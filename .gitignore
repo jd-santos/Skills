@@ -1,0 +1,13 @@
+# Local state and generated third-party skills
+/.local/
+/skills/.tracked-skill-*/
+/skills/.*.previous/
+/skills/informed-patient/
+/skills/learning-opportunities/
+/skills/orient/
+/skills/offgrid-review/
+
+# Common local files
+.DS_Store
+__pycache__/
+*.pyc

@@ -1,0 +1,57 @@
+{
+  "version": 1,
+  "tracked_skills": [
+    {
+      "name": "informed-patient",
+      "repo": "https://github.com/DrCatHicks/informed-patient.git",
+      "ref": "main",
+      "commit": "4ec9c1e87804e70a7d53e0fb852a4fdb5646da9f",
+      "source_path": "informed-patient/skills/informed-patient",
+      "project": "Informed Patient",
+      "author": "Dr. Cat Hicks",
+      "license": "CC-BY-4.0",
+      "license_path": "LICENSE.txt",
+      "source_url": "https://github.com/DrCatHicks/informed-patient",
+      "reviewed_at": "2026-05-13"
+    },
+    {
+      "name": "learning-opportunities",
+      "repo": "https://github.com/DrCatHicks/learning-opportunities.git",
+      "ref": "main",
+      "commit": "ae8412fb1b9118bfb2fad9872048f9384f797098",
+      "source_path": "learning-opportunities/skills/learning-opportunities",
+      "project": "Learning Opportunities",
+      "author": "Dr. Cat Hicks",
+      "license": "CC-BY-4.0",
+      "license_path": "LICENSE",
+      "source_url": "https://github.com/DrCatHicks/learning-opportunities",
+      "reviewed_at": "2026-05-15"
+    },
+    {
+      "name": "orient",
+      "repo": "https://github.com/DrCatHicks/learning-opportunities.git",
+      "ref": "main",
+      "commit": "ae8412fb1b9118bfb2fad9872048f9384f797098",
+      "source_path": "orient/skills/orient",
+      "project": "Orient",
+      "author": "Dr. Michael Mullarkey",
+      "license": "CC-BY-4.0",
+      "license_path": "LICENSE",
+      "source_url": "https://github.com/DrCatHicks/learning-opportunities/tree/main/orient",
+      "reviewed_at": "2026-05-15"
+    },
+    {
+      "name": "offgrid-review",
+      "repo": "https://github.com/jd-santos/offgrid-review.git",
+      "ref": "main",
+      "commit": "0c6f27d6e8a99225352a8a68476b1c6bef721ee6",
+      "source_path": "skills/offgrid-review",
+      "project": "Offgrid Review",
+      "author": "JD Santos",
+      "license": "GPL-3.0-only",
+      "license_path": "LICENSE",
+      "source_url": "https://github.com/jd-santos/offgrid-review",
+      "reviewed_at": "2026-08-06"
+    }
+  ]
+}
