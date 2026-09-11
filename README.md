@@ -9,26 +9,43 @@ preferences.
 
 ## Skills I maintain
 
-| Area | Skill | What it does |
-| --- | --- | --- |
-| Planning | [`planning-first`](skills/planning-first/) | Runs a two-round planning process before non-trivial implementation. |
-| Delivery | [`ship`](skills/ship/) | Recovers repository context, reviews local work, creates focused commits, and handles pushes and pull requests. |
-| Task tracking | [`todo-manager`](skills/todo-manager/) | Maintains a structured `TODO.md` with active work, upcoming tasks, backlog, and completed work. |
-| Project tracking | [`project-issue-note`](skills/project-issue-note/) | Creates Markdown project, feature, and issue notes with consistent frontmatter. |
-| Git | [`commit-message-writer`](skills/commit-message-writer/) | Writes concise commit messages using a scope-first format. |
-| Releases | [`changelog-writer`](skills/changelog-writer/) | Writes readable changelog entries and release notes using Keep a Changelog sections. |
-| Writing | [`technical-writing-style`](skills/technical-writing-style/) | Keeps technical prose direct, useful, and free of corporate or generated-sounding filler. |
-| Skill management | [`tracked-skills`](skills/tracked-skills/) | Installs external skills from reviewed commits and shows upstream changes before advancing pins. |
-| Skill authoring | [`create-skill`](skills/create-skill/) | Creates focused Agent Skills packages with useful retrieval descriptions and supporting files. |
-| Agent guidance | [`create-agents-md`](skills/create-agents-md/) | Creates repository guidance files that give coding agents durable project context. |
-| Pi | [`add-pi-feature`](skills/add-pi-feature/) | Adds Pi extensions, skills, prompts, themes, commands, and related configuration. |
-| Examples | [`example-skill`](skills/example-skill/) | Provides a small reference implementation of the skill format. |
-| Swift | [`swift-code-writer`](skills/swift-code-writer/) | Guides idiomatic Swift implementation using current project settings and Apple documentation. |
-| Swift | [`swift-mentor`](skills/swift-mentor/) | Teaches Swift, SwiftUI, and SwiftData with explanations of design choices and modern patterns. |
-| Marimo | [`marimo`](skills/marimo/) | Covers reactive notebook structure, data work, widgets, SQL, export, and deployment. |
-| Marimo | [`marimo-pair`](skills/marimo-pair/) | Works inside a running marimo kernel to execute code and build notebooks as artifacts. |
-| Language study | [`study-lyrics`](skills/study-lyrics/) | Studies user-provided lyrics through translation, language notes, and sourced cultural context. |
-| Structured review | [`offgrid-review`](https://github.com/jd-santos/offgrid-review) | Moves complex decisions into a portable review workbench with a separate verified apply pass. Maintained in its own repository. |
+### Workflows and communication
+
+| Skill | What it does |
+| --- | --- |
+| [`planning-first`](skills/planning-first/) | Runs a two-round planning process before non-trivial implementation. |
+| [`ship`](skills/ship/) | Recovers repository context, reviews local work, creates focused commits, and handles pushes and pull requests. |
+| [`todo-manager`](skills/todo-manager/) | Maintains a structured `TODO.md` with active work, upcoming tasks, backlog, and completed work. |
+| [`project-issue-note`](skills/project-issue-note/) | Creates Markdown project, feature, and issue notes with consistent frontmatter. |
+| [`commit-message-writer`](skills/commit-message-writer/) | Writes concise commit messages using a scope-first format. |
+| [`changelog-writer`](skills/changelog-writer/) | Writes readable changelog entries and release notes using Keep a Changelog sections. |
+| [`technical-writing-style`](skills/technical-writing-style/) | Keeps technical prose direct, useful, and free of corporate or generated-sounding filler. |
+| [`offgrid-review`](https://github.com/jd-santos/offgrid-review) | Moves complex decisions into a portable review workbench with a separate verified apply pass. Maintained in its own repository. |
+
+### Agent and skill tooling
+
+| Skill | What it does |
+| --- | --- |
+| [`tracked-skills`](skills/tracked-skills/) | Installs external skills from reviewed commits and shows upstream changes before advancing pins. |
+| [`create-skill`](skills/create-skill/) | Creates focused Agent Skills packages with useful retrieval descriptions and supporting files. |
+| [`create-agents-md`](skills/create-agents-md/) | Creates repository guidance files that give coding agents durable project context. |
+| [`add-pi-feature`](skills/add-pi-feature/) | Adds Pi extensions, skills, prompts, themes, commands, and related configuration. |
+| [`example-skill`](skills/example-skill/) | Provides a small reference implementation of the skill format. |
+
+### Swift and notebooks
+
+| Skill | What it does |
+| --- | --- |
+| [`swift-code-writer`](skills/swift-code-writer/) | Guides idiomatic Swift implementation using current project settings and Apple documentation. |
+| [`swift-mentor`](skills/swift-mentor/) | Teaches Swift, SwiftUI, and SwiftData with explanations of design choices and modern patterns. |
+| [`marimo`](skills/marimo/) | Covers reactive notebook structure, data work, widgets, SQL, export, and deployment. |
+| [`marimo-pair`](skills/marimo-pair/) | Works inside a running marimo kernel to execute code and build notebooks as artifacts. |
+
+### Language study
+
+| Skill | What it does |
+| --- | --- |
+| [`study-lyrics`](skills/study-lyrics/) | Studies user-provided lyrics through translation, language notes, and sourced cultural context. |
 
 ## Install
 
