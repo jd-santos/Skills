@@ -38,6 +38,7 @@ preferences.
 | --- | --- |
 | [`swift-code-writer`](skills/swift-code-writer/) | Guide idiomatic Swift implementation. |
 | [`swift-mentor`](skills/swift-mentor/) | Teach Swift, SwiftUI, and SwiftData. |
+| [`adaptive-teaching`](skills/adaptive-teaching/) | Teach efficiently with adaptive lessons and client-aware presentation. |
 | [`marimo`](skills/marimo/) | Work with reactive Python notebooks. |
 | [`marimo-pair`](skills/marimo-pair/) | Build inside a running marimo kernel. |
 | [`study-lyrics`](skills/study-lyrics/) | Study lyrics through translation and cultural context. |
