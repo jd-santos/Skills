@@ -1,88 +1,63 @@
 # Skills
 
-The agent skills I use across Pi, Claude Code, OpenCode, and other tools that
-support the [Agent Skills](https://agentskills.io) format.
+The agent skills I use across Hermes Agent, Pi, Zed, Codex, Claude Code, and
+other tools that support the [Agent Skills](https://agentskills.io) format.
 
 Most of these skills are meant to be read, copied, and adapted. They reflect how
 I work, but the useful version is the one tuned to your tools, constraints, and
 preferences.
 
-## Skills I maintain
+## Skill list
 
-### Workflows and communication
+### Workflows
 
-| Skill | What it does |
+| Skill | Purpose |
 | --- | --- |
-| [`planning-first`](skills/planning-first/) | Runs a two-round planning process before non-trivial implementation. |
-| [`ship`](skills/ship/) | Recovers repository context, reviews local work, creates focused commits, and handles pushes and pull requests. |
-| [`todo-manager`](skills/todo-manager/) | Maintains a structured `TODO.md` with active work, upcoming tasks, backlog, and completed work. |
-| [`project-issue-note`](skills/project-issue-note/) | Creates Markdown project, feature, and issue notes with consistent frontmatter. |
-| [`commit-message-writer`](skills/commit-message-writer/) | Writes concise commit messages using a scope-first format. |
-| [`changelog-writer`](skills/changelog-writer/) | Writes readable changelog entries and release notes using Keep a Changelog sections. |
-| [`technical-writing-style`](skills/technical-writing-style/) | Keeps technical prose direct, useful, and free of corporate or generated-sounding filler. |
-| [`offgrid-review`](https://github.com/jd-santos/offgrid-review) | Moves complex decisions into a portable review workbench with a separate verified apply pass. Maintained in its own repository. |
+| [`planning-first`](skills/planning-first/) | Plan before non-trivial implementation. |
+| [`ship`](skills/ship/) | Review, commit, push, and open pull requests. |
+| [`todo-manager`](skills/todo-manager/) | Maintain a structured `TODO.md`. |
+| [`project-issue-note`](skills/project-issue-note/) | Track projects, features, and issues in Markdown. |
+| [`commit-message-writer`](skills/commit-message-writer/) | Write concise, scope-first commit messages. |
+| [`changelog-writer`](skills/changelog-writer/) | Write changelog entries and release notes. |
+| [`technical-writing-style`](skills/technical-writing-style/) | Keep technical prose direct and human. |
+| [`offgrid-review`](https://github.com/jd-santos/offgrid-review) | Move complex decisions into a portable review workbench. |
 
-### Agent and skill tooling
+### Agent tooling
 
-| Skill | What it does |
+| Skill | Purpose |
 | --- | --- |
-| [`tracked-skills`](skills/tracked-skills/) | Installs external skills from reviewed commits and shows upstream changes before advancing pins. |
-| [`create-skill`](skills/create-skill/) | Creates focused Agent Skills packages with useful retrieval descriptions and supporting files. |
-| [`create-agents-md`](skills/create-agents-md/) | Creates repository guidance files that give coding agents durable project context. |
-| [`add-pi-feature`](skills/add-pi-feature/) | Adds Pi extensions, skills, prompts, themes, commands, and related configuration. |
-| [`example-skill`](skills/example-skill/) | Provides a small reference implementation of the skill format. |
+| [`tracked-skills`](skills/tracked-skills/) | Install and review updates for pinned external skills. |
+| [`create-skill`](skills/create-skill/) | Create Agent Skills packages. |
+| [`create-agents-md`](skills/create-agents-md/) | Create durable repository guidance for agents. |
+| [`add-pi-feature`](skills/add-pi-feature/) | Add Pi extensions, prompts, themes, skills, and commands. |
+| [`example-skill`](skills/example-skill/) | Show a minimal skill structure. |
 
-### Swift and notebooks
+### Languages, notebooks, and study
 
-| Skill | What it does |
+| Skill | Purpose |
 | --- | --- |
-| [`swift-code-writer`](skills/swift-code-writer/) | Guides idiomatic Swift implementation using current project settings and Apple documentation. |
-| [`swift-mentor`](skills/swift-mentor/) | Teaches Swift, SwiftUI, and SwiftData with explanations of design choices and modern patterns. |
-| [`marimo`](skills/marimo/) | Covers reactive notebook structure, data work, widgets, SQL, export, and deployment. |
-| [`marimo-pair`](skills/marimo-pair/) | Works inside a running marimo kernel to execute code and build notebooks as artifacts. |
-
-### Language study
-
-| Skill | What it does |
-| --- | --- |
-| [`study-lyrics`](skills/study-lyrics/) | Studies user-provided lyrics through translation, language notes, and sourced cultural context. |
+| [`swift-code-writer`](skills/swift-code-writer/) | Guide idiomatic Swift implementation. |
+| [`swift-mentor`](skills/swift-mentor/) | Teach Swift, SwiftUI, and SwiftData. |
+| [`marimo`](skills/marimo/) | Work with reactive Python notebooks. |
+| [`marimo-pair`](skills/marimo-pair/) | Build inside a running marimo kernel. |
+| [`study-lyrics`](skills/study-lyrics/) | Study lyrics through translation and cultural context. |
 
 ## Install
 
 ### Recommended: copy and adapt
 
-I recommend copying the skills you want into your own Agent Skills directory,
-then editing them to match your workflow. That gives you a stable local version
-without inheriting changes from this repository.
-
-Copy one skill:
+Start with the skills that fit your workflow. Copy them into your own Agent
+Skills directory, then change the instructions to suit how you work.
 
 ```bash
-git clone --depth 1 https://github.com/jd-santos/Skills.git /tmp/jd-skills
+git clone --depth 1 https://github.com/jd-santos/Skills.git jd-skills
 mkdir -p ~/.agents/skills
-cp -R /tmp/jd-skills/skills/planning-first ~/.agents/skills/
-rm -rf /tmp/jd-skills
+cp -R jd-skills/skills/planning-first ~/.agents/skills/
 ```
 
-Replace `planning-first` with any standalone skill from the table above.
-Supporting files inside the skill directory are part of the skill and should be
-copied with it. The `tracked-skills` skill is the exception because it depends
-on the registry and scripts in a full repository checkout.
-
-To use all of the standalone skills as a starting point:
-
-```bash
-git clone --depth 1 https://github.com/jd-santos/Skills.git /tmp/jd-skills
-mkdir -p ~/.agents/skills
-for skill in /tmp/jd-skills/skills/*; do
-  [ "${skill##*/}" = "tracked-skills" ] || cp -R "$skill" ~/.agents/skills/
-done
-rm -rf /tmp/jd-skills
-```
-
-This copies only files committed to this repository and skips the
-checkout-specific management skill. It does not download the third-party skills
-listed later in this README.
+Replace `planning-first` with another skill from the list and repeat as needed.
+Copy the whole directory so its references and scripts come with it.
+`tracked-skills` is repository tooling and expects a full checkout.
 
 ### Track this repository directly
 
@@ -123,12 +98,9 @@ silently advance this repository or any external skill pin.
 
 ## Discovery
 
-Installed skills live at `~/.agents/skills/`. That path is used by:
-
-- Pi through its configured `skills` path
-- Claude Code through the `.agents` compatibility path
-- OpenCode through its global Agent Skills path
-- Other tools that implement the Agent Skills format
+Installed skills live at `~/.agents/skills/`. I use the collection with Hermes
+Agent, Pi, Zed, Codex, and Claude Code. OpenCode and other tools that implement
+the Agent Skills format can use the same files.
 
 Reload the relevant tool after installing or changing skills.
 
