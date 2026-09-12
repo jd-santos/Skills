@@ -99,7 +99,8 @@ def validate_entry(raw: Any) -> dict[str, str]:
     if not NAME_PATTERN.fullmatch(entry["name"]):
         raise TrackedSkillsError(f"Invalid skill name: {entry['name']!r}")
     relative_path(entry["source_path"], "source_path")
-    relative_path(entry["license_path"], "license_path")
+    if entry["license_path"]:
+        relative_path(entry["license_path"], "license_path")
     if not re.fullmatch(r"[0-9a-f]{40}", entry["commit"]):
         raise TrackedSkillsError(
             f"{entry['name']} must pin a full 40-character Git commit"
@@ -157,6 +158,19 @@ def repo_cache(repo: str) -> Path:
     return cache_root() / "sources" / digest
 
 
+def repository_identity(url: str) -> str:
+    """Normalize equivalent GitHub HTTPS and SSH clone URLs."""
+    value = url.strip().rstrip("/").removesuffix(".git")
+    github = re.fullmatch(
+        r"(?:https?://github\.com/|git@github\.com:|ssh://git@github\.com/)(.+)",
+        value,
+        flags=re.IGNORECASE,
+    )
+    if github:
+        return f"github.com/{github.group(1)}".lower()
+    return value
+
+
 def ensure_repo(entry: dict[str, str], refresh: bool = False) -> Path:
     cache = repo_cache(entry["repo"])
     cache.parent.mkdir(parents=True, exist_ok=True)
@@ -167,9 +181,7 @@ def ensure_repo(entry: dict[str, str], refresh: bool = False) -> Path:
         raise TrackedSkillsError(f"Cache path is not a Git checkout: {cache}")
 
     remote = run("git", "remote", "get-url", "origin", cwd=cache)
-    if remote.rstrip("/").removesuffix(".git") != entry["repo"].rstrip(
-        "/"
-    ).removesuffix(".git"):
+    if repository_identity(remote) != repository_identity(entry["repo"]):
         raise TrackedSkillsError(
             f"Cached origin for {entry['name']} does not match its registry entry"
         )
@@ -222,21 +234,30 @@ def materialize(
 ) -> None:
     cache = ensure_repo(entry)
     source = cache.joinpath(*relative_path(entry["source_path"], "source_path").parts)
-    license_source = cache.joinpath(
-        *relative_path(entry["license_path"], "license_path").parts
-    )
+    license_source = None
+    if entry["license_path"]:
+        license_source = cache.joinpath(
+            *relative_path(entry["license_path"], "license_path").parts
+        )
     cache_resolved = cache.resolve()
     if not source.resolve().is_relative_to(cache_resolved):
         raise TrackedSkillsError(f"Source escapes cached repository: {source}")
-    if not source.is_dir() or not (source / "SKILL.md").is_file():
+    if source.is_dir() and (source / "SKILL.md").is_file():
+        source_kind = "directory"
+    elif source.is_file() and source.suffix.lower() == ".md":
+        source_kind = "markdown"
+    else:
         raise TrackedSkillsError(
-            f"{entry['name']} source does not contain SKILL.md: {source}"
+            f"{entry['name']} source is not a skill directory or Markdown file: {source}"
         )
-    if not license_source.is_file():
+    if license_source is not None and not license_source.is_file():
         raise TrackedSkillsError(
             f"{entry['name']} license file is missing: {license_source}"
         )
-    assert_safe_tree(source)
+    if source_kind == "directory":
+        assert_safe_tree(source)
+    elif source.is_symlink():
+        raise TrackedSkillsError(f"External skill contains an unsupported symlink: {source}")
 
     SKILLS_DIR.mkdir(parents=True, exist_ok=True)
     destination = SKILLS_DIR / entry["name"]
@@ -255,8 +276,13 @@ def materialize(
 
     with tempfile.TemporaryDirectory(prefix=".tracked-skill-", dir=SKILLS_DIR) as tmp:
         staged = Path(tmp) / entry["name"]
-        shutil.copytree(source, staged)
-        shutil.copy2(license_source, staged / "UPSTREAM_LICENSE")
+        if source_kind == "directory":
+            shutil.copytree(source, staged)
+        else:
+            staged.mkdir()
+            shutil.copy2(source, staged / "SKILL.md")
+        if license_source is not None:
+            shutil.copy2(license_source, staged / "UPSTREAM_LICENSE")
         provenance = {
             "project": entry["project"],
             "author": entry["author"],

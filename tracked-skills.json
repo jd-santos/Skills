@@ -52,6 +52,32 @@
       "license_path": "LICENSE",
       "source_url": "https://github.com/jd-santos/offgrid-review",
       "reviewed_at": "2026-08-06"
+    },
+    {
+      "name": "explain-diff-html",
+      "repo": "https://gist.github.com/a29df1b5f9865506e8952488eac3d524.git",
+      "ref": "main",
+      "commit": "126e7fe9eecaafadfe1ac8bb183d135812b608f2",
+      "source_path": "explain-diff-html.md",
+      "project": "Explain Diff",
+      "author": "Geoffrey Litt",
+      "license": "NOASSERTION",
+      "license_path": "",
+      "source_url": "https://gist.github.com/geoffreylitt/a29df1b5f9865506e8952488eac3d524",
+      "reviewed_at": "2026-09-11"
+    },
+    {
+      "name": "explain-diff-notion",
+      "repo": "https://gist.github.com/a29df1b5f9865506e8952488eac3d524.git",
+      "ref": "main",
+      "commit": "126e7fe9eecaafadfe1ac8bb183d135812b608f2",
+      "source_path": "explain-diff-notion.md",
+      "project": "Explain Diff",
+      "author": "Geoffrey Litt",
+      "license": "NOASSERTION",
+      "license_path": "",
+      "source_url": "https://gist.github.com/geoffreylitt/a29df1b5f9865506e8952488eac3d524",
+      "reviewed_at": "2026-09-11"
     }
   ]
 }
