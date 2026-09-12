@@ -115,9 +115,11 @@ repository.
 | `informed-patient` | Informed Patient by Dr. Cat Hicks | CC BY 4.0 | [DrCatHicks/informed-patient](https://github.com/DrCatHicks/informed-patient) |
 | `learning-opportunities` | Learning Opportunities by Dr. Cat Hicks | CC BY 4.0 | [DrCatHicks/learning-opportunities](https://github.com/DrCatHicks/learning-opportunities) |
 | `orient` | Orient by Dr. Michael Mullarkey | CC BY 4.0 | [DrCatHicks/learning-opportunities](https://github.com/DrCatHicks/learning-opportunities/tree/main/orient) |
+| `explain-diff-html` | Explain Diff by Geoffrey Litt | No license declared | [geoffreylitt/explain-diff gist](https://gist.github.com/geoffreylitt/a29df1b5f9865506e8952488eac3d524) |
+| `explain-diff-notion` | Explain Diff by Geoffrey Litt | No license declared | [geoffreylitt/explain-diff gist](https://gist.github.com/geoffreylitt/a29df1b5f9865506e8952488eac3d524) |
 
-The local installer preserves each upstream license and records the source
-repository and exact installed commit. See
+The local installer preserves each declared upstream license and records the
+source repository and exact installed commit. See
 [`tracked-skills.json`](tracked-skills.json) for the reviewed pins.
 
 Offgrid Review uses the same pinned installation mechanism because its canonical

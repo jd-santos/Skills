@@ -12,7 +12,7 @@ contains:
 - The canonical repository and project page
 - The upstream branch or tag used when checking for updates
 - An exact reviewed Git commit used for installation
-- The skill and license paths inside the upstream repository
+- The skill path and, when available, license path inside the upstream repository
 - The project, author, license, and review date used for attribution
 
 Installation always uses the exact commit. The `ref` field is only an update
@@ -33,8 +33,8 @@ ignored by Git.
 
 Each generated skill includes:
 
-- The upstream skill files
-- `UPSTREAM_LICENSE`, copied from the configured upstream license
+- The upstream skill files. A standalone Markdown skill is installed as `SKILL.md`.
+- `UPSTREAM_LICENSE`, when copied from a configured upstream license
 - `.tracked-source.json`, containing source and commit provenance
 
 The installer does not edit the upstream `SKILL.md`.
@@ -59,7 +59,8 @@ The command refuses to replace:
 
 - A destination it did not previously generate
 - A generated destination changed since the previous installation
-- A source directory without `SKILL.md`
+- A source that is neither a directory containing `SKILL.md` nor a standalone
+  Markdown skill file
 - A source or license path that escapes the cached repository
 - A source tree containing symbolic links
 
@@ -101,9 +102,11 @@ entry to `tracked-skills.json`, add the destination to `.gitignore`, then run:
 Before committing the registry entry:
 
 1. Confirm the canonical repository and author.
-2. Read the upstream license and record its SPDX identifier.
+2. Read the upstream license and record its SPDX identifier. If the source does
+   not declare a license, use `NOASSERTION` and leave `license_path` empty.
 3. Review the exact pinned commit.
-4. Confirm the source is a self-contained skill directory.
+4. Confirm the source is a self-contained skill directory or standalone
+   Markdown skill file.
 5. Confirm the generated destination remains ignored by Git.
 6. Add visible attribution to the README.
 
