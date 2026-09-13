@@ -22,6 +22,12 @@ preferences.
 | [`technical-writing-style`](skills/technical-writing-style/) | Keep technical prose direct and human. |
 | [`offgrid-review`](https://github.com/jd-santos/offgrid-review) | Move complex decisions into a portable review workbench. |
 
+### Design
+
+| Skill | Purpose |
+| --- | --- |
+| [`ui-design`](skills/ui-design/) | Design clear, restrained, accessible application interfaces. |
+
 ### Agent tooling
 
 | Skill | Purpose |
