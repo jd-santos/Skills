@@ -1,7 +1,7 @@
 ---
 name: create-skill
 description: Creates new skills (SKILL.md files) for repeatable workflows. Use when building a new skill, writing skill instructions, or when user says "create a skill" or "make a new skill".
-version: 1.1.0
+version: 1.2.0
 author: jdwork
 category: meta
 ---
@@ -10,7 +10,7 @@ category: meta
 
 ## Description
 
-Creates well-structured Claude Code skills for repeatable workflows and actions. Skills are retrieved by agents when needed, making them ideal for specific procedures rather than general knowledge.
+Creates well-structured agent skills (`SKILL.md`) for repeatable workflows and actions, following the [Agent Skills](https://agentskills.io) open standard. Skills live under `.agents/skills/` and are shared across Claude Code, pi, and OpenCode. They are retrieved by agents when needed, making them ideal for specific procedures rather than general knowledge.
 
 ## When to Create a Skill
 
@@ -28,6 +28,29 @@ Creates well-structured Claude Code skills for repeatable workflows and actions.
 - Project structure documentation → use AGENTS.md
 
 **Rule of thumb:** If it's a repeatable *action* with specific steps → Skill. If it's *knowledge* the agent should always have → AGENTS.md (use `create-agents-md` skill).
+
+## Where Skills Live — Directory Structure (READ FIRST, MUST FOLLOW)
+
+**Every skill MUST be saved under an `.agents/skills/` tree. You MUST NOT create it under `.claude/skills/`.**
+
+| Scope | Exact path to create |
+|-------|----------------------|
+| Personal / reusable (default) | `~/.agents/skills/<skill-name>/SKILL.md` |
+| Project-specific | `<repo-root>/.agents/skills/<skill-name>/SKILL.md` |
+
+**Why this is a hard rule — not a preference:** `.agents/` is the single canonical source of truth for skills, and every agent tool reads from it — Claude Code, pi, and OpenCode. At the personal level, Claude Code's `~/.claude/skills` is a **symlink into `~/.agents/skills`**, so a skill saved there is discovered by all three tools automatically (Claude Code picks it up on next restart). The `.agents/` path is what keeps one skill working everywhere instead of three copies drifting apart.
+
+For a **project-specific** skill, still author it in `<repo-root>/.agents/skills/`. If that repo also needs Claude Code to auto-discover it, create the same one-time symlink in the repo (`ln -s ../.agents/skills <repo-root>/.claude/skills`) — author once in `.agents/`, never maintain a second copy under `.claude/`.
+
+**Do NOT write to `.claude/skills/` or `~/.claude/skills/`.** That location is only a symlink target, not a place to author files. Writing a real file or directory there:
+
+- forks a second copy that silently drifts out of sync with `.agents/`,
+- is invisible to pi and OpenCode,
+- can shadow or collide with the symlinked tree and corrupt discovery.
+
+If the target `.agents/skills/` directory does not exist yet, **create it** (`mkdir -p`). Do not "fall back" to `.claude/` because it happens to exist.
+
+**Verify before you finish (do not skip):** the full path of the file you wrote MUST contain `/.agents/skills/` and MUST NOT contain `/.claude/skills/`. If it contains `/.claude/skills/`, you placed it wrong — move it into `.agents/skills/` and confirm again.
 
 ## Instructions
 
@@ -189,6 +212,8 @@ Keep individual skills under 200 lines when possible. If a skill grows too large
 
 ## Template
 
+> Save this file to `~/.agents/skills/<skill-name>/SKILL.md` (personal) or `<repo-root>/.agents/skills/<skill-name>/SKILL.md` (project). Never `.claude/skills/`. See [Where Skills Live](#where-skills-live--directory-structure-read-first-must-follow).
+
 ```markdown
 ---
 name: skill-name
@@ -238,3 +263,5 @@ If the skill fails:
 ## Cross-Reference
 
 For project knowledge and conventions that agents should always have, create an AGENTS.md file instead using the `create-agents-md` skill.
+
+**Placement reminder:** the finished skill goes under `.agents/skills/`, never `.claude/skills/` — see [Where Skills Live](#where-skills-live--directory-structure-read-first-must-follow).

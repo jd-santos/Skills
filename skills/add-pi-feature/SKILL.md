@@ -34,9 +34,9 @@ Before implementing:
 
 ### A. Skills
 
-**Location:**
-- Global: `~/.pi/agent/skills/<name>/SKILL.md` or `~/.agents/skills/<name>/SKILL.md`
-- Project: `.pi/skills/<name>/SKILL.md` or `.agents/skills/<name>/SKILL.md`
+**Location** — prefer `.agents/skills/` (the canonical, cross-tool source shared by Claude Code, pi, and OpenCode); the `~/.pi/agent/skills/` paths are pi-only:
+- Global: `~/.agents/skills/<name>/SKILL.md` _(preferred)_ or `~/.pi/agent/skills/<name>/SKILL.md` _(pi-only)_
+- Project: `.agents/skills/<name>/SKILL.md` _(preferred)_ or `.pi/skills/<name>/SKILL.md` _(pi-only)_
 
 **Rules:**
 - Directory name must match the `name` field in frontmatter

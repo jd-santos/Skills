@@ -1,6 +1,6 @@
 ---
 name: example-skill
-description: Template demonstrating Claude skill structure and format. Use when learning how skills work, viewing an example skill, or as a starting point for new skills.
+description: Template demonstrating agent skill structure and format. Use when learning how skills work, viewing an example skill, or as a starting point for new skills.
 version: 1.0.0
 author: jdwork
 category: meta
@@ -10,7 +10,9 @@ category: meta
 
 ## Description
 
-This is a template/example skill that demonstrates the structure and format of a Claude skill. Use this as a starting point when creating your own custom skills.
+This is a template/example skill that demonstrates the structure and format of an agent skill. Use this as a starting point when creating your own custom skills.
+
+**Where to save it:** skills live under `.agents/skills/` — `~/.agents/skills/<name>/SKILL.md` (personal) or `<repo-root>/.agents/skills/<name>/SKILL.md` (project). Never `.claude/skills/`, which is only a symlink into `.agents/skills/`. See the `create-skill` skill for the full rule.
 
 ## Instructions
 
