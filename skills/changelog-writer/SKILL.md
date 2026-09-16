@@ -1,7 +1,7 @@
 ---
 name: changelog-writer
 description: Writes human-readable CHANGELOG.md entries using Keep a Changelog sections with optional date-based or SemVer releases. Use when updating changelogs, writing release notes, summarizing notable changes, preparing releases, or when user says "update the changelog", "write release notes", or "summarize these changes".
-version: 1.0.0
+version: 1.1.0
 author: jdwork
 category: documentation
 ---
@@ -20,7 +20,7 @@ Before writing:
 
 1. **Find the repo root**: Work from the Git repository root when possible.
 2. **Check the current state**: Review `git status --short`, changed file names, recent commits, and diff stats before reading detailed diffs.
-3. **Check versioning signals**: Look for existing version tags, package versions, release notes, or an existing SemVer statement in `CHANGELOG.md`.
+3. **Find the maintained changelog and versioning signals**: Preserve its existing location and format. Look for version tags, package versions, release notes, or an existing SemVer statement. Do not create a root duplicate when a maintained changelog lives elsewhere.
 4. **Protect secrets**: Do not read prohibited secret files such as `.env*`, credentials, tokens, keys, or pem files. If changed files look sensitive, stop and ask the user how to summarize them safely.
 5. **Respect public repos**: Avoid internal URLs, personal identifiers, client names, credentials, or machine-specific private details in changelog entries.
 
@@ -72,7 +72,15 @@ If `CHANGELOG.md` already has a format, preserve it unless the user asks to migr
 
 ### 3. Create `CHANGELOG.md` if needed
 
-If the project has no changelog, create a root-level `CHANGELOG.md`.
+If the project has no changelog, create a root-level `CHANGELOG.md`. Do not move
+an existing changelog into `todo/` when adopting the task workbench.
+
+`CHANGELOG.md` owns maintained release notes. Git and PRs own the development
+story; retained work records hold supporting evidence. `todo/DONE.md` is a
+navigation page that may link to this changelog and briefly highlight up to
+three verified major releases. It must not become a copied changelog or task
+completion ledger. Keep highlights optional, and never describe Unreleased
+entries as a published release.
 
 Use this default header for date-based projects:
 

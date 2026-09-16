@@ -1,273 +1,179 @@
 ---
 name: todo-manager
-description: Creates and manages TODO.md files with In Progress, Up Next, Backlog, and Done sections. Use when managing tasks, tracking progress, or when user mentions "todo" (add todo, update todo, create todo, mark done, etc.).
-version: 1.0.0
-author: jdwork
+description: Manages a root-level todo workbench with a P0–P4 priority index, independent work records, and reviewed shipping cleanup. Use when managing tasks, tracking progress, preparing handoffs, or when the user mentions todos, task cleanup, or completed work.
+version: 2.0.0
 category: workflow
 ---
 
-# Skill: TODO.md Manager
+# Skill: Task Workbench
 
 ## Description
 
-Manages project TODO.md files with structured sections for task tracking. Handles adding tasks, nesting sub-tasks under existing items, and summarizing completed work.
+Keep live tasks in `todo/TODO.md`, substantial work in stable work folders, and
+history in Git and PRs. Keep useful evidence without maintaining a Done task
+ledger or feeding obsolete plans into future agents' context.
 
 ## Instructions
 
-### 1. Locate or Create TODO.md
+### 1. Locate the workbench
 
-**Search order:**
-1. `./TODO.md` (project root)
-2. `./docs/TODO.md`
+1. Find the project root. In Git, use `git rev-parse --show-toplevel`; do not
+   mistake a package directory or a parent repository for this project's root.
+2. Read applicable agent instructions and locate `todo/README.md` and
+   `todo/TODO.md`. Check legacy root `TODO.md` and `docs/TODO.md` before creating
+   anything. Follow explicit project conventions.
+3. If multiple live queues exist, ask which owns the work. Follow redirect-only
+   files; do not treat them as competing queues.
+4. If only a legacy queue exists, maintain it until migration is authorized.
+   Do not silently create a second queue or reorganize unrelated records.
+5. For an authorized new workbench, use the templates in
+   [references/workbench.md](references/workbench.md). Create `todo/README.md`,
+   `todo/TODO.md`, and `todo/DONE.md`. Create work folders only when needed.
+6. Respect read-only planning gates. Loading this skill does not authorize
+   writing tasks, migration, pruning, commits, or delivery.
 
-**If neither exists:** Create `docs/TODO.md` with this template:
+Read the index and the relevant work record, then follow selected links. Do not
+load all retained work as current context. Never read secret-looking artifacts,
+including during cleanup; keep private logs and sensitive assets out of Git.
 
-```markdown
-# TODO
+### 2. Keep one priority index
 
-## In Progress
+Use these headings in order:
 
-## Up Next
+| Heading | Meaning |
+| --- | --- |
+| `## P0: Rush` | Immediate interruption or emergency work. |
+| `## P1: Essential` | Required or blocking an agreed outcome. |
+| `## P2: High` | Important work to prioritize next. |
+| `## P3: Low` | Useful work without near-term urgency. |
+| `## P4: Minor` | Small improvements or optional polish. |
 
-## Backlog
+Priority is not execution status. Do not create In Progress, Backlog, or Done
+sections alongside these headings. Preserve user-assigned priorities. If no
+priority can be inferred, use P3 provisionally and say so; ask when placement
+would materially affect scheduling. Do not infer urgency from task size.
 
-## Done
-```
+- Use `- [ ]` and `- [x]`, with two-space indentation for nested checkboxes.
+- Keep small tasks and their steps inline. Link larger tasks to
+  `work/<descriptive-name>/README.md` from the index.
+- Put each detailed checklist in one place. A top-level index checkbox can
+  summarize a linked slice, but must not duplicate its steps.
+- Nest clearly related work. Ask when parentage or a matching task is ambiguous.
+- Preserve unchecked work and checked state when reprioritizing.
+- Suggest only genuinely high-priority issues discovered in related work,
+  normally no more than one or two per session. Ask before adding speculative work.
 
-### 2. Task Format
+### 3. Give substantial work a stable home
 
-**Main tasks:**
-```markdown
-- [ ] Task description
-```
+Use `todo/work/<descriptive-name>/README.md` as its local entry point. Prefer
+lowercase hyphenated names, not dates, opaque IDs, or process jargon. Do not move
+folders between active and archive directories when their status changes.
 
-**With priority (optional):**
-```markdown
-- [ ] [HIGH] Fix critical auth bug
-- [ ] [MED] Add user settings page
-- [ ] [LOW] Update footer styling
-```
+The work README owns purpose, execution status, current ownership when active,
+acceptance criteria, the execution checklist, and links to supporting material.
+Use plain language such as Planned, In progress, Blocked, Ready for review,
+Ready for merge, or Retained record. Distinguish implementation from delivery;
+include a known PR or commit reference without inventing one.
 
-**Sub-tasks (indented with 2 spaces):**
-```markdown
-- [ ] Implement auth flow
-  - [ ] Add login endpoint
-  - [ ] Add logout endpoint
-  - [ ] Write tests
-```
+- Add `plan.md` only when the design no longer fits comfortably in the README.
+- Name other files for their purpose, such as `research.md`, `validation.md`,
+  or `migration-notes.md`. Use `assets/` for supporting images and other files.
+- Add a subdirectory only when a real cluster needs grouping, with a descriptive
+  name and a link from the work README. Avoid empty scaffolding and deep trees.
+- Every retained artifact needs a reason to exist and an entry-point link.
+- Keep one current plan. Preserve consequential rejected alternatives and their
+  reasons as decisions, not competing executable plans.
+- Put enduring project instructions and current architecture in maintained
+  project docs. Link to them rather than treating old work records as manuals.
 
-### 3. Adding New Tasks
+### 4. Coordinate concurrent agents
 
-**Workflow:**
+Before starting, inspect available task/agent status, the work record, and Git
+worktree metadata. Record an agreed role or branch and bounded scope without
+personal identifiers or machine-specific paths.
 
-1. **Check existing items** in the target section (usually Up Next or Backlog)
-2. **Look for related tasks** the new item might belong under
-3. **If clearly related:** Add as indented sub-task
-4. **If ambiguous:** Ask the user: "Should this go under '[existing task]' or as a new item?"
-5. **If unrelated:** Add as new top-level item
+- Use the coordinating session to assign disjoint work where available.
+- Keep one writer per checkout. Use separate worktrees for concurrent writers.
+- Let each worker primarily update its own work record. Assign shared TODO
+  edits to the coordinator or integrator where possible.
+- Re-read the shared index before targeted edits. Reconcile it during integration;
+  do not overwrite other agents' progress or reorder unrelated items.
+- Ownership text and checkboxes are not locks across worktrees. If ownership
+  overlaps, is stale, or cannot be established safely, ask before changing it.
+- Sibling worktrees remain inspection-only unless separately authorized.
 
-**Context clues for sub-task detection:**
-- New task mentions same feature/component as existing task
-- New task is a step toward completing an existing task
-- Keywords overlap significantly (e.g., "auth", "login", "user")
+A handoff updates the existing work README with remaining steps, blockers,
+validation performed, and relevant links. Do not generate a new timestamped
+handoff file for every session. For an inline task, keep the handoff inline.
 
-**Example:**
-```
-Existing: - [ ] Implement auth flow
-New task: "add password reset endpoint"
+### 5. Complete a slice without manufacturing history
 
-→ Clearly related, add as sub-task:
-- [ ] Implement auth flow
-  - [ ] Add password reset endpoint
-```
+1. Check completed steps in place. Check a parent only when its whole scope and
+   acceptance criteria are satisfied. A checkbox is not proof of tests or merge.
+2. Keep checked entries in the live index until a reviewed closeout. Do not move
+   them to a Done section or compress them into a parallel completion ledger.
+3. At shipping, reconcile the record with actual diffs and checks. Remove only
+   the ready scope from the live index in the same commit as that scope's
+   closeout. For partial shipping, retain the parent and all unfinished work.
+4. Set retained records to the actual state, such as Ready for merge, not Merged.
+   Record merge or release only when verified. Direct-to-main delivery and local
+   commits also need explicit, accurate delivery status.
+5. If commit or delivery fails, preserve the record and report the pending state.
+   Do not claim shipment or erase unfinished work. Reconcile on the next attempt.
 
-### 4. Proactive Suggestions
+See the shipping and cleanup rules in
+[references/workbench.md](references/workbench.md). `ship` owns review and
+closeout, `commit-message-writer` owns commit prose, and `changelog-writer` owns
+release notes. Those skills must not manufacture delivery evidence from tasks.
 
-**When to suggest tasks:**
+### 6. Keep DONE useful and small
 
-If you notice high-priority issues while working (critical bugs, missing error handling, security concerns, broken tests), you can prompt the user:
+`todo/DONE.md` points to Git history, merged PRs when available, the existing
+`CHANGELOG.md`, and retained work records. It is not a second changelog.
 
-"I noticed [issue]. Should I add '[suggested task]' to the TODO list?"
+It may include up to three selected major release highlights with verified
+release references and links to the real release notes. Do not add one entry per
+task, call unreleased work a release, or require updates on every ship.
 
-**Only suggest when:**
-- Issue is genuinely important (HIGH priority level)
-- It's clear the user hasn't already addressed it
-- You're actively working in related code
+Prefer links to live PR lists or existing generated tables. Create no generation
+script unless requested. Any saved table must state its source, generation date,
+and refresh method; label it a snapshot rather than a current source of truth.
 
-**Don't spam suggestions:**
-- Limit to 1-2 per session unless user asks for more
-- Skip minor improvements or style issues
-- Focus on functionality, security, or blocking problems
+### 7. Handle errors and migration
 
-### 5. Moving Tasks Between Sections
-
-**In Progress → Done:**
-1. Summarize the task to a single line (drop sub-task checklists)
-2. Add brief parenthetical if sub-tasks provide useful context
-3. Mark as checked
-4. **Insert at the top of Done section** (newest first)
-5. Remove from In Progress
-
-**Example transformation:**
-```markdown
-# Before (In Progress):
-- [ ] Implement auth flow
-  - [x] Add login endpoint
-  - [x] Add logout endpoint
-  - [x] Add password reset
-  - [x] Write tests for auth
-
-# After (Done):
-- [x] Implement auth flow (login, logout, password reset)
-```
-
-**Other moves:**
-- Up Next → In Progress: Move as-is (preserve sub-tasks and their checked state)
-- Backlog → Up Next: Move as-is
-- Any section → Backlog: Move as-is (demoting)
-
-### 6. Section Order
-
-Maintain this order in the file:
-
-1. `## In Progress` - Currently being worked on
-2. `## Up Next` - Queued for immediate attention
-3. `## Backlog` - Future work, not prioritized
-4. `## Done` - Completed work (summaries only, newest first)
-
-### 7. Priority Markers
-
-Use when specified by user or when task urgency is mentioned:
-
-| Priority | When to use |
-|----------|-------------|
-| `[HIGH]` | Blocking issues, critical bugs, urgent deadlines |
-| `[MED]` | Important but not urgent, normal feature work |
-| `[LOW]` | Nice-to-have, minor improvements, tech debt |
-
-**Don't add priority** if the user doesn't mention urgency—keep it simple.
-
-### 8. Error Handling
-
-**Item not found when moving/updating:**
-- Search all sections for similar text
-- Suggest closest matches: "I couldn't find 'auth flow'. Did you mean 'Implement authentication'?"
-- If no matches, ask user to clarify
-
-**Item appears in multiple sections:**
-- Warn user: "Found 'auth flow' in both In Progress and Up Next. Which one should I update?"
-- Wait for clarification before making changes
-
-**Ambiguous sub-task placement:**
-- Ask: "Should 'add login endpoint' go under 'Implement auth flow' or as a new item?"
-- Default to asking rather than guessing wrong
-
-### 9. Common Operations
-
-**"Add a task" / "Create todo" / "Update todo with X":**
-1. Determine section (default: Up Next, or ask)
-2. Check for related existing tasks
-3. Add as sub-task or new item
-
-**"Mark X as done" / "Complete X":**
-1. Find item in In Progress (or other sections)
-2. Summarize if it has sub-tasks
-3. Move to top of Done as checked item
-
-**"What's in progress?" / "Show me the todo":**
-1. Read and display requested section(s)
-
-**"Move X to in progress" / "Start working on X":**
-1. Find item in Up Next or Backlog
-2. Move to In Progress section
-
-**"Add sub-task to X":**
-1. Find parent task X
-2. Add indented checkbox under it
+- Missing or duplicate task: suggest likely matches and ask; do not guess.
+- Conflicting ownership or merge conflicts: stop changes to the affected scope.
+- Existing alternative plans: identify the authoritative one before consolidation.
+- Broken links or unknown delivery: report uncertainty, never fabricate references.
+- Legacy migration: follow the preservation and link-repair checklist in the
+  reference. Never equate an old section name with a new priority automatically.
 
 ## Examples
 
-### Example 1: Adding a Related Task
+### Small task
 
-**User:** "Add a task to write tests for the login endpoint"
-
-**Current TODO.md:**
 ```markdown
-## In Progress
-- [ ] Implement auth flow
-  - [x] Add login endpoint
-  - [ ] Add logout endpoint
+## P3: Low
+
+- [ ] Clarify setup instructions
+  - [x] Verify the command
+  - [ ] Update the example
 ```
 
-**Action:** Recognize "login endpoint" relates to "Implement auth flow"
+### Larger task with concurrent work
 
-**Result:**
 ```markdown
-## In Progress
-- [ ] Implement auth flow
-  - [x] Add login endpoint
-  - [ ] Add logout endpoint
-  - [ ] Write tests for login endpoint
+## P1: Essential
+
+- [ ] [Improve import reliability](work/import-reliability/README.md)
+- [ ] [Add search filters](work/search-filters/README.md)
 ```
 
-### Example 2: Completing a Task with Sub-tasks
+Assign separate workers and worktrees. Each maintains its own detailed checklist;
+the integrator reconciles this index before shipping.
 
-**User:** "Mark auth flow as done"
+### Partial delivery
 
-**Current:**
-```markdown
-## In Progress
-- [ ] Implement auth flow
-  - [x] Add login endpoint
-  - [x] Add logout endpoint
-  - [x] Add password reset
-
-## Done
-- [x] Update database schema
-```
-
-**Result:**
-```markdown
-## In Progress
-
-## Done
-- [x] Implement auth flow (login, logout, password reset)
-- [x] Update database schema
-```
-
-### Example 3: Ambiguous Task Placement
-
-**User:** "Add task: update API documentation"
-
-**Current:**
-```markdown
-## Up Next
-- [ ] Refactor API endpoints
-- [ ] Write user guide
-```
-
-**Response:** "Should 'update API documentation' go under 'Refactor API endpoints', under 'Write user guide', or as a new item?"
-
-### Example 4: Item Not Found
-
-**User:** "Mark authentication as done"
-
-**Current TODO.md has:** `- [ ] Implement auth flow`
-
-**Response:** "I couldn't find 'authentication'. Did you mean 'Implement auth flow'?"
-
-### Example 5: Proactive Suggestion
-
-**Context:** You just fixed a critical bug in the auth code and notice error logging is missing.
-
-**Prompt:** "I noticed the auth endpoints don't have error logging. Should I add '[HIGH] Add error logging to auth endpoints' to the TODO list?"
-
-**User response determines action.**
-
-## Notes
-
-- Done section grows over time (newest at top)—user can manually archive if needed
-- Sub-task details are for In Progress/Up Next; Done is the summary view
-- When in doubt, ask rather than assume
-- Priority markers are optional—only add when user indicates urgency
-- When moving tasks between sections, preserve sub-task checkbox states
+The import fix is ready, but its migration tool is unfinished. Commit the fix and
+its validation evidence. Keep the work item unchecked with the migration step
+open. Do not label the whole effort complete or prune another worker's draft.

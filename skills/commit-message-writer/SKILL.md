@@ -1,7 +1,7 @@
 ---
 name: commit-message-writer
 description: 'Writes git commit messages using Scoped Commits format (scope: description). Use when committing changes, writing commit messages, or when user says "commit this" or "write a commit message".'
-version: 1.0.0
+version: 1.1.0
 author: jdwork
 category: git
 ---
@@ -93,6 +93,25 @@ Add a body when:
 - There is migration, rollout, or compatibility context
 
 Skip the body when the subject says enough.
+
+### Use work records without copying the task list
+
+When a task workbench exists, read only the relevant work README and selected
+supporting records. Use them to recover motivation, consequential decisions,
+validation, and limitations. Verify every claim against the staged diff and
+checks actually run; a checked task is not evidence of delivery.
+
+- Carry important reasoning into the commit body so Git history makes sense
+  without the chat or a surviving plan file.
+- For substantial changes, explain the problem, chosen approach, and relevant
+  tradeoff. Mention tests or limitations only when useful and accurate.
+- Link a stable repo-relative work record in the body or an optional
+  `Work-Record: todo/work/<name>/README.md` trailer when it adds useful evidence.
+  The link supplements the explanation; it must not replace it.
+- Do not paste execution checklists, duplicate the changelog, or label local
+  commits as merged or released.
+- Writing a message does not authorize task cleanup. `ship` and `todo-manager`
+  own closeout; a message-only request must not edit the queue.
 
 ### 5. Handle breaking changes and trailers
 
