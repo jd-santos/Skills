@@ -1,11 +1,11 @@
 # TODO
 
-## P0: Rush
-
-## P1: Essential
+## P1: Rush
 
 ## P2: High
 
-## P3: Low
+## P3: Essential
 
-## P4: Minor
+## P4: Low
+
+## P5: Minor

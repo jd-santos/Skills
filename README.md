@@ -167,7 +167,7 @@ details.
 ## Task workbench
 
 Start at [todo/README.md](todo/README.md) for the human introduction and map.
-Agents use [todo/TODO.md](todo/TODO.md) as a P0–P4 priority index; larger tasks
+Agents use [todo/TODO.md](todo/TODO.md) as a P1–P5 priority index; larger tasks
 keep their execution checklist and supporting evidence in stable work folders.
 Parallel agents primarily edit separate records and reconcile the shared queue
 during integration. Ownership notes are not cross-worktree locks.

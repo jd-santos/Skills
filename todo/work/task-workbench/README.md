@@ -1,7 +1,8 @@
 # Task workbench
 
-Status: Ready for merge. Implementation and validation complete. Check Git and
-PR history for delivery state; this record does not assert merge or release.
+Status: Retained record. The initial implementation merged in
+[Skills PR #5](https://github.com/jd-santos/Skills/pull/5) and
+[Dotfiles PR #26](https://github.com/jd-santos/Dotfiles/pull/26).
 Scope: Workflow skills in this repository and matching Pi instructions, handoff
 advisory wording, and regression tests in the parent Dotfiles repository.
 
@@ -15,7 +16,7 @@ and duplicate agent output through reviewed cleanup.
 ## Agreed design
 
 - Use root-level `todo/README.md`, `todo/TODO.md`, and `todo/DONE.md`.
-- Use P0: Rush, P1: Essential, P2: High, P3: Low, and P4: Minor headings.
+- Use P1: Rush, P2: High, P3: Essential, P4: Low, and P5: Minor headings.
 - Keep small task checklists in TODO. Delegate larger execution checklists to
   stable `todo/work/<descriptive-name>/README.md` paths, linked from TODO.
 - Create supporting plans, research, evidence, and asset directories only when
@@ -51,7 +52,7 @@ and duplicate agent output through reviewed cleanup.
 
 ## Acceptance criteria
 
-- New projects get one P0–P4 priority index and no Done task section.
+- New projects get one P1–P5 priority index and no Done task section.
 - Legacy locations are discovered without silently creating a second queue.
 - Parallel agents primarily edit separate work records; shared edits and
   overlapping ownership require reconciliation.
@@ -93,11 +94,10 @@ and duplicate agent output through reviewed cleanup.
 
 ## Shipping notes
 
-This change spans the Skills submodule and its parent Dotfiles checkout. Publish
-the Skills scope first, then pin that reviewed revision with the matching Pi
-changes. Merge the Skills PR before the Dotfiles PR. If the Skills merge rewrites
-commits, refresh the parent pin to the resulting main-branch revision before
-merging Dotfiles. Unrelated local work is outside this change's scope.
+The initial change shipped through the Skills repository first, followed by the
+matching Pi integration and submodule pin in Dotfiles. Later corrections use the
+same order so the parent always points to a published Skills revision. Unrelated
+local work remains outside this record's scope.
 
 The former `docs/TODO.md` is a redirect, not a live queue. Its two completed UI
 design entries were already committed and remain recoverable with

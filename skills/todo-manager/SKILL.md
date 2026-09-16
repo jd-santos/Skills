@@ -1,7 +1,7 @@
 ---
 name: todo-manager
-description: Manages a root-level todo workbench with a P0–P4 priority index, independent work records, and reviewed shipping cleanup. Use when managing tasks, tracking progress, preparing handoffs, or when the user mentions todos, task cleanup, or completed work.
-version: 2.0.0
+description: Manages a root-level todo workbench with a P1–P5 priority index, independent work records, and reviewed shipping cleanup. Use when managing tasks, tracking progress, preparing handoffs, or when the user mentions todos, task cleanup, or completed work.
+version: 2.0.1
 category: workflow
 ---
 
@@ -29,6 +29,11 @@ ledger or feeding obsolete plans into future agents' context.
 5. For an authorized new workbench, use the templates in
    [references/workbench.md](references/workbench.md). Create `todo/README.md`,
    `todo/TODO.md`, and `todo/DONE.md`. Create work folders only when needed.
+   Write the README as the human-facing introduction to the workbench, not as
+   agent instructions. Explain its purpose, credit and link the todo-manager
+   workflow, summarize the live-index/work-record/Git-history model, and map
+   the local files. Adapt the wording to the project instead of copying a
+   generic rules list.
 6. Respect read-only planning gates. Loading this skill does not authorize
    writing tasks, migration, pruning, commits, or delivery.
 
@@ -42,15 +47,15 @@ Use these headings in order:
 
 | Heading | Meaning |
 | --- | --- |
-| `## P0: Rush` | Immediate interruption or emergency work. |
-| `## P1: Essential` | Required or blocking an agreed outcome. |
+| `## P1: Rush` | Immediate interruption or emergency work. |
 | `## P2: High` | Important work to prioritize next. |
-| `## P3: Low` | Useful work without near-term urgency. |
-| `## P4: Minor` | Small improvements or optional polish. |
+| `## P3: Essential` | Required or blocking an agreed outcome. |
+| `## P4: Low` | Useful work without near-term urgency. |
+| `## P5: Minor` | Small improvements or optional polish. |
 
 Priority is not execution status. Do not create In Progress, Backlog, or Done
 sections alongside these headings. Preserve user-assigned priorities. If no
-priority can be inferred, use P3 provisionally and say so; ask when placement
+priority can be inferred, use P4 provisionally and say so; ask when placement
 would materially affect scheduling. Do not infer urgency from task size.
 
 - Use `- [ ]` and `- [x]`, with two-space indentation for nested checkboxes.
@@ -153,7 +158,7 @@ and refresh method; label it a snapshot rather than a current source of truth.
 ### Small task
 
 ```markdown
-## P3: Low
+## P4: Low
 
 - [ ] Clarify setup instructions
   - [x] Verify the command
@@ -163,7 +168,7 @@ and refresh method; label it a snapshot rather than a current source of truth.
 ### Larger task with concurrent work
 
 ```markdown
-## P1: Essential
+## P3: Essential
 
 - [ ] [Improve import reliability](work/import-reliability/README.md)
 - [ ] [Add search filters](work/search-filters/README.md)

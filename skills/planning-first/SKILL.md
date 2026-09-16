@@ -51,7 +51,7 @@ Only when the user explicitly authorizes ("write it up", "commit the plan", "sav
 Load `todo-manager` to locate the project's queue and respect legacy locations
 until migration is authorized. For a new or migrated workbench:
 
-- **Small tasks:** update `todo/TODO.md` under the appropriate P0–P4 heading.
+- **Small tasks:** update `todo/TODO.md` under the appropriate P1–P5 heading.
 - **Substantial tasks:** link a stable `todo/work/<descriptive-name>/README.md`
   from the index. The work README owns the execution checklist, acceptance
   criteria, status, and current ownership.
