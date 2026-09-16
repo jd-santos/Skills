@@ -6,12 +6,13 @@ description: >-
   updates pull requests. Use when the repository state is uncertain, finishing
   development work, preparing branch changes, or when the user says "ship
   this", "commit and push", or "review this branch".
-version: 1.1.0
+version: 1.2.0
 author: jdwork
 category: workflow
 requires:
   - commit-message-writer
   - changelog-writer
+  - todo-manager
 ---
 
 # Skill: Ship
@@ -29,11 +30,12 @@ confirmation. Always ask before pushing directly to `main`.
 
 - A Git repository and `git` on PATH.
 - Optional: GitHub CLI (`gh`) for repository metadata and pull requests.
-- The `commit-message-writer` and `changelog-writer` skills.
+- The `commit-message-writer`, `changelog-writer`, and `todo-manager` skills.
 
 If the companion skills are unavailable, use Scoped Commits in the form
 `scope: short imperative description` and Keep a Changelog conventions for
-notable changes.
+notable changes. If `todo-manager` is unavailable, report task closeout as
+pending rather than inventing migration or pruning rules.
 
 ## Instructions
 
@@ -41,7 +43,7 @@ notable changes.
 
 Before changing anything:
 
-1. Load and follow `commit-message-writer` and `changelog-writer`.
+1. Load and follow `commit-message-writer`, `changelog-writer`, and `todo-manager`.
 2. Find the repository root with `git rev-parse --show-toplevel` and work from
    there.
 3. Inspect:
@@ -53,6 +55,10 @@ Before changing anything:
      divergence from its upstream and likely base
    - staged and unstaged diff summaries
    - an existing pull request for the current branch, when `gh` is available
+   - the existing task index and relevant work records using `todo-manager`
+     discovery, without loading the whole archive or creating a new workbench.
+     Also follow work-record paths and trailers in the commits being delivered:
+     a clean checkout after a failed push may already have closed its TODO entry
 4. If the harness exposes active-agent or task status, inspect status metadata
    for work that may still be running. Do not read another agent's transcript.
 5. Use `gh repo view --json isPrivate,defaultBranchRef` when available. In a
@@ -122,14 +128,37 @@ Make branch choice a dedicated decision before committing:
    - Leave inseparable future-facing text uncommitted and explain why.
    - Include such text only with explicit approval, with context in the commit
      body about the incoming implementation.
-7. Stage only the paths or hunks for one group. Review the staged diff, then
-   commit without asking for separate confirmation.
-8. Follow `commit-message-writer` exactly. Prefer specific Scoped Commit
+   - Clearly labeled workbench plans and historical evidence may be committed
+     as such. They must not present proposed behavior as delivered product docs.
+7. Reconcile task closeout for each ready group using `todo-manager` and its
+   workbench reference:
+   - Treat records as intent, not evidence that code works or has shipped.
+   - Match checked items to the diff, acceptance criteria, and checks actually
+     run. Keep unfinished steps and partially delivered parents in the queue.
+   - Review supporting artifacts: keep evidence, consolidate duplication,
+     resolve obsolete guidance, and promote enduring docs. Propose file
+     deletions by path and reason; wait for explicit approval before deleting.
+     Shipping permission is not pruning permission.
+   - If pruning is declined or unanswered, retain the files, label known stale
+     guidance, and report pending cleanup. Do not block otherwise safe delivery
+     for optional cleanup; sensitive files remain blocked.
+   - Remove only the ready scope from the live queue in its closeout commit.
+     Keep useful records at stable paths with accurate state, such as Ready for
+     merge. Never infer merge or release from a checked box or a successful push.
+   - Keep the existing changelog as the release record. Update `todo/DONE.md`
+     only for useful navigation or selected verified major release highlights,
+     not for every shipped task. Do not create duplicate completion logs.
+8. Stage only the paths or hunks for one group, including its applicable task
+   closeout and documentation. Review the staged diff, then commit without
+   asking for separate confirmation.
+9. Follow `commit-message-writer` exactly. Prefer specific Scoped Commit
    subjects, use a body for motivation or non-obvious context, and split
    unrelated work. Never use vague, WIP, or type-first subjects unless the
    repository requires them.
-9. Repeat until all ready groups are committed. Leave unfinished, unclear,
-   sensitive, or concurrently owned work untouched and report it.
+10. Repeat until all ready groups are committed. Leave unfinished, unclear,
+    sensitive, or concurrently owned work untouched and report it. On commit or
+    delivery failure, preserve the work records and report pending state rather
+    than claiming task shipment.
 
 ### 5. Deliver commits
 
@@ -145,8 +174,11 @@ Make branch choice a dedicated decision before committing:
      existing PR establishes another base.
    - If an existing PR has no new commits, return its link without rewriting it.
    - For new work, derive the title and body from all commits in the PR range,
-     not only the latest commit. Summarize the delivered behavior and list
-     validation performed.
+     not only the latest commit. Summarize behavior, motivation, consequential
+     decisions, validation performed, and remaining limitations. Use relevant
+     work records for context, verified against the diff. Preserve the reasoning
+     in the PR description even when branch commits will be squashed. Link
+     useful retained evidence without pasting whole task checklists.
    - Create the PR when none exists. Update an existing PR when needed, while
      preserving manually written context.
    - Never discard an existing human-written description. If it cannot be
@@ -161,12 +193,18 @@ Make branch choice a dedicated decision before committing:
 
 ### 6. Report the result
 
+Post-merge branch/worktree deletion is a separate authorized operation, not a
+side effect of task closeout. Do not require another commit solely to mark a
+record merged; reconcile historical status when next needed, using verified
+host or Git evidence. A stale Ready for merge label does not prove it is unmerged.
+
 Report:
 
 - branch decision and why it fits the repository history
 - commits created and pushed
 - PR link, or why no PR was created
 - checks run and changelog decision
+- task closeout, retained evidence, and any pruning awaiting approval
 - remaining local, unrelated, uncertain, sensitive, or concurrent work
 
 Keep the summary short. If an existing PR has no additional work and nothing

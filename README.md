@@ -15,7 +15,7 @@ preferences.
 | --- | --- |
 | [`planning-first`](skills/planning-first/) | Plan before non-trivial implementation. |
 | [`ship`](skills/ship/) | Review, commit, push, and open pull requests. |
-| [`todo-manager`](skills/todo-manager/) | Maintain a structured `TODO.md`. |
+| [`todo-manager`](skills/todo-manager/) | Manage a priority workbench, work records, and reviewed closeout. |
 | [`project-issue-note`](skills/project-issue-note/) | Track projects, features, and issues in Markdown. |
 | [`commit-message-writer`](skills/commit-message-writer/) | Write concise, scope-first commit messages. |
 | [`changelog-writer`](skills/changelog-writer/) | Write changelog entries and release notes. |
@@ -164,6 +164,24 @@ asks for approval before changing `tracked-skills.json`. See
 [`docs/tracked-skills.md`](docs/tracked-skills.md) for safety and recovery
 details.
 
+## Task workbench
+
+Start at [todo/README.md](todo/README.md) for the human introduction and map.
+Agents use [todo/TODO.md](todo/TODO.md) as a P0–P4 priority index; larger tasks
+keep their execution checklist and supporting evidence in stable work folders.
+Parallel agents primarily edit separate records and reconcile the shared queue
+during integration. Ownership notes are not cross-worktree locks.
+
+Planning creates one authoritative plan after approval. Shipping checks task
+claims against the diff, preserves unfinished work, and proposes artifact
+pruning before merge. File deletions require explicit approval. Completed work
+does not accumulate in a Done task section.
+
+[DONE](todo/DONE.md) points to Git history, PRs, and retained records.
+[CHANGELOG.md](CHANGELOG.md) holds release notes. DONE may highlight a few major
+releases, but does not duplicate the changelog. Older projects keep their
+existing task location until a migration is authorized.
+
 ## Repository layout
 
 ```text
@@ -174,6 +192,12 @@ details.
 │   └── tracked-skills.py
 ├── skills/
 │   └── <maintained-skill>/
+├── todo/
+│   ├── README.md
+│   ├── TODO.md
+│   ├── DONE.md
+│   └── work/
+├── CHANGELOG.md
 ├── tracked-skills.json
 └── LICENSE
 ```

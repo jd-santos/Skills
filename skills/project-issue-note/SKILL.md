@@ -1,7 +1,7 @@
 ---
 name: project-issue-note
 description: Creates and updates Markdown project, issue, or feature notes with YAML frontmatter for repo-local tracking. Use when creating project notes, issue notes, feature notes, project tracker notes, tracking project status in Markdown, or when user says "project note", "issue note", "feature note", "project tracker note", "create an issue", or "create a feature". Prefer the TODO.md Manager skill when the user asks for tasks or todos without mentioning a project, issue, feature, note, or tracker.
-version: 1.0.0
+version: 1.1.0
 author: jdwork
 category: workflow
 ---
@@ -20,11 +20,29 @@ Use this skill when the user wants a project note, issue note, feature note, pro
 
 Before creating or editing a project, issue, or feature note:
 
-1. **Find repo conventions**: Check `AGENTS.md`, `README.md`, `docs/`, or existing project, issue, or feature notes for naming and location patterns.
-2. **Confirm the target location**: Use the repo convention if it exists. Otherwise default to `docs/projects/` for project notes, `docs/issues/` for issue notes, and `docs/features/` for feature notes.
+1. **Find repo conventions**: Check `AGENTS.md`, `README.md`, `todo/README.md`, or existing project, issue, or feature notes for naming and location patterns.
+2. **Confirm the target location**: If the repo has a task workbench, use the workbench mode below. Otherwise use the repo convention, defaulting to `docs/projects/`, `docs/issues/`, or `docs/features/` for standalone notes.
 3. **Confirm the note title**: Use the user's title or ask for one if it is missing.
 4. **Check for an existing note**: Search the target location for a matching title or slug before creating a duplicate.
 5. **Protect private data**: Do not include secrets, internal URLs, access tokens, private identifiers, or work-specific details in public repos.
+
+### Workbench mode
+
+When the project uses `todo/`, load `todo-manager` and reuse or create the
+relevant `todo/work/<descriptive-name>/README.md`. Do not create a second tracker
+under `docs/projects/`, `docs/issues/`, or `docs/features/` for the same work.
+
+In this mode, `todo-manager` owns layout, P0–P4 priority, status, and closeout.
+The index owns priority; the work README owns the detailed checklist. Do not
+apply the standalone schema, mirrored next-action lists, dated progress log,
+legacy priority meanings, or body template below. Add metadata only if the
+project already queries it and defines how it stays consistent.
+
+Keep existing standalone notes where they are until migration is authorized.
+Link them rather than duplicating them. Ask which record is authoritative if
+both forms already track the same work.
+
+The remaining sections describe standalone-note mode only.
 
 ### 2. File Naming
 
