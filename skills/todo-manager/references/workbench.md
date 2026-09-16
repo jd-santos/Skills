@@ -7,46 +7,73 @@ text to the project rather than leaving placeholders and empty example folders.
 
 ### `todo/README.md`
 
+Write this as the front page for a person encountering the workbench, not as an
+agent rule sheet. It should answer four questions:
+
+1. What is this workbench for?
+2. Which todo-manager concepts shape it?
+3. What belongs in TODO, `work/`, and DONE?
+4. Where can someone read the full workflow?
+
+Credit and link the upstream
+[`todo-manager`](https://github.com/jd-santos/Skills/tree/main/skills/todo-manager)
+skill. If the project also carries a local copy, link that as the version agents
+actually load. Keep operational details such as worktree coordination, artifact
+cleanup, and migration rules in the skill unless project users need them here.
+
 ```markdown
-# Project workbench
+# Todo workbench
 
-[TODO](TODO.md) is the live priority queue, mostly for agents.
-[DONE](DONE.md) points to development history and retained evidence.
+This directory follows the
+[`todo-manager`](https://github.com/jd-santos/Skills/tree/main/skills/todo-manager)
+workflow from [jd-santos/Skills](https://github.com/jd-santos/Skills). It keeps
+unfinished work readable without turning Markdown into a second issue tracker.
 
-## How to work here
+The workflow keeps current priorities, detailed working material, and shipped
+history separate:
 
-- P0: Rush, P1: Essential, P2: High, P3: Low, P4: Minor.
-- Small checklists stay in TODO. Larger efforts link to a work README under
-  `work/<descriptive-name>/`, which owns their detailed checklist.
-- Read the relevant work README before its supporting files. Historical records
-  explain past work; they are not current implementation instructions.
-- Agree on ownership before starting. Parallel workers use separate worktrees
-  and primarily edit their own records. Ownership notes are not locks.
-- Check completed steps in place. Shipping reconciles the ready scope and
-  removes it from the queue, without adding a Done task ledger.
-- Preserve useful evidence. Propose deletions and resolve obsolete guidance
-  before merge. Post-merge branch housekeeping is a separate operation.
+- [TODO](TODO.md) is the live P1–P5 priority list.
+- [`work/`](work/) gives substantial efforts a stable home for their checklist,
+  decisions, and supporting material.
+- [DONE](DONE.md) points to Git history and retained evidence. It is not another
+  completed-task list.
+
+## Priorities
+
+1. **P1: Rush** for work that needs immediate attention.
+2. **P2: High** for important work that should happen next.
+3. **P3: Essential** for required work without immediate urgency.
+4. **P4: Low** for useful work that can wait.
+5. **P5: Minor** for small improvements and optional polish.
+
+## Using the workbench
+
+Keep short tasks in TODO. Give larger efforts a descriptive folder under
+`work/`, with one README that owns the detailed checklist. When work ships,
+remove it from the live list and let Git, pull requests, and the project's
+changelog tell the finished story.
 ```
 
-Add a short map to existing work areas or maintained project docs when useful.
-Do not enumerate every artifact here; work READMEs own their local maps. A
-high-level focus paragraph is optional, but needs a review date and an owner to
-avoid becoming another stale status report.
+Adapt the title and opening to the project. Add links to the actual changelog,
+project docs, local skill, or important work areas when useful. Do not enumerate
+every artifact here; work READMEs own their local maps. Avoid volatile status
+summaries. If a current-focus paragraph is truly useful, include a review date
+and owner so it does not silently become stale.
 
 ### `todo/TODO.md`
 
 ```markdown
 # TODO
 
-## P0: Rush
-
-## P1: Essential
+## P1: Rush
 
 ## P2: High
 
-## P3: Low
+## P3: Essential
 
-## P4: Minor
+## P4: Low
+
+## P5: Minor
 ```
 
 ### `todo/DONE.md`
@@ -160,7 +187,7 @@ Migration is a deliberate change, not a side effect of adding a task:
 1. Inventory root `TODO.md`, `docs/TODO.md`, existing work notes, and their inbound
    links. If more than one queue is live, ask which owns the work.
 2. Agree on scope, priorities, and ownership. Old In Progress/Up Next/Backlog
-   sections express status or ordering, not P0–P4 urgency. Preserve that context
+   sections express status or ordering, not P1–P5 urgency. Preserve that context
    in the relevant work record; ask about material priority ambiguities.
 3. Preserve all unfinished work, nested steps, and checked state. Split detailed
    records only where useful. Leave unrelated `docs/` material where it is.

@@ -1,35 +1,59 @@
-# Skills workbench
+# Todo workbench
 
-[TODO](TODO.md) is the live priority queue, mostly for agents.
-[DONE](DONE.md) points to development history and retained evidence.
+This directory uses the
+[`todo-manager`](https://github.com/jd-santos/Skills/tree/main/skills/todo-manager)
+workflow from [jd-santos/Skills](https://github.com/jd-santos/Skills). It gives
+unfinished work a small, readable home without turning Markdown into a second
+issue tracker.
 
-## How to work here
+The workflow separates three things that are easy to mix together:
 
-- Use P0: Rush, P1: Essential, P2: High, P3: Low, and P4: Minor. Priority is not
-  execution status. Unspecified priority defaults provisionally to P3.
-- Keep small checklists in TODO. Substantial efforts link to a stable work
-  README under `work/<descriptive-name>/`, which owns the detailed checklist.
-- Create supporting files only when needed. Name them for their purpose and
-  link them from their work README; do not build empty folder hierarchies.
-- Read the relevant work README before its supporting files. Retained plans and
-  evidence explain past work, not necessarily the current implementation.
-- Agree on bounded ownership before starting. Concurrent writers use separate
-  worktrees and mostly edit their own records. The coordinator or integrator
-  reconciles shared TODO edits. Ownership notes are not locks.
-- Check completed steps in place. Shipping removes only ready scope from the
-  queue in its closeout commit, without creating a Done task ledger.
-- Keep useful evidence, resolve obsolete guidance, and propose file deletions
-  for approval before merge. Branch/worktree housekeeping is separate.
+- the work that needs attention now,
+- the plans and evidence needed to finish larger efforts,
+- the history of work that has already shipped.
 
-## Map
+That separation keeps the live list useful while preserving context worth
+returning to later.
 
-- [Workbench implementation](work/task-workbench/README.md): design, checklist,
-  and validation for these workflow changes.
-- [Task workbench skill](../skills/todo-manager/SKILL.md): portable workflow rules.
-- [Changelog](../CHANGELOG.md): notable changes and release notes.
-- [Maintained project docs](../docs/): reference material, not the default place
-  for working plans.
+## How it is organized
 
-This directory belongs to the Skills repository, which can be checked out as a
-Dotfiles submodule. The parent repository has its own task queue; do not merge
-the two or migrate the parent's tasks as a side effect of work here.
+- [TODO](TODO.md) is the live priority list. Small tasks can stay there as
+  checklists. Larger tasks link to their own folder under [`work/`](work/).
+- [`work/`](work/) contains the record for substantial work. Each folder starts
+  with a README covering the goal, status, checklist, and relevant supporting
+  material.
+- [DONE](DONE.md) points to completed work in Git, merged pull requests, the
+  changelog, and retained work records. It is a map to history, not a second
+  task list.
+
+This follows the core idea of the todo-manager skill: keep one short priority
+index, give substantial work a stable home, and let Git tell the finished story.
+
+## Priorities
+
+Tasks use five priority levels:
+
+1. **P1: Rush** for work that needs immediate attention.
+2. **P2: High** for important work that should happen next.
+3. **P3: Essential** for required work without immediate urgency.
+4. **P4: Low** for useful work that can wait.
+5. **P5: Minor** for small improvements and optional polish.
+
+Priority describes urgency, not progress. The task or its work README records
+whether it is planned, active, blocked, ready for review, or ready to ship.
+
+## Using the workbench
+
+Add a short task directly to TODO. If the work needs a detailed checklist or
+supporting files, create `work/<descriptive-name>/README.md` and link it from the
+TODO entry. Keep one detailed checklist so progress does not drift between
+files.
+
+When work ships, remove it from the live list. Keep work records that explain
+important decisions or preserve useful evidence. Git and pull requests remain
+the source of truth for what changed, while the [changelog](../CHANGELOG.md)
+records notable releases and user-visible changes.
+
+The [local todo-manager skill](../skills/todo-manager/SKILL.md) contains the full
+workflow. The [task-workbench record](work/task-workbench/README.md) explains how
+this particular workbench was introduced.

@@ -32,7 +32,7 @@ When the project uses `todo/`, load `todo-manager` and reuse or create the
 relevant `todo/work/<descriptive-name>/README.md`. Do not create a second tracker
 under `docs/projects/`, `docs/issues/`, or `docs/features/` for the same work.
 
-In this mode, `todo-manager` owns layout, P0–P4 priority, status, and closeout.
+In this mode, `todo-manager` owns layout, P1–P5 priority, status, and closeout.
 The index owns priority; the work README owns the detailed checklist. Do not
 apply the standalone schema, mirrored next-action lists, dated progress log,
 legacy priority meanings, or body template below. Add metadata only if the
