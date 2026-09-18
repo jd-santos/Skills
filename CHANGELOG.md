@@ -10,6 +10,8 @@ unless the project adopts a versioning policy.
 
 - Add `core-writing` as the shared voice for prose and copyable text, with
   lightweight routing to focused writing skills.
+- Add `i-am-baby` as a cross-stack teaching overlay for explaining consequential
+  concepts without replacing domain-specific skills.
 
 ### Changed
 
@@ -28,3 +30,8 @@ unless the project adopts a versioning policy.
   history; changelogs retain their existing location and release-note role.
 - Make project, issue, and feature notes reuse an existing task workbench rather
   than creating a parallel tracker with duplicate checklists.
+
+### Removed
+
+- Remove the overlapping `swift-mentor` skill and route Swift teaching guidance
+  through `i-am-baby`.
