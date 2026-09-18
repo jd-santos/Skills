@@ -44,16 +44,22 @@ preferences.
 | [`add-pi-feature`](skills/add-pi-feature/) | Add Pi extensions, prompts, themes, skills, and commands. |
 | [`example-skill`](skills/example-skill/) | Show a minimal skill structure. |
 
-### Languages, notebooks, and study
+### Learning
+
+| Skill | Purpose |
+| --- | --- |
+| [`adaptive-teaching`](skills/adaptive-teaching/) | Teach efficiently with adaptive lessons and client-aware presentation. |
+| [`i-am-baby`](skills/i-am-baby/) | Guide development when the language or stack is unfamiliar. |
+| [`learning-opportunities`](https://github.com/DrCatHicks/learning-opportunities) | Practice concepts through opt-in exercises during development. |
+| [`study-lyrics`](skills/study-lyrics/) | Study lyrics through translation and cultural context. |
+
+### Languages and tools
 
 | Skill | Purpose |
 | --- | --- |
 | [`swift-code-writer`](skills/swift-code-writer/) | Guide idiomatic Swift implementation. |
-| [`swift-mentor`](skills/swift-mentor/) | Teach Swift, SwiftUI, and SwiftData. |
-| [`adaptive-teaching`](skills/adaptive-teaching/) | Teach efficiently with adaptive lessons and client-aware presentation. |
 | [`marimo`](skills/marimo/) | Work with reactive Python notebooks. |
 | [`marimo-pair`](skills/marimo-pair/) | Build inside a running marimo kernel. |
-| [`study-lyrics`](skills/study-lyrics/) | Study lyrics through translation and cultural context. |
 
 ## Install
 

@@ -15,7 +15,7 @@ set -euo pipefail
 
 # Optional eval logging: set EXECUTE_CODE_LOG to a file path to record each call
 if [[ -n "${EXECUTE_CODE_LOG:-}" ]]; then
-  echo "$(date -u +%Y-%m-%dT%H:%M:%SZ)" >> "$EXECUTE_CODE_LOG"
+  echo "$(date -u +%Y-%m-%dT%H:%M:%SZ)" >>"$EXECUTE_CODE_LOG"
 fi
 
 port=""
@@ -25,13 +25,31 @@ token="${MARIMO_TOKEN:-}"
 session=""
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --port)    port="$2"; shift 2 ;;
-    --url)     url="$2"; shift 2 ;;
-    --token)   token="$2"; shift 2 ;;
-    --session) session="$2"; shift 2 ;;
-    -c)        code="$2"; shift 2 ;;
-    -*)      echo "Unknown option: $1" >&2; exit 1 ;;
-    *)       break ;;
+  --port)
+    port="$2"
+    shift 2
+    ;;
+  --url)
+    url="$2"
+    shift 2
+    ;;
+  --token)
+    token="$2"
+    shift 2
+    ;;
+  --session)
+    session="$2"
+    shift 2
+    ;;
+  -c)
+    code="$2"
+    shift 2
+    ;;
+  -*)
+    echo "Unknown option: $1" >&2
+    exit 1
+    ;;
+  *) break ;;
   esac
 done
 
@@ -55,8 +73,8 @@ if [[ -n "$url" ]]; then
   url_host="${url#*://}"
   url_host="${url_host%%[:/]*}"
   case "$url_host" in
-    localhost|127.0.0.1|::1|0.0.0.0) ;;
-    *) echo "Warning: connecting to non-local server '${url_host}'. Ensure this is trusted." >&2 ;;
+  localhost | 127.0.0.1 | ::1 | 0.0.0.0) ;;
+  *) echo "Warning: connecting to non-local server '${url_host}'. Ensure this is trusted." >&2 ;;
   esac
 else
   # Locate the servers directory
@@ -176,35 +194,36 @@ current_event=""
 done_received=false
 while IFS= read -r line && [[ "$done_received" == false ]]; do
   case "$line" in
-    event:*)
-      current_event="${line#event: }"
+  event:*)
+    current_event="${line#event: }"
+    ;;
+  data:*)
+    payload="${line#data: }"
+    case "$current_event" in
+    stdout)
+      echo "$payload" | jq -jr '.data'
       ;;
-    data:*)
-      payload="${line#data: }"
-      case "$current_event" in
-        stdout)
-          echo "$payload" | jq -jr '.data'
-          ;;
-        stderr)
-          echo "$payload" | jq -jr '.data' >&2
-          ;;
-        done)
-          if echo "$payload" | jq -e '.success == false' >/dev/null 2>&1; then
-            echo "$payload" | jq -r '.error.msg' >&2
-            exit_code=1
-          else
-            echo "$payload" | jq -r '.output.data // empty'
-          fi
-          done_received=true
-          ;;
-      esac
+    stderr)
+      echo "$payload" | jq -jr '.data' >&2
       ;;
+    done)
+      if echo "$payload" | jq -e '.success == false' >/dev/null 2>&1; then
+        echo "$payload" | jq -r '.error.msg' >&2
+        exit_code=1
+      else
+        echo "$payload" | jq -r '.output.data // empty'
+      fi
+      done_received=true
+      ;;
+    esac
+    ;;
   esac
-done < <(curl -sN -X POST "${base}/api/kernel/execute" \
-  -H "Content-Type: application/json" \
-  -H "Marimo-Session-Id: ${session_id}" \
-  ${auth_args[@]+"${auth_args[@]}"} \
-  -d "$(jq -n --arg c "$code" '{code: $c}')" \
+done < <(
+  curl -sN -X POST "${base}/api/kernel/execute" \
+    -H "Content-Type: application/json" \
+    -H "Marimo-Session-Id: ${session_id}" \
+    ${auth_args[@]+"${auth_args[@]}"} \
+    -d "$(jq -n --arg c "$code" '{code: $c}')"
 )
 
 exit "$exit_code"

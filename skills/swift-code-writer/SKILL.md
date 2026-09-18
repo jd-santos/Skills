@@ -1,9 +1,9 @@
 ---
 name: swift-code-writer
-description: Writes idiomatic Swift code and implementation guidance using project settings, Xcode MCP tools, and Apple documentation as source of truth.
+description: Writes and reviews idiomatic Swift, SwiftUI, and SwiftData code using project settings, Xcode MCP tools, and Apple documentation as sources of truth. Use when implementing or reviewing Apple-platform features, models, views, tests, concurrency, persistence, or Xcode project changes.
 version: 1.1.0
 author: JD
-category: development
+category: workflow
 ---
 
 # Skill: Swift Code Writer
@@ -187,7 +187,7 @@ Before generating code:
 - Verify current API behavior for SwiftUI, SwiftData, Observation, Testing, FoundationModels, Liquid Glass, and platform integration APIs.
 - Check for recent framework changes or deprecations before relying on memory.
 - Confirm API availability against project build settings and active run destinations.
-- Suggest updating this skill or `swift-mentor` when significant patterns change.
+- Suggest updating this skill when significant Swift patterns change.
 
 ## Examples
 
@@ -342,7 +342,7 @@ struct SidebarView: View {
 
 ## Notes
 
-This skill focuses on code generation and implementation choices without extended teaching. For teaching or mentoring scenarios where concepts need explanation, use the `swift-mentor` skill instead.
+This skill owns Swift code generation and implementation choices. When the user is unfamiliar with Swift or wants concepts explained during development, compose it with `i-am-baby`.
 
 Key principles:
 
