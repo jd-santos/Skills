@@ -6,8 +6,16 @@ unless the project adopts a versioning policy.
 
 ## Unreleased
 
+### Added
+
+- Add `core-writing` as the shared voice for prose and copyable text, with
+  lightweight routing to focused writing skills.
+
 ### Changed
 
+- Replace `technical-writing-style` with a focused `technical-writing` skill
+  that builds on `core-writing`. Commit and changelog writing now use the same
+  baseline while remaining operational workflows.
 - Replace the default TODO status sections and Done task ledger with a root
   `todo/` workbench: a P1–P5 priority index, human introduction, history links,
   and stable work folders for substantial efforts. The todo-manager setup now

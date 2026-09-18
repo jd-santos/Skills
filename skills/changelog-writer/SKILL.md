@@ -1,9 +1,10 @@
 ---
 name: changelog-writer
 description: Writes human-readable CHANGELOG.md entries using Keep a Changelog sections with optional date-based or SemVer releases. Use when updating changelogs, writing release notes, summarizing notable changes, preparing releases, or when user says "update the changelog", "write release notes", or "summarize these changes".
-version: 1.1.0
+version: 1.2.0
 author: jdwork
 category: documentation
+requires: [core-writing]
 ---
 
 # Skill: Changelog Writer
