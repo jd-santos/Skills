@@ -19,8 +19,14 @@ preferences.
 | [`project-issue-note`](skills/project-issue-note/) | Track projects, features, and issues in Markdown. |
 | [`commit-message-writer`](skills/commit-message-writer/) | Write concise, scope-first commit messages. |
 | [`changelog-writer`](skills/changelog-writer/) | Write changelog entries and release notes. |
-| [`technical-writing-style`](skills/technical-writing-style/) | Keep technical prose direct and human. |
 | [`offgrid-review`](https://github.com/jd-santos/offgrid-review) | Move complex decisions into a portable review workbench. |
+
+### Communication
+
+| Skill | Purpose |
+| --- | --- |
+| [`core-writing`](skills/core-writing/) | Apply JD's baseline voice to prose and copyable text. |
+| [`technical-writing`](skills/technical-writing/) | Write accurate, useful technical material. |
 
 ### Design
 

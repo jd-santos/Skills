@@ -1,9 +1,10 @@
 ---
 name: commit-message-writer
 description: 'Writes git commit messages using Scoped Commits format (scope: description). Use when committing changes, writing commit messages, or when user says "commit this" or "write a commit message".'
-version: 1.1.0
+version: 1.2.0
 author: jdwork
 category: git
+requires: [core-writing]
 ---
 
 # Skill: Commit Message Writer
