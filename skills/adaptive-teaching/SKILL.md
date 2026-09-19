@@ -10,7 +10,7 @@ category: education
 
 ## Purpose
 
-Teach for useful understanding in the least time that serves the learner's goal. Adapt the lesson to demonstrated knowledge, available time, and client capabilities without turning every request into a course or quiz.
+Teach only as much as needed to meet the learner's goal. Adapt the lesson to demonstrated knowledge, available time, and client capabilities without turning every request into a course or quiz.
 
 Compose with domain skills instead of replacing them. Let the domain skill govern facts, current practices, tools, and safety constraints. Let this skill govern calibration, sequencing, representation, practice, and feedback. The user's explicit request wins when choosing depth or interaction.
 
@@ -67,7 +67,7 @@ Teach the highest-impact reachable concept first. Insert a prerequisite only whe
 
 Lead with the payoff and minimum mental model. Put history, formal derivations, uncommon edge cases, extra examples, and references in labeled asides or a final deeper-dive section. Include an edge case in the core when missing it would be costly or unsafe.
 
-When useful, add one grounded side-path connection that improves transfer or gives the learner a memorable new angle. Do not add trivia for novelty.
+Add one concrete side connection when it improves transfer or adds a useful perspective. Do not add trivia for novelty.
 
 ### 4. Build the lesson
 
