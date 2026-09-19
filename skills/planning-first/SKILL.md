@@ -5,7 +5,7 @@ description: Two-round lightweight planning protocol before non-trivial work. As
 
 # Planning-First
 
-A lightweight alternative to dedicated plan/act modes. No server, no mode switch, just a discipline for the first few turns of a task.
+Use this lightweight protocol instead of a dedicated plan/act mode.
 
 ## When to use
 
@@ -19,7 +19,7 @@ Skip for trivial edits (typos, single-line fixes, obvious renames).
 
 Run two rounds of conversation before any code or plan file is written.
 
-### Round 1 — Clarify
+### Round 1: Clarify
 
 Ask 3–7 clarifying questions. Cover:
 
@@ -33,7 +33,7 @@ Do not propose solutions in Round 1. Stop and wait for answers.
 
 Read-only exploration is allowed and encouraged (`read`, `ls`, `grep`, `lsp_navigation`, `ast_grep_search`) so questions are informed by the actual codebase.
 
-### Round 2 — Propose
+### Round 2: Propose
 
 After the user answers:
 
@@ -76,13 +76,13 @@ Only after explicit go-ahead ("build it", "implement", "go"), start editing code
 
 - No file writes or edits during Rounds 1 and 2.
 - No destructive bash during Rounds 1 and 2.
-- Pair naturally with `/readonly` if the user wants the permission gate to enforce the discipline.
+- Use `/readonly` as an optional enforcement layer when the user wants the permission gate to restrict the protocol.
 - Keep round-by-round answers tight. The plan artifact is the place for prose, not the chat.
 
 ## Relationship to other tools
 
 - **`/plan` prompt template**: the inline trigger for this protocol on a single task. The skill is the durable description; the template is the per-invocation kickoff.
-- **`/readonly`**: optional belt-and-suspenders. The skill is behavioral; `/readonly` is enforced by the permission gate.
+- **`/readonly`**: an optional enforcement layer. This skill defines the behavior; `/readonly` restricts the available actions.
 - **`todo-manager`**: owns workbench discovery, priorities, record layout, and
   closeout. Working designs belong with their work records; enduring reference
   documentation belongs in maintained project docs.

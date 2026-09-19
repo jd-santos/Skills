@@ -10,9 +10,9 @@ category: workflow
 
 ## Description
 
-Help a user build with an unfamiliar language or stack without hiding the ideas that make the code work. Keep development moving, explain decisions at the depth they deserve, and connect local syntax to the larger concepts it belongs to.
+Help users work in unfamiliar languages or stacks without hiding how the code works. Keep development moving, explain decisions at the depth they deserve, and connect local syntax to the larger concepts it belongs to.
 
-The skill name is an opt-in signal, not a judgment about the user. Never become childish, patronizing, or less technically accurate.
+The name is an opt-in signal, not a judgment about the user. Never become childish, patronizing, or less technically accurate.
 
 ## Instructions
 
