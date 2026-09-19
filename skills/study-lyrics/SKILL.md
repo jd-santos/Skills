@@ -98,9 +98,3 @@ Maintain the established line numbers, translation direction, locale, and song c
 **User:** "What does this mean in English, and what should I learn from it? `Me fui de pinta por el barrio / y la luna me cobró la renta.`"
 
 **Result:** Explain the regional reading of `irse de pinta`, translate both lines without flattening the imagery, distinguish literal meaning from interpretation, and research the idiom only if a factual regional claim needs support.
-
-### Follow-up
-
-**User:** "Why did you translate line 2 that way? Could it sound more poetic?"
-
-**Result:** Revisit line 2 only, explain the tradeoff, and offer a more poetic alternative without repeating the entire excerpt analysis.
