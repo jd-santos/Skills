@@ -1,7 +1,7 @@
 ---
 name: todo-manager
 description: Manages a root-level todo workbench with a P1–P5 priority index, independent work records, and reviewed shipping cleanup. Use when managing tasks, tracking progress, preparing handoffs, or when the user mentions todos, task cleanup, or completed work.
-version: 2.0.1
+version: 2.0.2
 category: workflow
 ---
 
@@ -59,8 +59,11 @@ priority can be inferred, use P4 provisionally and say so; ask when placement
 would materially affect scheduling. Do not infer urgency from task size.
 
 - Use `- [ ]` and `- [x]`, with two-space indentation for nested checkboxes.
-- Keep small tasks and their steps inline. Link larger tasks to
-  `work/<descriptive-name>/README.md` from the index.
+- Keep small tasks and their steps inline. A task that fits in one or two
+  sentences, especially a loosely defined future idea, belongs in TODO even if
+  it may later grow. Create a work record only when detailed planning,
+  coordination, evidence, or a multi-step checklist would make the index hard
+  to use. Link those larger tasks to `work/<descriptive-name>/README.md`.
 - Put each detailed checklist in one place. A top-level index checkbox can
   summarize a linked slice, but must not duplicate its steps.
 - Nest clearly related work. Ask when parentage or a matching task is ambiguous.
@@ -70,17 +73,26 @@ would materially affect scheduling. Do not infer urgency from task size.
 
 ### 3. Give substantial work a stable home
 
-Use `todo/work/<descriptive-name>/README.md` as its local entry point. Prefer
-lowercase hyphenated names, not dates, opaque IDs, or process jargon. Do not move
-folders between active and archive directories when their status changes.
+Use `todo/work/<descriptive-name>/README.md` only for substantial work that
+needs a durable home beyond its TODO checkbox. Do not create a folder merely
+because an item is in TODO. Prefer lowercase hyphenated names, not dates, opaque
+IDs, or process jargon. Do not move folders between active and archive
+directories when their status changes.
 
 The work README owns purpose, execution status, current ownership when active,
 acceptance criteria, the execution checklist, and links to supporting material.
-Use plain language such as Planned, In progress, Blocked, Ready for review,
-Ready for merge, or Retained record. Distinguish implementation from delivery;
-include a known PR or commit reference without inventing one.
+Use plain language such as Planned, In progress, Blocked, Awaiting human
+review, Ready for review, Ready for merge, or Retained record. Use Awaiting
+human review only when a required signoff blocks the next closeout step.
+Distinguish implementation from delivery; include a known PR or commit reference
+without inventing one.
 
 - Add `plan.md` only when the design no longer fits comfortably in the README.
+- Add a `## Human review` section only when a human decision, visual check,
+  deployment check, or signoff is needed. Make each item a checkbox labeled
+  Required or Optional and its timing, such as Required before merge. Include
+  concise `How` and `Look for` guidance so the reviewer can execute the check.
+  Do not add an empty section to records without review requirements.
 - Name other files for their purpose, such as `research.md`, `validation.md`,
   or `migration-notes.md`. Use `assets/` for supporting images and other files.
 - Add a subdirectory only when a real cluster needs grouping, with a descriptive
@@ -117,13 +129,18 @@ handoff file for every session. For an inline task, keep the handoff inline.
    acceptance criteria are satisfied. A checkbox is not proof of tests or merge.
 2. Keep checked entries in the live index until a reviewed closeout. Do not move
    them to a Done section or compress them into a parallel completion ledger.
-3. At shipping, reconcile the record with actual diffs and checks. Remove only
-   the ready scope from the live index in the same commit as that scope's
-   closeout. For partial shipping, retain the parent and all unfinished work.
-4. Set retained records to the actual state, such as Ready for merge, not Merged.
+3. At each relevant boundary, such as readiness for merge, shipping, or
+   deployment, surface outstanding required human-review items in chat. Do not
+   claim a review happened or check its box unless the user confirms it.
+4. At shipping, reconcile the record with actual diffs and checks. Required
+   review blocks its stated closeout step; optional review does not block safe
+   delivery. Remove only the ready scope from the live index in the same commit
+   as that scope's closeout. For partial shipping, retain the parent and all
+   unfinished work.
+5. Set retained records to the actual state, such as Ready for merge, not Merged.
    Record merge or release only when verified. Direct-to-main delivery and local
    commits also need explicit, accurate delivery status.
-5. If commit or delivery fails, preserve the record and report the pending state.
+6. If commit or delivery fails, preserve the record and report the pending state.
    Do not claim shipment or erase unfinished work. Reconcile on the next attempt.
 
 See the shipping and cleanup rules in

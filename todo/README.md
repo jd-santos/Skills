@@ -21,13 +21,28 @@ returning to later.
   checklists. Larger tasks link to their own folder under [`work/`](work/).
 - [`work/`](work/) contains the record for substantial work. Each folder starts
   with a README covering the goal, status, checklist, and relevant supporting
-  material.
+  material. Work that fits in a couple of sentences, especially a loose future
+  idea, stays as a checkbox in TODO.
 - [DONE](DONE.md) points to completed work in Git, merged pull requests, the
   changelog, and retained work records. It is a map to history, not a second
   task list.
 
 This follows the core idea of the todo-manager skill: keep one short priority
 index, give substantial work a stable home, and let Git tell the finished story.
+
+## Work records
+
+### Active
+
+- [Learner-aware development guidance](work/i-am-baby/README.md) — Ready for merge
+- [Writing skill system](work/writing-skill-system/README.md) — Ready for review
+
+### Retained
+
+- [Task workbench](work/task-workbench/README.md)
+
+A work record's `Status` line is authoritative. Do not move its folder when the
+status changes.
 
 ## Priorities
 

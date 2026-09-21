@@ -127,41 +127,66 @@ when work starts. Add validation, decisions, blockers, or handoff notes when
 needed; omit empty sections. If a separate plan owns the design, link it instead
 of copying it. The work README still owns the execution checklist.
 
+Add `## Human review` only when the slice requires a human decision, visual
+check, deployment check, or signoff. Do not copy an empty heading into every
+record. Make required and optional review distinct, state when it is due, and
+include enough guidance to carry out the check:
+
+```markdown
+## Human review
+
+- [ ] **Required before merge:** Confirm the settings flow
+  - **How:** Open Settings, change each option, then restart the app.
+  - **Look for:** Values persist and labels match the product language.
+- [ ] **Optional after deployment:** Check the first production run
+  - **How:** Use the normal workflow with a real account.
+  - **Look for:** Unexpected errors, confusing copy, or slow responses.
+```
+
+Use `Awaiting human review` only when a required item blocks the next closeout
+step. The item, not the status, states whether review is due before merge,
+before deployment, or after deployment.
+
 ## Reviewed pre-merge closeout
 
 Review only the shipping scope. Read-only reviewers can recommend changes but
 cannot prune files or close tasks. The shipping agent:
 
 1. Matches tasks and acceptance criteria to the actual diff and validation.
-2. Inventories associated artifacts and classifies them:
+2. Checks the applicable `Human review` section. Surface outstanding required
+   items to the user when the relevant review boundary is reached, including
+   readiness for merge, shipping, or deployment. Required items block only the
+   closeout step they name. Optional items remain visible without blocking safe
+   delivery. Never mark review complete without user confirmation.
+3. Inventories associated artifacts and classifies them:
    - **Keep:** useful evidence, research, screenshots, or validation results.
    - **Consolidate:** repeated summaries, handoffs, and overlapping notes.
    - **Resolve:** competing plans or claims no longer true. Preserve significant
      alternatives and rejection reasons in the final decision record.
    - **Promote:** enduring guidance that belongs in maintained project docs.
    - **Propose removal:** scratch output, empty scaffolding, or redundant drafts.
-3. Presents proposed file deletions by path and reason, including apparently
+4. Presents proposed file deletions by path and reason, including apparently
    temporary files. Apply only after explicit approval. Deletion is not implied
    by "ship" or "mark done." Never clean unrelated or concurrently owned work.
-4. Updates retained material and navigation. A stale plan's header must say it is
+5. Updates retained material and navigation. A stale plan's header must say it is
    historical or superseded and link to the final decision/current guidance.
    Clearly distinguish observations at the time from claims about current code.
    For non-text evidence, put provenance and scope in its linked README.
-5. Checks for unique rationale, unresolved questions, evidence, and inbound links
+6. Checks for unique rationale, unresolved questions, evidence, and inbound links
    before consolidating. Do not discard unique information without approval.
-6. Fixes links after approved changes and preserves original evidence where it
+7. Fixes links after approved changes and preserves original evidence where it
    is useful. If deletion is declined or unanswered, keep the file, label any
    known obsolete guidance, and report pending cleanup instead of blocking safe
    unrelated delivery. Sensitive material remains a shipping blocker.
-7. Updates the changelog for notable behavior or workflow changes. Existing
+8. Updates the changelog for notable behavior or workflow changes. Existing
    location and release conventions win; default to root `CHANGELOG.md` only
    when creating one. Do not relocate it into `todo/`.
-8. Carries purpose, consequential decisions, validation, migration notes, and
+9. Carries purpose, consequential decisions, validation, migration notes, and
    limitations into commit bodies and PR descriptions where relevant. Preserve
    the story even if commits will be squashed. Do not copy the whole checklist.
-9. Removes only the ready scope from the priority index in its closeout commit.
-   Preserve unfinished parent tasks and unrelated or concurrent work. Retain
-   useful work records at their stable paths with accurate delivery status.
+10. Removes only the ready scope from the priority index in its closeout commit.
+    Preserve unfinished parent tasks and unrelated or concurrent work. Retain
+    useful work records at their stable paths with accurate delivery status.
 
 Pre-merge plans and evidence can be committed as plans and evidence. They must
 not present proposed behavior as already delivered product documentation.
