@@ -15,6 +15,9 @@ unless the project adopts a versioning policy.
 
 ### Changed
 
+- Clarify when TODO items need a work record, add stable active and retained
+  record navigation, and document required or optional human review during
+  closeout.
 - Replace `technical-writing-style` with a focused `technical-writing` skill
   that builds on `core-writing`. Commit and changelog writing now use the same
   baseline while remaining operational workflows.
