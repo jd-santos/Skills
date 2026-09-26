@@ -10,6 +10,7 @@
 
 ## P4: Low
 
+- [ ] [Integrate Matt Pocock's skills with the task workbench](work/agent-workflow-integration/README.md) (priority provisional)
 - [ ] Add medium-specific design skills that build on `core-design`
   - [ ] Add a Typst design skill
   - [ ] Add a promotional design skill
