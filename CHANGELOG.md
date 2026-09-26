@@ -8,6 +8,8 @@ unless the project adopts a versioning policy.
 
 ### Added
 
+- Add a confirmed `tracked-skills add` workflow that validates and pins
+  external skill sources, and register Herdr with upstream attribution.
 - Add `core-writing` as the shared voice for prose and copyable text, with
   lightweight routing to focused writing skills.
 - Add `i-am-baby` as a cross-stack teaching overlay for explaining consequential

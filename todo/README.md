@@ -36,6 +36,7 @@ index, give substantial work a stable home, and let Git tell the finished story.
 
 - [Learner-aware development guidance](work/i-am-baby/README.md) — Ready for merge
 - [Writing skill system](work/writing-skill-system/README.md) — Ready for review
+- [Tracked-skill registration command](work/tracked-skills-add/README.md) — Ready for review
 
 ### Retained
 

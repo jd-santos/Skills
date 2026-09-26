@@ -78,6 +78,19 @@
       "license_path": "",
       "source_url": "https://gist.github.com/geoffreylitt/a29df1b5f9865506e8952488eac3d524",
       "reviewed_at": "2026-09-11"
+    },
+    {
+      "name": "herdr",
+      "repo": "https://github.com/herdrdev/herdr.git",
+      "ref": "master",
+      "commit": "81ddfc65b4661c52569f8b8d1ee41d5a6d68f85e",
+      "source_path": "skills/herdr",
+      "project": "Herdr",
+      "author": "herdrdev",
+      "license": "Apache-2.0",
+      "license_path": "LICENSE",
+      "source_url": "https://github.com/herdrdev/herdr/blob/master/skills/herdr/SKILL.md",
+      "reviewed_at": "2026-09-25"
     }
   ]
 }
