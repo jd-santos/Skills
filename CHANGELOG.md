@@ -8,6 +8,8 @@ unless the project adopts a versioning policy.
 
 ### Added
 
+- Add `study-cards` for sourced, Mochi-compatible Markdown flashcards and
+  optional direct insertion into Mochi.
 - Add a confirmed `tracked-skills add` workflow that validates and pins
   external skill sources, and register Herdr with upstream attribution.
 - Add `core-writing` as the shared voice for prose and copyable text, with

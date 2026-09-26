@@ -1,0 +1,4 @@
+interface:
+  display_name: "Study Cards"
+  short_description: "Create focused Markdown study cards for Mochi"
+  default_prompt: "Use $study-cards to turn these sources into a focused Mochi-compatible study-card bundle."
