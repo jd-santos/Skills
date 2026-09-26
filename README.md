@@ -52,6 +52,7 @@ preferences.
 | [`i-am-baby`](skills/i-am-baby/) | Guide development when the language or stack is unfamiliar. |
 | [`learning-opportunities`](https://github.com/DrCatHicks/learning-opportunities) | Practice concepts through opt-in exercises during development. |
 | [`study-lyrics`](skills/study-lyrics/) | Study lyrics through translation and cultural context. |
+| [`study-cards`](skills/study-cards/) | Create sourced, Mochi-compatible study cards from learning materials. |
 
 ### Languages and tools
 
