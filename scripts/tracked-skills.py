@@ -15,12 +15,14 @@ import tempfile
 from datetime import date
 from pathlib import Path, PurePosixPath
 from typing import Any
+from urllib.parse import urlsplit
 
 ROOT = Path(__file__).resolve().parents[1]
 MANIFEST_PATH = ROOT / "tracked-skills.json"
 SKILLS_DIR = ROOT / "skills"
 STATE_PATH = ROOT / ".local" / "tracked-skills-state.json"
 NAME_PATTERN = re.compile(r"^[a-z0-9][a-z0-9._-]*$")
+SPDX_LICENSE_ID_PATTERN = re.compile(r"^[A-Za-z0-9][A-Za-z0-9.+-]*$")
 
 
 class TrackedSkillsError(RuntimeError):
@@ -101,11 +103,23 @@ def validate_entry(raw: Any) -> dict[str, str]:
     relative_path(entry["source_path"], "source_path")
     if entry["license_path"]:
         relative_path(entry["license_path"], "license_path")
+    validate_license_identifier(entry["license"])
     if not re.fullmatch(r"[0-9a-f]{40}", entry["commit"]):
         raise TrackedSkillsError(
             f"{entry['name']} must pin a full 40-character Git commit"
         )
     return entry
+
+
+def validate_license_identifier(value: str) -> None:
+    """Validate the syntax of one SPDX identifier or the NOASSERTION sentinel."""
+    if value == "NOASSERTION":
+        return
+    if (
+        not SPDX_LICENSE_ID_PATTERN.fullmatch(value)
+        or value in {"AND", "OR", "WITH"}
+    ):
+        raise TrackedSkillsError(f"Invalid SPDX license identifier syntax: {value!r}")
 
 
 def load_manifest() -> tuple[dict[str, Any], list[dict[str, str]]]:
@@ -205,6 +219,19 @@ def ensure_repo(entry: dict[str, str], refresh: bool = False) -> Path:
     return cache
 
 
+def assert_safe_path(root: Path, path: Path) -> None:
+    """Reject symlinks anywhere along a path beneath a trusted root."""
+    try:
+        relative = path.relative_to(root)
+    except ValueError as error:
+        raise TrackedSkillsError(f"Path escapes trusted root: {path}") from error
+    current = root
+    for part in relative.parts:
+        current = current / part
+        if current.is_symlink():
+            raise TrackedSkillsError(f"External source contains an unsupported symlink: {current}")
+
+
 def assert_safe_tree(source: Path) -> None:
     for path in source.rglob("*"):
         if path.is_symlink():
@@ -239,6 +266,9 @@ def materialize(
         license_source = cache.joinpath(
             *relative_path(entry["license_path"], "license_path").parts
         )
+    assert_safe_path(cache, source)
+    if license_source is not None:
+        assert_safe_path(cache, license_source)
     cache_resolved = cache.resolve()
     if not source.resolve().is_relative_to(cache_resolved):
         raise TrackedSkillsError(f"Source escapes cached repository: {source}")
@@ -351,6 +381,178 @@ def hydrate(entries: list[dict[str, str]], force: bool) -> None:
         save_json(STATE_PATH, state)
 
 
+def validate_repository_url(repo: str) -> None:
+    """Require a public HTTPS URL without embedded credentials or parameters."""
+    parsed = urlsplit(repo)
+    if (
+        parsed.scheme != "https"
+        or not parsed.hostname
+        or parsed.username is not None
+        or parsed.password is not None
+        or parsed.query
+        or parsed.fragment
+    ):
+        raise TrackedSkillsError(
+            "Repository URL must be HTTPS without credentials, query, or fragment"
+        )
+
+
+def resolve_remote_head(repo: str) -> tuple[str, str]:
+    """Return the default branch and exact HEAD commit for a remote repository."""
+    validate_repository_url(repo)
+    output = run("git", "ls-remote", "--symref", repo, "HEAD")
+    branch = "HEAD"
+    commit = ""
+    for line in output.splitlines():
+        value, _, remote_ref = line.partition("\t")
+        if remote_ref == "HEAD" and value.startswith("ref: refs/heads/"):
+            branch = value.removeprefix("ref: refs/heads/")
+        elif remote_ref == "HEAD" and re.fullmatch(r"[0-9a-f]{40}", value):
+            commit = value
+    if not commit:
+        raise TrackedSkillsError(f"Could not resolve remote HEAD for {repo}")
+    return branch, commit
+
+
+def prompt_value(label: str, value: str | None, default: str | None = None) -> str:
+    if value is not None:
+        result = value.strip()
+    else:
+        suffix = f" [{default}]" if default else ""
+        try:
+            result = input(f"{label}{suffix}: ").strip()
+        except EOFError as error:
+            raise TrackedSkillsError(
+                f"Interactive input is required for {label}; pass its command-line option"
+            ) from error
+        if not result and default is not None:
+            result = default
+    if not result:
+        raise TrackedSkillsError(f"{label} is required")
+    return result
+
+
+def validate_add_source(
+    repo: str,
+    commit: str,
+    source_path: str,
+    license_path: str,
+) -> None:
+    cache = repo_cache(repo)
+    cache.parent.mkdir(parents=True, exist_ok=True)
+    if not cache.exists():
+        print(f"Cloning {repo}")
+        run("git", "clone", "--quiet", "--no-checkout", repo, str(cache))
+    elif not (cache / ".git").exists():
+        raise TrackedSkillsError(f"Cache path is not a Git checkout: {cache}")
+    remote = run("git", "remote", "get-url", "origin", cwd=cache)
+    if repository_identity(remote) != repository_identity(repo):
+        raise TrackedSkillsError(
+            "Cached repository origin does not match the supplied URL"
+        )
+    run("git", "fetch", "--quiet", "origin", commit, cwd=cache)
+    run("git", "checkout", "--quiet", "--detach", commit, cwd=cache)
+    run("git", "reset", "--quiet", "--hard", commit, cwd=cache)
+    run("git", "clean", "-qfdx", cwd=cache)
+
+    source = cache.joinpath(*relative_path(source_path, "source_path").parts)
+    assert_safe_path(cache, source)
+    if not source.resolve().is_relative_to(cache.resolve()):
+        raise TrackedSkillsError(f"Source escapes cached repository: {source}")
+    if source.is_dir() and (source / "SKILL.md").is_file():
+        assert_safe_tree(source)
+    elif source.is_file() and source.suffix.lower() == ".md":
+        if source.is_symlink():
+            raise TrackedSkillsError(
+                f"External skill contains an unsupported symlink: {source}"
+            )
+    else:
+        raise TrackedSkillsError(
+            f"Source is not a skill directory or Markdown file: {source}"
+        )
+    if license_path:
+        license_file = cache.joinpath(*relative_path(license_path, "license_path").parts)
+        assert_safe_path(cache, license_file)
+        if not license_file.resolve().is_relative_to(cache.resolve()):
+            raise TrackedSkillsError(f"License escapes cached repository: {license_file}")
+        if not license_file.is_file() or license_file.is_symlink():
+            raise TrackedSkillsError(
+                f"License file is missing or unsupported: {license_file}"
+            )
+    print(f"Validated skill source at {source} ({commit[:12]})")
+
+
+def add_entry(args: argparse.Namespace) -> None:
+    manifest, entries = load_manifest()
+    validate_repository_url(args.repo)
+    source_path = str(relative_path(args.source_path, "source_path"))
+    default_name = PurePosixPath(source_path).name
+    if default_name.lower().endswith(".md"):
+        default_name = default_name[:-3]
+    name = prompt_value("Installed skill name", args.name, default_name)
+    if not NAME_PATTERN.fullmatch(name):
+        raise TrackedSkillsError(f"Invalid skill name: {name!r}")
+    if any(entry["name"] == name for entry in entries):
+        raise TrackedSkillsError(f"Tracked skill already exists: {name}")
+
+    project = prompt_value("Project", args.project, name.replace("-", " ").title())
+    author = prompt_value("Author", args.author)
+    license_id = prompt_value(
+        "SPDX license identifier", args.license_id, "NOASSERTION"
+    )
+    validate_license_identifier(license_id)
+    if args.license_path is None:
+        try:
+            license_path = input("License file path (blank if none): ").strip()
+        except EOFError as error:
+            raise TrackedSkillsError(
+                "Interactive input is required for license file path; pass --license-path"
+            ) from error
+    else:
+        license_path = args.license_path.strip()
+    if license_id == "NOASSERTION" and license_path:
+        raise TrackedSkillsError("NOASSERTION entries must not specify a license file")
+    if license_id != "NOASSERTION" and not license_path:
+        raise TrackedSkillsError("A license file path is required for declared licenses")
+    if license_path:
+        relative_path(license_path, "license_path")
+
+    branch, commit = resolve_remote_head(args.repo)
+    if args.source_url:
+        source_url = args.source_url
+    elif args.repo.startswith("https://github.com/"):
+        repo_page = args.repo.removesuffix(".git").rstrip("/")
+        source_url = f"{repo_page}/tree/{branch}/{source_path}"
+    else:
+        source_url = args.repo
+
+    entry = {
+        "name": name,
+        "repo": args.repo,
+        "ref": branch,
+        "commit": commit,
+        "source_path": source_path,
+        "project": project,
+        "author": author,
+        "license": license_id,
+        "license_path": license_path,
+        "source_url": source_url,
+        "reviewed_at": date.today().isoformat(),
+    }
+    validate_entry(entry)
+    validate_add_source(args.repo, commit, source_path, license_path)
+
+    print("\nProposed tracked skill:")
+    print(json.dumps(entry, indent=2))
+    if not confirm("Add this entry to tracked-skills.json?"):
+        print("No registry changes made.")
+        return
+    manifest["tracked_skills"].append(entry)
+    save_json(MANIFEST_PATH, manifest)
+    print(f"Added {name} at {commit[:12]}.")
+    print(f"Next: add skills/{name}/ to .gitignore and run install/verify for {name}.")
+
+
 def resolve_candidate(entry: dict[str, str]) -> tuple[Path, str]:
     cache = ensure_repo(entry, refresh=True)
     ref = entry["ref"]
@@ -456,6 +658,22 @@ def parser() -> argparse.ArgumentParser:
                 help="replace unmanaged or locally modified destinations",
             )
 
+    add = subparsers.add_parser(
+        "add", help="register a new external skill after validating its source"
+    )
+    add.add_argument("repo", help="HTTPS Git repository URL")
+    add.add_argument(
+        "source_path", help="skill directory or standalone Markdown path"
+    )
+    add.add_argument("--name", help="installed skill name")
+    add.add_argument("--project", help="upstream project display name")
+    add.add_argument("--author", help="upstream author or maintainer")
+    add.add_argument("--license", dest="license_id", help="SPDX license identifier")
+    add.add_argument(
+        "--license-path", help="license file path, or empty for NOASSERTION"
+    )
+    add.add_argument("--source-url", help="canonical upstream skill page")
+
     update = subparsers.add_parser("update")
     update.add_argument("names", nargs="*", default=["all"])
     update.add_argument(
@@ -476,6 +694,10 @@ def main() -> int:
                 f"{entry['name']}\t{entry['commit'][:12]}\t"
                 f"{entry['project']}\t{entry['source_url']}"
             )
+        return 0
+
+    if args.command == "add":
+        add_entry(args)
         return 0
 
     selected = select_entries(entries, args.names)

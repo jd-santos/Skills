@@ -136,6 +136,7 @@ repository.
 | `orient` | Orient by Dr. Michael Mullarkey | CC BY 4.0 | [DrCatHicks/learning-opportunities](https://github.com/DrCatHicks/learning-opportunities/tree/main/orient) |
 | `explain-diff-html` | Explain Diff by Geoffrey Litt | No license declared | [geoffreylitt/explain-diff gist](https://gist.github.com/geoffreylitt/a29df1b5f9865506e8952488eac3d524) |
 | `explain-diff-notion` | Explain Diff by Geoffrey Litt | No license declared | [geoffreylitt/explain-diff gist](https://gist.github.com/geoffreylitt/a29df1b5f9865506e8952488eac3d524) |
+| `herdr` | Herdr by herdrdev | Apache 2.0 | [Herdr skill](https://github.com/herdrdev/herdr/tree/master/skills/herdr) |
 
 The local installer preserves each declared upstream license and records the
 source repository and exact installed commit. See

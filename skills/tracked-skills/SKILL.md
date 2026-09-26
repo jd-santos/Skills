@@ -56,9 +56,10 @@ After approval:
 
 ### 4. Add a source
 
-Version 0.1 uses explicit registry edits rather than an interactive add command.
-Follow the checklist in `../../docs/tracked-skills.md`, including visible README
-attribution and a matching `.gitignore` entry.
+Use `./scripts/tracked-skills add <repo> <source-path>` to register a source.
+Review the upstream source, author, and license before confirming the exact
+commit. Then follow `../../docs/tracked-skills.md` to add visible README
+attribution, ignore the generated destination, and install and verify it.
 
 ## Safety
 

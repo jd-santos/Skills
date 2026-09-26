@@ -45,6 +45,7 @@ Run commands from any directory through the repository script:
 
 ```bash
 /path/to/Skills/scripts/tracked-skills list
+/path/to/Skills/scripts/tracked-skills add <repo> <source-path> [options]
 /path/to/Skills/scripts/tracked-skills install [all|<name> ...]
 /path/to/Skills/scripts/tracked-skills verify [all|<name> ...]
 /path/to/Skills/scripts/tracked-skills update [all|<name> ...]
@@ -91,24 +92,44 @@ review when both are selected.
 
 ## Adding a source
 
-Version 0.1 keeps source registration as an explicit repository change. Add an
-entry to `tracked-skills.json`, add the destination to `.gitignore`, then run:
+Use `add` to register an external source after validating its skill and license
+paths at the current default-branch commit:
 
 ```bash
-./scripts/tracked-skills install <name>
-./scripts/tracked-skills verify <name>
+./scripts/tracked-skills add https://github.com/owner/project.git skills/example \
+  --name example \
+  --project "Example Project" \
+  --author "Example Author" \
+  --license Apache-2.0 \
+  --license-path LICENSE \
+  --source-url https://github.com/owner/project/tree/main/skills/example
 ```
 
-Before committing the registry entry:
+Only the repository and skill source path are positional. Omit metadata options
+to enter them interactively. The command prints the exact commit and proposed
+registry entry, then asks for confirmation before writing `tracked-skills.json`.
+It accepts HTTPS repository URLs. Use `NOASSERTION` with an empty license path
+when the upstream source does not declare a license. The utility checks
+identifier syntax, but you must confirm the identifier is recognized by SPDX
+and matches the upstream license.
 
-1. Confirm the canonical repository and author.
-2. Read the upstream license and record its SPDX identifier. If the source does
-   not declare a license, use `NOASSERTION` and leave `license_path` empty.
-3. Review the exact pinned commit.
-4. Confirm the source is a self-contained skill directory or standalone
-   Markdown skill file.
-5. Confirm the generated destination remains ignored by Git.
-6. Add visible attribution to the README.
+Before confirming the prompt, review the displayed repository, source path,
+exact commit, and attribution. Check the skill content and license at that pinned
+commit; the command validates source and license paths but does not assess the
+content. Decline if anything needs more review.
+
+After registration:
+
+1. Add `skills/<name>/` to `.gitignore` and add visible attribution to the
+   README.
+2. Install and verify the selected skill:
+
+   ```bash
+   ./scripts/tracked-skills install <name>
+   ./scripts/tracked-skills verify <name>
+   ```
+
+The command does not install the skill or edit documentation automatically.
 
 ## Recovery
 
