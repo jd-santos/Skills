@@ -14,6 +14,7 @@ import sys
 import tempfile
 from datetime import date
 from pathlib import Path, PurePosixPath
+from stat import S_IMODE
 from typing import Any
 from urllib.parse import urlsplit
 
@@ -115,10 +116,7 @@ def validate_license_identifier(value: str) -> None:
     """Validate the syntax of one SPDX identifier or the NOASSERTION sentinel."""
     if value == "NOASSERTION":
         return
-    if (
-        not SPDX_LICENSE_ID_PATTERN.fullmatch(value)
-        or value in {"AND", "OR", "WITH"}
-    ):
+    if not SPDX_LICENSE_ID_PATTERN.fullmatch(value) or value in {"AND", "OR", "WITH"}:
         raise TrackedSkillsError(f"Invalid SPDX license identifier syntax: {value!r}")
 
 
@@ -188,6 +186,8 @@ def repository_identity(url: str) -> str:
 def ensure_repo(entry: dict[str, str], refresh: bool = False) -> Path:
     cache = repo_cache(entry["repo"])
     cache.parent.mkdir(parents=True, exist_ok=True)
+    if cache.is_symlink():
+        raise TrackedSkillsError(f"Refusing symlinked repository cache: {cache}")
     if not cache.exists():
         print(f"Cloning {entry['repo']}")
         run("git", "clone", "--quiet", "--no-checkout", entry["repo"], str(cache))
@@ -201,13 +201,16 @@ def ensure_repo(entry: dict[str, str], refresh: bool = False) -> Path:
         )
 
     commit = entry["commit"]
-    has_commit = subprocess.run(
-        ("git", "cat-file", "-e", f"{commit}^{{commit}}"),
-        cwd=cache,
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL,
-        check=False,
-    ).returncode == 0
+    has_commit = (
+        subprocess.run(
+            ("git", "cat-file", "-e", f"{commit}^{{commit}}"),
+            cwd=cache,
+            stdout=subprocess.DEVNULL,
+            stderr=subprocess.DEVNULL,
+            check=False,
+        ).returncode
+        == 0
+    )
     if refresh:
         run("git", "fetch", "--quiet", "--tags", "--prune", "origin", cwd=cache)
     elif not has_commit:
@@ -229,7 +232,9 @@ def assert_safe_path(root: Path, path: Path) -> None:
     for part in relative.parts:
         current = current / part
         if current.is_symlink():
-            raise TrackedSkillsError(f"External source contains an unsupported symlink: {current}")
+            raise TrackedSkillsError(
+                f"External source contains an unsupported symlink: {current}"
+            )
 
 
 def assert_safe_tree(source: Path) -> None:
@@ -248,6 +253,8 @@ def directory_hash(directory: Path) -> str:
         if path.is_file():
             relative = path.relative_to(directory).as_posix()
             digest.update(relative.encode())
+            digest.update(b"\0")
+            digest.update(f"{S_IMODE(path.stat().st_mode) & 0o111:03o}".encode())
             digest.update(b"\0")
             digest.update(path.read_bytes())
             digest.update(b"\0")
@@ -287,7 +294,9 @@ def materialize(
     if source_kind == "directory":
         assert_safe_tree(source)
     elif source.is_symlink():
-        raise TrackedSkillsError(f"External skill contains an unsupported symlink: {source}")
+        raise TrackedSkillsError(
+            f"External skill contains an unsupported symlink: {source}"
+        )
 
     SKILLS_DIR.mkdir(parents=True, exist_ok=True)
     destination = SKILLS_DIR / entry["name"]
@@ -440,6 +449,8 @@ def validate_add_source(
 ) -> None:
     cache = repo_cache(repo)
     cache.parent.mkdir(parents=True, exist_ok=True)
+    if cache.is_symlink():
+        raise TrackedSkillsError(f"Refusing symlinked repository cache: {cache}")
     if not cache.exists():
         print(f"Cloning {repo}")
         run("git", "clone", "--quiet", "--no-checkout", repo, str(cache))
@@ -471,10 +482,14 @@ def validate_add_source(
             f"Source is not a skill directory or Markdown file: {source}"
         )
     if license_path:
-        license_file = cache.joinpath(*relative_path(license_path, "license_path").parts)
+        license_file = cache.joinpath(
+            *relative_path(license_path, "license_path").parts
+        )
         assert_safe_path(cache, license_file)
         if not license_file.resolve().is_relative_to(cache.resolve()):
-            raise TrackedSkillsError(f"License escapes cached repository: {license_file}")
+            raise TrackedSkillsError(
+                f"License escapes cached repository: {license_file}"
+            )
         if not license_file.is_file() or license_file.is_symlink():
             raise TrackedSkillsError(
                 f"License file is missing or unsupported: {license_file}"
@@ -497,9 +512,7 @@ def add_entry(args: argparse.Namespace) -> None:
 
     project = prompt_value("Project", args.project, name.replace("-", " ").title())
     author = prompt_value("Author", args.author)
-    license_id = prompt_value(
-        "SPDX license identifier", args.license_id, "NOASSERTION"
-    )
+    license_id = prompt_value("SPDX license identifier", args.license_id, "NOASSERTION")
     validate_license_identifier(license_id)
     if args.license_path is None:
         try:
@@ -513,7 +526,9 @@ def add_entry(args: argparse.Namespace) -> None:
     if license_id == "NOASSERTION" and license_path:
         raise TrackedSkillsError("NOASSERTION entries must not specify a license file")
     if license_id != "NOASSERTION" and not license_path:
-        raise TrackedSkillsError("A license file path is required for declared licenses")
+        raise TrackedSkillsError(
+            "A license file path is required for declared licenses"
+        )
     if license_path:
         relative_path(license_path, "license_path")
 
@@ -590,7 +605,15 @@ def update_entries(
         print("\nDiff summary:")
         print(run("git", "diff", "--stat", current, candidate, cwd=cache))
         if confirm("Show the full diff?"):
-            run("git", "diff", "--color=always", current, candidate, cwd=cache, capture=False)
+            run(
+                "git",
+                "diff",
+                "--color=always",
+                current,
+                candidate,
+                cwd=cache,
+                capture=False,
+            )
         if confirm("Pin and install this update?"):
             approved[key] = candidate
         else:
@@ -662,9 +685,7 @@ def parser() -> argparse.ArgumentParser:
         "add", help="register a new external skill after validating its source"
     )
     add.add_argument("repo", help="HTTPS Git repository URL")
-    add.add_argument(
-        "source_path", help="skill directory or standalone Markdown path"
-    )
+    add.add_argument("source_path", help="skill directory or standalone Markdown path")
     add.add_argument("--name", help="installed skill name")
     add.add_argument("--project", help="upstream project display name")
     add.add_argument("--author", help="upstream author or maintainer")

@@ -64,13 +64,17 @@ The command refuses to replace:
   Markdown skill file
 - A source or license path that escapes the cached repository
 - A source tree containing symbolic links
+- A symlinked repository cache, before running Git commands against it
 
 Use `--force` only after inspecting the destination and accepting its removal.
 
 ### Verify
 
 `verify` compares installed commits and content hashes with the local state and
-registry. It does not fetch upstream changes.
+registry. Hashes include file executable bits. It does not fetch upstream
+changes. State created before executable bits were included needs a one-time
+reinstall: inspect the generated destination before using `install --force`, then
+run `verify` again.
 
 ### Update
 

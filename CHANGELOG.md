@@ -8,6 +8,10 @@ unless the project adopts a versioning policy.
 
 ### Added
 
+- Add `work-routing` for cross-agent workflow selection and pin Matt Pocock's
+  `grilling` skill at the reviewed MIT-licensed commit.
+- Reject symlinked tracked-skill caches before Git cleanup and detect changes to
+  installed helper executable bits during verification.
 - Add `study-cards` for sourced, Mochi-compatible Markdown flashcards and
   optional direct insertion into Mochi.
 - Add a confirmed `tracked-skills add` workflow that validates and pins
