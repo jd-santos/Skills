@@ -6,11 +6,13 @@
 
 ## P3: Essential
 
-- [ ] [Build a composable design skill family](work/design-skill-family/README.md)
+- [ ] Adapt Wayfinder for multi-session discovery within the existing workbench.
+  Do not create a parallel tracker. [Integration context](work/006-agent-workflow-integration/plan.md#trial-and-decision-order). [context: medium]
+- [ ] [Build a composable design skill family](work/004-design-skill-family/README.md)
 
 ## P4: Low
 
-- [ ] [Integrate Matt Pocock's skills with the task workbench](work/agent-workflow-integration/README.md) (priority provisional)
+- [ ] [Integrate Matt Pocock's skills with the task workbench](work/006-agent-workflow-integration/README.md) (priority provisional)
 - [ ] Add medium-specific design skills that build on `core-design`
   - [ ] Add a Typst design skill
   - [ ] Add a promotional design skill

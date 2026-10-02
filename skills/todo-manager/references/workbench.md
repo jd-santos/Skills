@@ -48,10 +48,10 @@ history separate:
 
 ## Using the workbench
 
-Keep short tasks in TODO. Give larger efforts a descriptive folder under
-`work/`, with one README that owns the detailed checklist. When work ships,
-remove it from the live list and let Git, pull requests, and the project's
-changelog tell the finished story.
+Keep short tasks in TODO. Give larger efforts a creation-order-numbered,
+descriptive folder under `work/`, with one README that owns the detailed
+checklist. When work ships, remove it from the live list and let Git, pull
+requests, and the project's changelog tell the finished story.
 ```
 
 Adapt the title and opening to the project. Add links to the actual changelog,
@@ -98,7 +98,7 @@ curation, not a mandatory ship-time log. Links to live PR queries are preferable
 to copied tables; existing generated reports can be linked without building a
 new generator.
 
-### `todo/work/<descriptive-name>/README.md`
+### `todo/work/<NNN-descriptive-name>/README.md`
 
 ```markdown
 # Work title

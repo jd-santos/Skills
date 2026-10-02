@@ -29,7 +29,7 @@ Before creating or editing a project, issue, or feature note:
 ### Workbench mode
 
 When the project uses `todo/`, load `todo-manager` and reuse or create the
-relevant `todo/work/<descriptive-name>/README.md`. Do not create a second tracker
+relevant work README under `todo/work/`, following that project's naming convention. Do not create a second tracker
 under `docs/projects/`, `docs/issues/`, or `docs/features/` for the same work.
 
 In this mode, `todo-manager` owns layout, P1–P5 priority, status, and closeout.

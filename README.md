@@ -14,7 +14,7 @@ preferences.
 | Skill | Purpose |
 | --- | --- |
 | [`work-routing`](skills/work-routing/) | Choose the shortest useful workflow for discovery and implementation. |
-| [`planning-first`](skills/planning-first/) | Legacy two-round workflow, retained until the cross-repository migration is complete. |
+| [`to-spec`](skills/to-spec/) | Synthesize a durable behavior contract from decisions and project evidence when useful. |
 | [`ship`](skills/ship/) | Review, commit, push, and open pull requests. |
 | [`todo-manager`](skills/todo-manager/) | Manage a priority workbench, work records, and reviewed closeout. |
 | [`project-issue-note`](skills/project-issue-note/) | Track projects, features, and issues in Markdown. |
@@ -190,9 +190,11 @@ during integration. Ownership notes are not cross-worktree locks.
 
 Use the shared `work-routing` skill when uncertainty or task size makes a route
 useful; clear requests can proceed directly. It chooses between direct work,
-grilling, optional domain modeling or specs, and implementation slices without
-requiring a plan file for every task. Shipping checks task claims against the
-diff, preserves unfinished work, and proposes artifact pruning before merge. File deletions require explicit approval. Completed work
+grilling, optional domain modeling or `to-spec`, and implementation slices
+without requiring a plan file for every task. `to-spec` uses the existing work
+record and adds a linked spec only when detail needs a durable home. Shipping
+checks task claims against the diff, preserves unfinished work, and proposes
+artifact pruning before merge. File deletions require explicit approval. Completed work
 does not accumulate in a Done task section.
 
 [DONE](todo/DONE.md) points to Git history, PRs, and retained records.

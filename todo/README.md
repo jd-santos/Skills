@@ -20,9 +20,10 @@ returning to later.
 - [TODO](TODO.md) is the live priority list. Small tasks can stay there as
   checklists. Larger tasks link to their own folder under [`work/`](work/).
 - [`work/`](work/) contains the record for substantial work. Each folder starts
-  with a README covering the goal, status, checklist, and relevant supporting
-  material. Work that fits in a couple of sentences, especially a loose future
-  idea, stays as a checkbox in TODO.
+  with a creation-order number and a descriptive name, such as
+  `006-agent-workflow-integration`. Its README covers the goal, status,
+  checklist, and relevant supporting material. Work that fits in a couple of
+  sentences, especially a loose future idea, stays as a checkbox in TODO.
 - [DONE](DONE.md) points to completed work in Git, merged pull requests, the
   changelog, and retained work records. It is a map to history, not a second
   task list.
@@ -34,14 +35,15 @@ index, give substantial work a stable home, and let Git tell the finished story.
 
 ### Active
 
-- [Matt Pocock workflow integration](work/agent-workflow-integration/README.md) — In progress
-- [Learner-aware development guidance](work/i-am-baby/README.md) — Ready for merge
-- [Writing skill system](work/writing-skill-system/README.md) — Ready for review
-- [Tracked-skill registration command](work/tracked-skills-add/README.md) — Ready for review
+- [Composable design skill family](work/004-design-skill-family/README.md) — Planned
+- [Matt Pocock workflow integration](work/006-agent-workflow-integration/README.md) — In progress
+- [Learner-aware development guidance](work/002-i-am-baby/README.md) — Ready for merge
+- [Writing skill system](work/003-writing-skill-system/README.md) — Ready for review
+- [Tracked-skill registration command](work/005-tracked-skills-add/README.md) — Ready for review
 
 ### Retained
 
-- [Task workbench](work/task-workbench/README.md)
+- [Task workbench](work/001-task-workbench/README.md)
 
 A work record's `Status` line is authoritative. Do not move its folder when the
 status changes.
@@ -62,9 +64,10 @@ whether it is planned, active, blocked, ready for review, or ready to ship.
 ## Using the workbench
 
 Add a short task directly to TODO. If the work needs a detailed checklist or
-supporting files, create `work/<descriptive-name>/README.md` and link it from the
-TODO entry. Keep one detailed checklist so progress does not drift between
-files.
+supporting files, create `work/<NNN-descriptive-name>/README.md` using the next
+unused creation-order number and link it from the TODO entry. Keep each number
+stable across priority or status changes and never reuse a gap. Keep one detailed
+checklist so progress does not drift between files.
 
 When work ships, remove it from the live list. Keep work records that explain
 important decisions or preserve useful evidence. Git and pull requests remain
@@ -72,5 +75,5 @@ the source of truth for what changed, while the [changelog](../CHANGELOG.md)
 records notable releases and user-visible changes.
 
 The [local todo-manager skill](../skills/todo-manager/SKILL.md) contains the full
-workflow. The [task-workbench record](work/task-workbench/README.md) explains how
+workflow. The [task-workbench record](work/001-task-workbench/README.md) explains how
 this particular workbench was introduced.

@@ -1,7 +1,7 @@
 ---
 name: todo-manager
 description: Manages a root-level todo workbench with a P1–P5 priority index, independent work records, and reviewed shipping cleanup. Use when managing tasks, tracking progress, preparing handoffs, or when the user mentions todos, task cleanup, or completed work.
-version: 2.0.2
+version: 2.1.0
 category: workflow
 ---
 
@@ -63,9 +63,14 @@ would materially affect scheduling. Do not infer urgency from task size.
   sentences, especially a loosely defined future idea, belongs in TODO even if
   it may later grow. Create a work record only when detailed planning,
   coordination, evidence, or a multi-step checklist would make the index hard
-  to use. Link those larger tasks to `work/<descriptive-name>/README.md`.
+  to use. Link those larger tasks to `work/<NNN-descriptive-name>/README.md`.
 - Put each detailed checklist in one place. A top-level index checkbox can
   summarize a linked slice, but must not duplicate its steps.
+- In a new workbench, number work folders by creation order as
+  `work/001-descriptive-name/`, `work/002-next-effort/`, and so on. Use the next
+  unused number for a new record; do not renumber on priority or status changes
+  or reuse gaps. The prefix is a browsing aid, not a second priority scale.
+  Respect an existing project's naming convention until migration is authorized.
 - Nest clearly related work. Ask when parentage or a matching task is ambiguous.
 - Preserve unchecked work and checked state when reprioritizing.
 - Suggest only genuinely high-priority issues discovered in related work,
@@ -73,11 +78,12 @@ would materially affect scheduling. Do not infer urgency from task size.
 
 ### 3. Give substantial work a stable home
 
-Use `todo/work/<descriptive-name>/README.md` only for substantial work that
+Use `todo/work/<NNN-descriptive-name>/README.md` only for substantial work that
 needs a durable home beyond its TODO checkbox. Do not create a folder merely
-because an item is in TODO. Prefer lowercase hyphenated names, not dates, opaque
-IDs, or process jargon. Do not move folders between active and archive
-directories when their status changes.
+because an item is in TODO. Prefer lowercase hyphenated descriptive names with
+this workbench's stable creation-order prefix, not dates, opaque IDs, or process
+jargon. Do not move folders between active and archive directories when their
+status changes.
 
 The work README owns purpose, execution status, current ownership when active,
 acceptance criteria, the execution checklist, and links to supporting material.
@@ -187,8 +193,8 @@ and refresh method; label it a snapshot rather than a current source of truth.
 ```markdown
 ## P3: Essential
 
-- [ ] [Improve import reliability](work/import-reliability/README.md)
-- [ ] [Add search filters](work/search-filters/README.md)
+- [ ] [Improve import reliability](work/001-import-reliability/README.md)
+- [ ] [Add search filters](work/002-search-filters/README.md)
 ```
 
 Assign separate workers and worktrees. Each maintains its own detailed checklist;
