@@ -13,7 +13,8 @@ preferences.
 
 | Skill | Purpose |
 | --- | --- |
-| [`planning-first`](skills/planning-first/) | Plan before non-trivial implementation. |
+| [`work-routing`](skills/work-routing/) | Choose the shortest useful workflow for discovery and implementation. |
+| [`to-spec`](skills/to-spec/) | Synthesize a durable behavior contract from decisions and project evidence when useful. |
 | [`ship`](skills/ship/) | Review, commit, push, and open pull requests. |
 | [`todo-manager`](skills/todo-manager/) | Manage a priority workbench, work records, and reviewed closeout. |
 | [`project-issue-note`](skills/project-issue-note/) | Track projects, features, and issues in Markdown. |
@@ -72,10 +73,10 @@ Skills directory, then change the instructions to suit how you work.
 ```bash
 git clone --depth 1 https://github.com/jd-santos/Skills.git jd-skills
 mkdir -p ~/.agents/skills
-cp -R jd-skills/skills/planning-first ~/.agents/skills/
+cp -R jd-skills/skills/work-routing ~/.agents/skills/
 ```
 
-Replace `planning-first` with another skill from the list and repeat as needed.
+Replace `work-routing` with another skill from the list and repeat as needed.
 Copy the whole directory so its references and scripts come with it.
 `tracked-skills` is repository tooling and expects a full checkout.
 
@@ -90,8 +91,8 @@ git clone https://github.com/jd-santos/Skills.git ~/.agents
 ```
 
 The first command installs the skills maintained in this repository. The second
-installs the reviewed external skills and Offgrid Review from their pinned
-commits.
+installs the reviewed external skills, including Matt Pocock's `grilling`, and
+Offgrid Review from their pinned commits.
 
 Update maintained skills without advancing external pins:
 
@@ -138,6 +139,7 @@ repository.
 | `explain-diff-html` | Explain Diff by Geoffrey Litt | No license declared | [geoffreylitt/explain-diff gist](https://gist.github.com/geoffreylitt/a29df1b5f9865506e8952488eac3d524) |
 | `explain-diff-notion` | Explain Diff by Geoffrey Litt | No license declared | [geoffreylitt/explain-diff gist](https://gist.github.com/geoffreylitt/a29df1b5f9865506e8952488eac3d524) |
 | `herdr` | Herdr by herdrdev | Apache 2.0 | [Herdr skill](https://github.com/herdrdev/herdr/tree/master/skills/herdr) |
+| `grilling` | Matt Pocock Skills by Matt Pocock | MIT | [Pinned grilling skill](https://github.com/mattpocock/skills/tree/c55ee46073ed923f86ce59a5eb3b6d895095d1b7/skills/productivity/grilling) |
 
 The local installer preserves each declared upstream license and records the
 source repository and exact installed commit. See
@@ -186,9 +188,13 @@ keep their execution checklist and supporting evidence in stable work folders.
 Parallel agents primarily edit separate records and reconcile the shared queue
 during integration. Ownership notes are not cross-worktree locks.
 
-Planning creates one authoritative plan after approval. Shipping checks task
-claims against the diff, preserves unfinished work, and proposes artifact
-pruning before merge. File deletions require explicit approval. Completed work
+Use the shared `work-routing` skill when uncertainty or task size makes a route
+useful; clear requests can proceed directly. It chooses between direct work,
+grilling, optional domain modeling or `to-spec`, and implementation slices
+without requiring a plan file for every task. `to-spec` uses the existing work
+record and adds a linked spec only when detail needs a durable home. Shipping
+checks task claims against the diff, preserves unfinished work, and proposes
+artifact pruning before merge. File deletions require explicit approval. Completed work
 does not accumulate in a Done task section.
 
 [DONE](todo/DONE.md) points to Git history, PRs, and retained records.

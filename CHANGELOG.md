@@ -8,6 +8,12 @@ unless the project adopts a versioning policy.
 
 ### Added
 
+- Add a local `to-spec` skill that synthesizes optional behavior contracts in
+  existing work records without issue-tracker publication or duplicate checklists.
+- Add `work-routing` for cross-agent workflow selection and pin Matt Pocock's
+  `grilling` skill at the reviewed MIT-licensed commit.
+- Reject symlinked tracked-skill caches before Git cleanup and detect changes to
+  installed helper executable bits during verification.
 - Add `study-cards` for sourced, Mochi-compatible Markdown flashcards and
   optional direct insertion into Mochi.
 - Add a confirmed `tracked-skills add` workflow that validates and pins
@@ -19,6 +25,10 @@ unless the project adopts a versioning policy.
 
 ### Changed
 
+- Let `work-routing` consider substantial project-specific answer-only work for
+  backlog capture while leaving exploration and read-only requests untouched.
+- Number work folders by creation order, backfill the six existing records,
+  and keep their IDs stable across priority or status changes.
 - Clarify when TODO items need a work record, add stable active and retained
   record navigation, and document required or optional human review during
   closeout.
@@ -40,5 +50,6 @@ unless the project adopts a versioning policy.
 
 ### Removed
 
+- Retire the mandatory `planning-first` skill in favor of optional `work-routing` and pinned `grilling` for consequential decisions.
 - Remove the overlapping `swift-mentor` skill and route Swift teaching guidance
   through `i-am-baby`.

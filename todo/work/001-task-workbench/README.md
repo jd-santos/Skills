@@ -19,6 +19,8 @@ and duplicate agent output through reviewed cleanup.
 - Use P1: Rush, P2: High, P3: Essential, P4: Low, and P5: Minor headings.
 - Keep small task checklists in TODO. Delegate larger execution checklists to
   stable `todo/work/<descriptive-name>/README.md` paths, linked from TODO.
+  This was the original path convention; [current workbench guidance](../../README.md#using-the-workbench)
+  now prefixes effort folders with creation-order numbers.
 - Create supporting plans, research, evidence, and asset directories only when
   useful. Do not duplicate checklists or move folders when status changes.
 - Treat ownership notes as coordination hints, not locks across worktrees.
