@@ -13,10 +13,10 @@ preferences.
 
 | Skill | Purpose |
 | --- | --- |
-| [`planning-first`](skills/planning-first/) | Plan before non-trivial implementation. |
+| [`work-routing`](skills/work-routing/) | Choose the shortest useful workflow for discovery and implementation. |
+| [`work-contract`](skills/work-contract/) | Reconcile behavior decisions and define useful implementation outcomes in the existing work record. |
 | [`ship`](skills/ship/) | Review, commit, push, and open pull requests. |
-| [`todo-manager`](skills/todo-manager/) | Manage a priority workbench, work records, and reviewed closeout. |
-| [`project-issue-note`](skills/project-issue-note/) | Track projects, features, and issues in Markdown. |
+| [`todo-manager`](skills/todo-manager/) | Create and maintain task entries, work records, metadata, and lifecycle rules. |
 | [`commit-message-writer`](skills/commit-message-writer/) | Write concise, scope-first commit messages. |
 | [`changelog-writer`](skills/changelog-writer/) | Write changelog entries and release notes. |
 | [`offgrid-review`](https://github.com/jd-santos/offgrid-review) | Move complex decisions into a portable review workbench. |
@@ -72,10 +72,10 @@ Skills directory, then change the instructions to suit how you work.
 ```bash
 git clone --depth 1 https://github.com/jd-santos/Skills.git jd-skills
 mkdir -p ~/.agents/skills
-cp -R jd-skills/skills/planning-first ~/.agents/skills/
+cp -R jd-skills/skills/work-routing ~/.agents/skills/
 ```
 
-Replace `planning-first` with another skill from the list and repeat as needed.
+Replace `work-routing` with another skill from the list and repeat as needed.
 Copy the whole directory so its references and scripts come with it.
 `tracked-skills` is repository tooling and expects a full checkout.
 
@@ -90,8 +90,8 @@ git clone https://github.com/jd-santos/Skills.git ~/.agents
 ```
 
 The first command installs the skills maintained in this repository. The second
-installs the reviewed external skills and Offgrid Review from their pinned
-commits.
+installs the reviewed external skills, including `grilling` and
+Offgrid Review from their pinned commits.
 
 Update maintained skills without advancing external pins:
 
@@ -122,7 +122,13 @@ Installed skills live at `~/.agents/skills/`. I use the collection with Hermes
 Agent, Pi, Zed, Codex, and Claude Code. OpenCode and other tools that implement
 the Agent Skills format can use the same files.
 
-Reload the relevant tool after installing or changing skills.
+Reload the relevant tool after installing or changing skills. If `grilling`
+is absent from the host's catalog, the router can check the installed source at
+`skills/grilling/SKILL.md` in this collection (normally
+`~/.agents/skills/grilling/SKILL.md`). Install/repair it with
+`./scripts/tracked-skills install grilling`, then verify it with
+`./scripts/tracked-skills verify grilling`. Direct file retrieval is not proof
+of automatic discovery or cross-agent parity.
 
 ## External work and attribution
 
@@ -138,6 +144,7 @@ repository.
 | `explain-diff-html` | Explain Diff by Geoffrey Litt | No license declared | [geoffreylitt/explain-diff gist](https://gist.github.com/geoffreylitt/a29df1b5f9865506e8952488eac3d524) |
 | `explain-diff-notion` | Explain Diff by Geoffrey Litt | No license declared | [geoffreylitt/explain-diff gist](https://gist.github.com/geoffreylitt/a29df1b5f9865506e8952488eac3d524) |
 | `herdr` | Herdr by herdrdev | Apache 2.0 | [Herdr skill](https://github.com/herdrdev/herdr/tree/master/skills/herdr) |
+| `grilling` | Matt Pocock Skills by Matt Pocock | MIT | [Pinned grilling skill](https://github.com/mattpocock/skills/tree/c55ee46073ed923f86ce59a5eb3b6d895095d1b7/skills/productivity/grilling) |
 
 The local installer preserves each declared upstream license and records the
 source repository and exact installed commit. See
@@ -186,10 +193,30 @@ keep their execution checklist and supporting evidence in stable work folders.
 Parallel agents primarily edit separate records and reconcile the shared queue
 during integration. Ownership notes are not cross-worktree locks.
 
-Planning creates one authoritative plan after approval. Shipping checks task
-claims against the diff, preserves unfinished work, and proposes artifact
-pruning before merge. File deletions require explicit approval. Completed work
-does not accumulate in a Done task section.
+`work-routing` selects useful capabilities without requiring users to name a
+skill or follow a mandatory pipeline. Each capability can also be invoked
+directly. Clear requests proceed directly; unresolved consequential decisions
+can use `grilling`. `todo-manager` finds or creates the authoritative work record
+once authorized work warrants a durable home; its contract need not be settled.
+`work-contract` reconciles behavior, defines acceptance criteria and validation,
+and decomposes work only when useful. Consequential changes to scope, delivery
+order, or dependencies require the user's decision. Execution follows the
+agreement and updates the existing checklist rather than silently changing the
+contract to match the build.
+
+The work README holds the full contract, including substantial or multi-session
+work. Subject-named attachments are optional for independently useful reading
+or evidence, not because a contract is long. New or explicitly migrated work
+READMEs use YAML `status` with optional `pr`, `blocked_by`, `parent`, `child`, and
+`tags`; priority stays in TODO. Tags can describe useful subjects or subsystems
+without a required taxonomy. No deadline or Git-derived audit fields are required.
+Hierarchy does not imply dependencies or mirrored child progress. Existing
+record formats and standalone notes remain valid until migration is authorized.
+Shipping checks task claims against the diff, preserves unfinished work, and
+prepares `status: complete` only for verified whole-record completion in the
+pre-merge closeout commit, without claiming merge or release. It proposes
+artifact pruning before merge; file deletions require explicit approval.
+Completed work does not accumulate in a Done task section.
 
 [DONE](todo/DONE.md) points to Git history, PRs, and retained records.
 [CHANGELOG.md](CHANGELOG.md) holds release notes. DONE may highlight a few major

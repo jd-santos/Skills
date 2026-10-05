@@ -91,6 +91,19 @@
       "license_path": "LICENSE",
       "source_url": "https://github.com/herdrdev/herdr/blob/master/skills/herdr/SKILL.md",
       "reviewed_at": "2026-09-25"
+    },
+    {
+      "name": "grilling",
+      "repo": "https://github.com/mattpocock/skills.git",
+      "ref": "main",
+      "commit": "c55ee46073ed923f86ce59a5eb3b6d895095d1b7",
+      "source_path": "skills/productivity/grilling",
+      "project": "Matt Pocock Skills",
+      "author": "Matt Pocock",
+      "license": "MIT",
+      "license_path": "LICENSE",
+      "source_url": "https://github.com/mattpocock/skills/tree/c55ee46073ed923f86ce59a5eb3b6d895095d1b7/skills/productivity/grilling",
+      "reviewed_at": "2026-09-29"
     }
   ]
 }

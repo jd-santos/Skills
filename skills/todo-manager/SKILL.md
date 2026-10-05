@@ -1,7 +1,7 @@
 ---
 name: todo-manager
-description: Manages a root-level todo workbench with a P1–P5 priority index, independent work records, and reviewed shipping cleanup. Use when managing tasks, tracking progress, preparing handoffs, or when the user mentions todos, task cleanup, or completed work.
-version: 2.0.2
+description: Creates and maintains task entries and work records with a P1–P5 priority index, metadata, and lifecycle rules. Use when tracking work, preparing handoffs, managing todos, or when the user asks to create a project, issue, feature, or work record in the established task source.
+version: 2.3.0
 category: workflow
 ---
 
@@ -35,7 +35,9 @@ ledger or feeding obsolete plans into future agents' context.
    the local files. Adapt the wording to the project instead of copying a
    generic rules list.
 6. Respect read-only planning gates. Loading this skill does not authorize
-   writing tasks, migration, pruning, commits, or delivery.
+   writing tasks, migration, pruning, commits, or delivery. In a project with a
+   different established tracker, follow its conventions rather than installing
+   a workbench or a second standalone-note schema.
 
 Read the index and the relevant work record, then follow selected links. Do not
 load all retained work as current context. Never read secret-looking artifacts,
@@ -63,9 +65,14 @@ would materially affect scheduling. Do not infer urgency from task size.
   sentences, especially a loosely defined future idea, belongs in TODO even if
   it may later grow. Create a work record only when detailed planning,
   coordination, evidence, or a multi-step checklist would make the index hard
-  to use. Link those larger tasks to `work/<descriptive-name>/README.md`.
+  to use. Link those larger tasks to `work/<NNN-descriptive-name>/README.md`.
 - Put each detailed checklist in one place. A top-level index checkbox can
   summarize a linked slice, but must not duplicate its steps.
+- In a new workbench, number work folders by creation order as
+  `work/001-descriptive-name/`, `work/002-next-effort/`, and so on. Use the next
+  unused number for a new record; do not renumber on priority or status changes
+  or reuse gaps. The prefix is a browsing aid, not a second priority scale.
+  Respect an existing project's naming convention until migration is authorized.
 - Nest clearly related work. Ask when parentage or a matching task is ambiguous.
 - Preserve unchecked work and checked state when reprioritizing.
 - Suggest only genuinely high-priority issues discovered in related work,
@@ -73,21 +80,58 @@ would materially affect scheduling. Do not infer urgency from task size.
 
 ### 3. Give substantial work a stable home
 
-Use `todo/work/<descriptive-name>/README.md` only for substantial work that
+Use `todo/work/<NNN-descriptive-name>/README.md` only for substantial work that
 needs a durable home beyond its TODO checkbox. Do not create a folder merely
-because an item is in TODO. Prefer lowercase hyphenated names, not dates, opaque
-IDs, or process jargon. Do not move folders between active and archive
-directories when their status changes.
+because an item is in TODO. Prefer lowercase hyphenated descriptive names with
+this workbench's stable creation-order prefix, not dates, opaque IDs, or process
+jargon. Do not move folders between active and archive directories when their
+status changes.
 
-The work README owns purpose, execution status, current ownership when active,
-acceptance criteria, the execution checklist, and links to supporting material.
-Use plain language such as Planned, In progress, Blocked, Awaiting human
-review, Ready for review, Ready for merge, or Retained record. Use Awaiting
-human review only when a required signoff blocks the next closeout step.
-Distinguish implementation from delivery; include a known PR or commit reference
-without inventing one.
+This skill owns record discovery and creation, not the behavior decisions that
+fill it. Create a record when authorized work needs a durable home and its
+purpose and current scope can be stated honestly; a settled contract is not a
+prerequisite. Capture open questions without inventing acceptance criteria or
+creating empty scaffolding. Small work stays inline; exploratory conversation
+alone does not authorize task writes.
 
-- Add `plan.md` only when the design no longer fits comfortably in the README.
+Before creation, search the index and relevant records for the same work. Reuse
+a matching record rather than creating a duplicate. Infer a readable title from
+agreed intent; ask only when the title, scope, priority, or authority is materially
+ambiguous. Preserve existing standalone notes and unknown non-sensitive metadata
+until migration is authorized; link useful evidence instead of copying it.
+
+The work README owns purpose, the full behavior contract, decisions, acceptance
+criteria, the execution checklist, and links to supporting material. Substantial
+and multi-session work still defaults to that README. Use a compact current
+summary and stable headings for selective reading, not dated progress journals.
+Use `work-contract` when synthesis or decomposition needs substantive reasoning;
+it supplies content while this skill owns layout, metadata, and lifecycle.
+
+For new or explicitly migrated `todo/work/*/README.md` records, keep metadata in
+YAML frontmatter: required `status`, optional `pr`, `blocked_by`, `parent`,
+`child`, and `tags`. Omit absent fields. Tags are an optional nonempty list for
+useful subjects or subsystems, not a required classification exercise. Do not
+mirror status or next actions in the body or navigation map; priority belongs in TODO. Do not require timestamps, model,
+harness, owner, or session logs. Use the schema and relationship rules in
+[references/workbench.md](references/workbench.md). Do not put this schema on
+supporting documents, `todo/README.md`, skill READMEs, or unrelated project docs.
+Respect existing metadata and plaintext records until migration is authorized.
+
+Use `awaiting_human_review` only when a required signoff blocks the next closeout
+step. `complete` means the record's entire agreed scope and required checks are
+verified complete, not that a PR merged or a release occurred. Record a real PR
+reference when known; never invent delivery evidence. Reconcile only the selected
+record at task entry when stale, update it at meaningful implementation/handoff
+checkpoints, and let `ship` perform reviewed pre-merge closeout.
+
+- Routine checklist organization stays within authorized scope. Changes to
+  agreed scope, delivery order, independently deliverable outcomes, or
+  consequential dependencies require the user's decision before creating the
+  corresponding records or treating those changes as commitments.
+- Add subject-named supporting detail only when it has an independently useful
+  reading or evidence purpose, or the user explicitly requests it. Length alone
+  does not require `plan.md` or `spec.md`; move detail rather than mirror it.
+  Preserve useful existing documents without unauthorized migration.
 - Add a `## Human review` section only when a human decision, visual check,
   deployment check, or signoff is needed. Make each item a checkbox labeled
   Required or Optional and its timing, such as Required before merge. Include
@@ -137,11 +181,15 @@ handoff file for every session. For an inline task, keep the handoff inline.
    delivery. Remove only the ready scope from the live index in the same commit
    as that scope's closeout. For partial shipping, retain the parent and all
    unfinished work.
-5. Set retained records to the actual state, such as Ready for merge, not Merged.
-   Record merge or release only when verified. Direct-to-main delivery and local
-   commits also need explicit, accurate delivery status.
-6. If commit or delivery fails, preserve the record and report the pending state.
-   Do not claim shipment or erase unfinished work. Reconcile on the next attempt.
+5. In the pre-merge closeout commit, set a YAML record to `status: complete` only
+   when its whole agreed scope and required checks, including review due at that
+   boundary, are satisfied. Keep partially complete parents open. Respect a
+   legacy record's existing format until migration is authorized. Record merge
+   or release only when verified; completion is not Git delivery.
+6. If commit or delivery fails, preserve verified work completion and report the
+   pending delivery separately; do not manufacture merge evidence. Reopen the
+   record when scope or validation fails. Keep unfinished work in the index and
+   reconcile on the next attempt. No ceremonial post-merge status commit is needed.
 
 See the shipping and cleanup rules in
 [references/workbench.md](references/workbench.md). `ship` owns review and
@@ -187,8 +235,8 @@ and refresh method; label it a snapshot rather than a current source of truth.
 ```markdown
 ## P3: Essential
 
-- [ ] [Improve import reliability](work/import-reliability/README.md)
-- [ ] [Add search filters](work/search-filters/README.md)
+- [ ] [Improve import reliability](work/001-import-reliability/README.md)
+- [ ] [Add search filters](work/002-search-filters/README.md)
 ```
 
 Assign separate workers and worktrees. Each maintains its own detailed checklist;

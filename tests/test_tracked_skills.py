@@ -2,6 +2,7 @@ import argparse
 import contextlib
 import importlib.util
 import io
+import json
 import sys
 import tempfile
 import unittest
@@ -85,9 +86,7 @@ class AddEntryTests(unittest.TestCase):
                 return_value=(self.manifest, [existing]),
             ),
             patch.object(tracked_skills, "resolve_remote_head") as resolve,
-            self.assertRaisesRegex(
-                tracked_skills.TrackedSkillsError, "already exists"
-            ),
+            self.assertRaisesRegex(tracked_skills.TrackedSkillsError, "already exists"),
         ):
             tracked_skills.add_entry(self.args)
         resolve.assert_not_called()
@@ -109,6 +108,76 @@ class AddEntryTests(unittest.TestCase):
                     tracked_skills.resolve_remote_head(url)
                 self.assertNotIn("secret", str(raised.exception))
                 run.assert_not_called()
+
+    def test_symlinked_cache_is_rejected_before_git_commands(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            checkout = root / "checkout"
+            checkout.mkdir()
+            cache = root / "sources" / "cached"
+            cache.parent.mkdir()
+            cache.symlink_to(checkout, target_is_directory=True)
+            entry = {"repo": self.args.repo, "name": "example", "commit": "a" * 40}
+            for operation in (
+                lambda: tracked_skills.ensure_repo(entry),
+                lambda: tracked_skills.validate_add_source(
+                    self.args.repo, "a" * 40, "skills/example", "LICENSE"
+                ),
+            ):
+                with (
+                    self.subTest(operation=operation.__code__.co_firstlineno),
+                    patch.object(tracked_skills, "repo_cache", return_value=cache),
+                    patch.object(tracked_skills, "run") as run,
+                    self.assertRaisesRegex(
+                        tracked_skills.TrackedSkillsError, "symlinked repository cache"
+                    ),
+                ):
+                    operation()
+                run.assert_not_called()
+
+    def test_directory_hash_detects_executable_bit_changes(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            helper = Path(temporary) / "helper.sh"
+            helper.write_text("#!/bin/sh\nexit 0\n")
+            helper.chmod(0o644)
+            original = tracked_skills.directory_hash(Path(temporary))
+            helper.chmod(0o755)
+            self.assertNotEqual(
+                original, tracked_skills.directory_hash(Path(temporary))
+            )
+
+    def test_verify_rejects_changed_executable_bit(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            skill = root / "skills" / "example"
+            skill.mkdir(parents=True)
+            helper = skill / "helper.sh"
+            helper.write_text("#!/bin/sh\nexit 0\n")
+            helper.chmod(0o644)
+            state = root / "state.json"
+            state.write_text(
+                json.dumps(
+                    {
+                        "installed": {
+                            "example": {
+                                "commit": "a" * 40,
+                                "content_hash": tracked_skills.directory_hash(skill),
+                            }
+                        }
+                    }
+                )
+            )
+            helper.chmod(0o755)
+            with (
+                patch.object(tracked_skills, "SKILLS_DIR", root / "skills"),
+                patch.object(tracked_skills, "STATE_PATH", state),
+                contextlib.redirect_stdout(io.StringIO()) as output,
+                self.assertRaisesRegex(
+                    tracked_skills.TrackedSkillsError, "Verification failed"
+                ),
+            ):
+                tracked_skills.verify([{"name": "example", "commit": "a" * 40}])
+            self.assertIn("local content differs", output.getvalue())
 
     def test_source_path_rejects_symlink_components(self):
         with tempfile.TemporaryDirectory() as temporary:
