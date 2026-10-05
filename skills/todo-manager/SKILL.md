@@ -1,7 +1,7 @@
 ---
 name: todo-manager
 description: Creates and maintains task entries and work records with a P1–P5 priority index, metadata, and lifecycle rules. Use when tracking work, preparing handoffs, managing todos, or when the user asks to create a project, issue, feature, or work record in the established task source.
-version: 2.3.0
+version: 2.4.0
 category: workflow
 ---
 
@@ -122,7 +122,8 @@ step. `complete` means the record's entire agreed scope and required checks are
 verified complete, not that a PR merged or a release occurred. Record a real PR
 reference when known; never invent delivery evidence. Reconcile only the selected
 record at task entry when stale, update it at meaningful implementation/handoff
-checkpoints, and let `ship` perform reviewed pre-merge closeout.
+checkpoints. `repo-commit` applies reviewed local/pre-merge closeout when
+commits are requested; `ship` checks requirements due at remote delivery.
 
 - Routine checklist organization stays within authorized scope. Changes to
   agreed scope, delivery order, independently deliverable outcomes, or
@@ -176,10 +177,10 @@ handoff file for every session. For an inline task, keep the handoff inline.
 3. At each relevant boundary, such as readiness for merge, shipping, or
    deployment, surface outstanding required human-review items in chat. Do not
    claim a review happened or check its box unless the user confirms it.
-4. At shipping, reconcile the record with actual diffs and checks. Required
+4. At authorized local closeout, reconcile the record with actual diffs and checks. Required
    review blocks its stated closeout step; optional review does not block safe
    delivery. Remove only the ready scope from the live index in the same commit
-   as that scope's closeout. For partial shipping, retain the parent and all
+   as that scope's closeout. For partial completion, retain the parent and all
    unfinished work.
 5. In the pre-merge closeout commit, set a YAML record to `status: complete` only
    when its whole agreed scope and required checks, including review due at that
@@ -191,10 +192,13 @@ handoff file for every session. For an inline task, keep the handoff inline.
    record when scope or validation fails. Keep unfinished work in the index and
    reconcile on the next attempt. No ceremonial post-merge status commit is needed.
 
-See the shipping and cleanup rules in
-[references/workbench.md](references/workbench.md). `ship` owns review and
-closeout, `commit-message-writer` owns commit prose, and `changelog-writer` owns
-release notes. Those skills must not manufacture delivery evidence from tasks.
+See the closeout and cleanup rules in
+[references/workbench.md](references/workbench.md). This skill owns lifecycle
+rules; `repo-commit` applies local review and commit closeout, `ship` owns remote
+delivery, `commit-message-writer` owns commit prose, and `changelog-writer` owns
+release notes. None may manufacture delivery evidence from tasks. Loading a skill
+for inspection does not authorize closeout. Human review is required only when
+an actual project or user requirement makes it due, not as an adoption ceremony.
 
 ### 6. Keep DONE useful and small
 

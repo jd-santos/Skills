@@ -1,247 +1,78 @@
 ---
 name: ship
-description: >-
-  Recovers repository context, reviews local work, creates readable commits,
-  chooses an appropriate branch, pushes eligible branches, and creates or
-  updates pull requests. Use when the repository state is uncertain, finishing
-  development work, preparing branch changes, or when the user says "ship
-  this", "commit and push", or "review this branch".
-version: 1.3.0
+description: Delivers committed work through pushes and pull requests, using repo-commit for outstanding local changes. Use when the user explicitly asks to ship, push, open a PR, or commit and push. Inspection, branch review, and local commit requests do not authorize delivery.
+version: 2.0.0
 author: jdwork
 category: workflow
 requires:
-  - commit-message-writer
-  - changelog-writer
+  - repo-commit
   - todo-manager
+  - core-writing
+  - technical-writing
 ---
 
 # Skill: Ship
 
 ## Description
 
-Turn coherent local work into a readable Git history, then deliver it through
-the branch and pull request flow that fits the repository. Recover context from
-the current session when available and from Git when it is not.
+Deliver requested work to the right remote branch and create or update its pull request. Use `repo-commit` for local preparation, not a second inventory and commit procedure here. An already-committed branch can be shipped without new commits.
 
-Commits, non-`main` pushes, and pull request creation do not need separate user
-confirmation. Always ask before pushing directly to `main`.
+Invoke delivery only when requested. A review or local commit request stays within that scope. Within an authorized shipping request, eligible topic-branch pushes and PR creation need no separate confirmation. Always ask before pushing directly to `main` or another remote default branch. Shipping does not authorize merge, release, deployment, deletion, or post-merge branch/worktree cleanup.
 
 ## Prerequisites
 
 - A Git repository and `git` on PATH.
-- Optional: GitHub CLI (`gh`) for repository metadata and pull requests.
-- The `commit-message-writer`, `changelog-writer`, and `todo-manager` skills.
+- `repo-commit` and `todo-manager` for local review and closeout.
+- Optional: authenticated GitHub CLI (`gh`) for PR delivery.
+- `core-writing` and `technical-writing` for PR prose.
 
-If the companion skills are unavailable, use Scoped Commits in the form
-`scope: short imperative description` and Keep a Changelog conventions for
-notable changes. If `todo-manager` is unavailable, report task closeout as
-pending rather than inventing migration or pruning rules.
+If `repo-commit` is unavailable, name the gap and do not substitute a local commit procedure silently. If `todo-manager` is unavailable, report closeout as pending; do not invent migration or pruning rules. Report missing PR tooling and provide copyable PR text when needed.
 
 ## Instructions
 
-### 1. Inventory the repository
+### 1. Establish delivery scope and prepare local work
 
-Before changing anything:
+1. Confirm the requested operation: push, PR creation/update, or full shipping. A push-only request does not authorize PR creation; a PR-only request does not authorize unrelated local commits. Follow explicit branch, base, remote, and scope constraints.
+2. Load `repo-commit` and apply its read-only inventory and review to establish repository root, work ownership, branch history, tracking, local state, public/private status, and relevant task records. Follow its secret-file and concurrent-work safeguards, including inspection-only sibling worktrees.
+3. For a full shipping or commit-and-push request, use `repo-commit` to validate and commit relevant ready local groups. Leave unclear, unrelated, unfinished, sensitive, or concurrently owned work untouched. Local commit permission comes from this delivery request, not from loading a skill.
+4. For already-committed work, review the actual destination range and validation evidence rather than assuming a clean checkout proves readiness. Recover relevant work-record links/trailers even if an earlier local closeout removed the TODO entry. Do not manufacture an empty commit or recreate a task to deliver it.
+5. Check required review or deployment gates due at the requested delivery boundary using `todo-manager`. Surface outstanding requirements; never manufacture signoff. Generic manual adoption review is not a prerequisite. If task evidence needs an authorized correction commit, use `repo-commit`; if committing is excluded, report the pending correction instead.
 
-1. Load and follow `commit-message-writer`, `changelog-writer`, and `todo-manager`.
-2. Find the repository root with `git rev-parse --show-toplevel` and work from
-   there.
-3. Inspect:
-   - `git status --short --branch`, including every untracked path
-   - current branch, upstream, remotes, and remote default branch
-   - local and remote branches with tracking state
-   - `git worktree list --porcelain`
-   - recent decorated history across branches and the current branch's
-     divergence from its upstream and likely base
-   - staged and unstaged diff summaries
-   - an existing pull request for the current branch, when `gh` is available
-   - the existing task index and relevant work records using `todo-manager`
-     discovery, without loading the whole archive or creating a new workbench.
-     Also follow work-record paths and trailers in the commits being delivered:
-     a clean checkout after a failed push may already have closed its TODO entry
-4. If the harness exposes active-agent or task status, inspect status metadata
-   for work that may still be running. Do not read another agent's transcript.
-5. Use `gh repo view --json isPrivate,defaultBranchRef` when available. In a
-   public repository, warn before committing personal identifiers, internal
-   URLs, machine-specific private configuration, or work-specific settings.
-6. Never read secret-looking files. Treat `.env*`, `*credentials*`,
-   `*secrets*`, `*token*`, `*.key`, `*.pem`, private SSH keys, and cloud
-   credential files as content-blocked. `.env.schema` and `.env-schema` are
-   allowed only when they contain schema information rather than literal
-   secrets.
+### 2. Verify destination and push only requested work
 
-### 2. Establish work ownership and scope
+1. Identify branch, upstream, remote default branch, divergence, related worktrees, and existing PR. Use `repo-commit`'s branch decision rules if local preparation needs a branch change. Never guess when branch ownership, base, or remotes conflict.
+2. Show the commits to be delivered and final local status. Account for all commits in the push range, not just those created in this session. Stop if the range includes unapproved or uncertain work, diverges unexpectedly, or belongs to another writer. Ask when the request does not settle scope.
+3. For a direct push to `main` or the remote default branch, summarize exactly what will be pushed and wait for confirmation. Otherwise push the authorized topic branch without another confirmation. Set an upstream only when remote/branch mapping is unambiguous. Never force-push, rewrite shared history, or delete a remote branch without explicit authorization.
+4. For a PR-only request on a branch not published remotely, explain that a push is needed and ask before performing it. A full shipping request already includes the necessary topic-branch push.
+5. On push failure, preserve local commits and verified work completion and report pending delivery. Do not manufacture merge or release evidence or reopen complete work solely because delivery failed.
 
-Use the current session as the strongest intent signal:
+### 3. Create or update the requested PR
 
-- After development in the same session, focus on changes related to that work.
-  Describe unrelated or unclear changes and offer to commit, leave, or otherwise
-  handle them.
-- With little session context, inspect all non-sensitive changes and treat every
-  coherent, ready change as potentially in scope.
-- Always account for staged, unstaged, and untracked work. Do not assume an
-  untracked file is disposable or unrelated.
+Use the repository's default branch as the base unless the request, history, or an existing PR establishes another base. Check the full PR range, including any stacked-branch changes, before describing its scope.
 
-Treat signs of concurrent work as a safety boundary. Dirty sibling worktrees,
-very recent commits outside the known session, unexpected file activity, or an
-active agent may mean someone else is working in the repository. Use those
-signals when choosing scope and branches. If shipping could interfere, stop and
-ask the user. Sibling worktrees are inspection-only: do not stage, commit,
-stash, reset, switch, or clean them.
+- If an existing PR has no new work, return its link without rewriting it, unless the user specifically requests a description update.
+- For new work, derive title/body from the entire PR range. Summarize what changed, why it matters, validation actually performed, and useful limitations. Keep implementation history and problem-solving detours out unless they explain a consequential tradeoff for reviewers.
+- Use relevant work records as intent and supporting evidence, verified against the diff. Link useful retained detail rather than pasting the task checklist. Do not equate a checked box, `status: complete`, or a successful push with merge or release.
+- Preserve human-written context when updating a PR. If the description cannot be merged safely, return proposed copyable text with the PR link rather than discarding it.
+- If PR creation succeeds but its body cannot be populated, keep the PR and return the intended text. If tooling or permissions prevent creation, report the blocker and provide a compare/creation URL when safely derivable.
 
-### 3. Evaluate the branch situation
+### 4. Report delivery
 
-Make branch choice a dedicated decision before committing:
+Report commits pushed, PR link or creation blocker, validation/limitations, and remaining local or unrelated work. Keep it short; an unchanged PR with nothing else needing attention can be reported by link alone.
 
-1. Identify the current branch, its upstream, the remote default branch,
-   divergence, related branches, sibling worktrees, and any existing PR.
-2. Infer repository convention from recent history. Few active topic branches
-   plus history dominated by direct `main` commits supports a small direct
-   commit. Frequent merges or PR branches supports a topic branch.
-3. Call out an obviously wrong branch, including work that belongs to an
-   existing branch or a branch already checked out in another worktree. Ask
-   before moving work when ownership or destination is unclear.
-4. On `main`, recommend creating a topic branch when the work is large,
-   multi-commit, risky, experimental, or easier to review as a PR, even if the
-   repository often commits directly to `main`.
-5. Do not switch branches with a dirty worktree unless the move is understood
-   and safe. Never guess when remotes, bases, or branch ownership conflict.
+Merge and post-merge cleanup require separate authorization. Verify merge through host state or Git evidence when later requested; squash merges may not preserve commit ancestry. No ceremonial status-only commit is needed to record a merge. Reconcile selected stale records only when needed, using task-management rules.
 
-### 4. Review and group the work
+## Error handling
 
-1. Review targeted diffs for tracked, non-sensitive files. Read files only when
-   needed to understand intent.
-2. Classify changes as ready, uncertain, unfinished, unrelated, concurrently
-   owned, or potentially sensitive.
-3. Validate ready work with the narrowest relevant checks. Do not claim checks
-   that were not run.
-4. Decide whether `CHANGELOG.md` needs an update. Include notable user-facing,
-   workflow, compatibility, release, or maintainer-visible changes. Skip tiny
-   refactors and formatting-only work unless they matter outside the diff.
-5. Group ready work by intent and reviewability, not merely by file path. Each
-   commit should leave the repository coherent and make sense when read later
-   without this conversation.
-6. Handle documentation according to repository state:
-   - Commit documentation that accurately describes the code in the same
-     commit, or in a focused documentation commit when independently useful.
-   - Split current and future-facing documentation by hunk when practical.
-   - Leave inseparable future-facing text uncommitted and explain why.
-   - Include such text only with explicit approval, with context in the commit
-     body about the incoming implementation.
-   - Clearly labeled workbench plans and historical evidence may be committed
-     as such. They must not present proposed behavior as delivered product docs.
-7. Reconcile task closeout for each ready group using `todo-manager` and its
-   workbench reference:
-   - Treat records as intent, not evidence that code works or has shipped.
-   - Match checked items to the diff, acceptance criteria, and checks actually
-     run. Keep unfinished steps and partially delivered parents in the queue.
-   - Review supporting artifacts: keep evidence, consolidate duplication,
-     resolve obsolete guidance, and promote enduring docs. Propose file
-     deletions by path and reason; wait for explicit approval before deleting.
-     Shipping permission is not pruning permission.
-   - If pruning is declined or unanswered, retain the files, label known stale
-     guidance, and report pending cleanup. Do not block otherwise safe delivery
-     for optional cleanup; sensitive files remain blocked.
-   - In the reviewed pre-merge closeout commit, remove only ready scope from
-     the live queue.
-     Keep useful records at stable paths. For YAML work records, prepare
-     `status: complete` in that commit only when the whole agreed scope and
-     required checks/review at this boundary are satisfied; keep partial parents
-     open. Completion describes work, not merge or release. Preserve legacy
-     formats unless migration is authorized. Update a real `pr` link when known;
-     do not infer delivery from it, a checked box, or a successful push. Follow
-     `todo-manager` for metadata and hierarchy rather than defining another schema.
-   - Keep the existing changelog as the release record. Update `todo/DONE.md`
-     only for useful navigation or selected verified major release highlights,
-     not for every shipped task. Do not create duplicate completion logs.
-8. Stage only the paths or hunks for one group, including its applicable task
-   closeout and documentation. Review the staged diff, then commit without
-   asking for separate confirmation.
-9. Follow `commit-message-writer` exactly. Prefer specific Scoped Commit
-   subjects, use a body for motivation or non-obvious context, and split
-   unrelated work. Never use vague, WIP, or type-first subjects unless the
-   repository requires them.
-10. Repeat until all ready groups are committed. Leave unfinished, unclear,
-    sensitive, or concurrently owned work untouched and report it. On commit or
-    delivery failure, preserve verified work completion and report pending
-    delivery separately rather than claiming shipment. Reopen work if scope or
-    validation fails; keep unfinished scope visible.
+- Missing repository, ambiguous ownership/destination, or unexpected divergence: stop affected delivery and ask.
+- Potential secret or private data in the delivery range: do not read blocked files or publish the data; report the path and safety issue.
+- Git command or tool permission failure: report it; do not bypass the gate or retry with a more destructive strategy.
+- Missing GitHub tooling: report whether pushing succeeded and return proposed PR text separately.
+- Dirty worktree after delivery: identify what remains without implying it was delivered.
 
-### 5. Deliver commits
+## Examples
 
-1. Show final status and the commits not yet on the destination remote.
-2. If delivery would push directly to `main`, summarize exactly what will be
-   pushed and ask for confirmation. Do not push until the user confirms.
-3. Push a non-`main` branch without another confirmation. If it has no upstream,
-   set one only when the remote and branch mapping are unambiguous. Otherwise,
-   ask.
-4. When the branch is suitable for a PR and `gh` is authenticated and
-   authorized:
-   - Use the repository's default branch as the base unless history or an
-     existing PR establishes another base.
-   - If an existing PR has no new commits, return its link without rewriting it.
-   - For new work, derive the title and body from all commits in the PR range,
-     not only the latest commit. Summarize behavior, motivation, consequential
-     decisions, validation performed, and remaining limitations. Use relevant
-     work records for context, verified against the diff. Preserve the reasoning
-     in the PR description even when branch commits will be squashed. Link
-     useful retained evidence without pasting whole task checklists.
-   - Create the PR when none exists. Update an existing PR when needed, while
-     preserving manually written context.
-   - Never discard an existing human-written description. If it cannot be
-     merged safely, return the proposed updated description as text with the PR
-     link.
-5. If the PR can be created but its body cannot be populated, create it when
-   possible, then return the intended title and body as copyable text with the
-   PR link.
-6. If permissions or tooling prevent PR creation, report the blocker and return
-   the proposed title and body. Include a compare or PR-creation URL when one
-   can be derived safely.
-
-### 6. Report the result
-
-Post-merge branch/worktree deletion is a separate authorized operation, not a
-side effect of task closeout. Do not require another commit solely to mark a
-record merged. `status: complete` already records verified work completion,
-not delivery. Reconcile legacy status when next needed using verified host or
-Git evidence. A stale Ready for merge label does not prove it is unmerged.
-
-Report:
-
-- branch decision and why it fits the repository history
-- commits created and pushed
-- PR link, or why no PR was created
-- checks run and changelog decision
-- task closeout, retained evidence, and any pruning awaiting approval
-- remaining local, unrelated, uncertain, sensitive, or concurrent work
-
-Keep the summary short. If an existing PR has no additional work and nothing
-else needs attention, returning the PR link is enough.
-
-## Error Handling
-
-- **Not a Git repository**: Stop and say the skill requires one.
-- **Concurrent or ambiguous ownership**: Do not alter the questionable work.
-  Summarize the evidence and ask the user.
-- **Wrong or ambiguous branch**: Stop before committing or moving work and ask.
-- **Git command failure**: Show the command and error. Do not retry with a more
-  destructive strategy without approval.
-- **Potential secret**: Stop handling that file's contents and report its path.
-- **Dirty worktree after shipping**: Explain what remains and why.
-- **PR body failure**: Keep the PR, return its link, and provide the intended
-  description as copyable text.
-
-## Example
-
-**User:** "Ship whatever is ready here."
-
-1. Recover branch, history, worktree, PR, and repository context.
-2. Use session history to separate current work from unrelated changes, or
-   review all coherent work when session context is sparse.
-3. Pause if a sibling worktree or recent external activity suggests concurrent
-   ownership.
-4. Choose the current branch, recommend a topic branch, or ask about an
-   obviously wrong destination.
-5. Create focused Scoped Commits and leave unfinished work alone.
-6. Push a non-`main` branch and create or update its PR when authorized. Ask
-   before a direct push to `main`.
+- **"Ship whatever is ready":** compose `repo-commit` for relevant ready work, push the eligible topic branch, and create/update its PR. Ask before direct default-branch pushes.
+- **"Open a PR for these committed changes":** review the full branch range and published state, then create the PR. Ask before a necessary push if it was not authorized.
+- **"Push these commits":** check the destination and range, then push only. Do not open a PR or commit unrelated local work.
+- **"Review this branch":** use `repo-commit` in read-only mode, not delivery.

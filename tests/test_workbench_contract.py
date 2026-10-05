@@ -11,6 +11,7 @@ REFERENCE = (ROOT / "skills/todo-manager/references/workbench.md").read_text()
 ROUTER = (ROOT / "skills/work-routing/SKILL.md").read_text()
 CONTRACT = (ROOT / "skills/work-contract/SKILL.md").read_text()
 SHIP = (ROOT / "skills/ship/SKILL.md").read_text()
+COMMIT = (ROOT / "skills/repo-commit/SKILL.md").read_text()
 MANAGER_TEXT = " ".join(MANAGER.split())
 CONTRACT_TEXT = " ".join(CONTRACT.split())
 
@@ -66,21 +67,22 @@ class WorkbenchContractTests(unittest.TestCase):
             self.assertIn("Move detail rather than mirror it", source)
 
     def test_pre_merge_completion_is_not_delivery(self):
-        for source in (MANAGER, REFERENCE, SHIP):
+        for source in (MANAGER, REFERENCE, COMMIT):
             with self.subTest(source=source.splitlines()[0]):
                 self.assertIn("pre-merge", source)
                 self.assertIn("status: complete", source)
                 self.assertIn("whole", source)
         self.assertIn("not that a PR merged or a release occurred", MANAGER)
         self.assertIn("Failed delivery is reported separately", REFERENCE)
-        self.assertIn("Reopen work if scope or", SHIP)
+        self.assertIn("failed validation or new scope reopens", " ".join(COMMIT.split()))
         self.assertIn("No ceremonial post-merge status commit", MANAGER)
 
     def test_router_delegates_metadata_and_lifecycle(self):
         self.assertIn("Use `todo-manager` for work-record YAML", ROUTER)
         self.assertIn("At task entry reconcile only the selected record", ROUTER)
         self.assertIn("Let `todo-manager` own YAML metadata", CONTRACT)
-        self.assertIn("Follow\n     `todo-manager` for metadata", SHIP)
+        self.assertIn("Do not define a second task schema", COMMIT)
+        self.assertIn("using task-management rules", SHIP)
 
     def test_retired_skills_have_no_wrapper_or_active_router_reference(self):
         for name in ("to-spec", "project-issue-note"):

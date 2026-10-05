@@ -1,7 +1,7 @@
 ---
 name: work-contract
 description: Defines behavior contracts and implementation slices from decisions and project evidence. Use when a substantial agreement needs to survive across sessions, when planning a feature, or when the user asks to write a spec, define acceptance criteria, or break work into tasks.
-version: 1.0.0
+version: 1.1.0
 category: workflow
 ---
 
@@ -43,11 +43,15 @@ invoked directly.
   questions. Compare the discussion with current code, tests, and maintained
   docs. Surface material conflicts to the user before calling the contract
   settled; record non-blocking uncertainty openly.
-- Ask only for consequential decisions that remain unresolved. Do not replay
-  already settled questions or require fixed interview rounds. Use the available
-  `grilling` skill when several dependent decisions need discussion. If domain
-  terms are disputed, recommend an available domain-modeling capability; name
-  a missing capability before substituting for it.
+- Without an explicit grilling invocation, ask only for consequential decisions
+  that remain unresolved. Do not replay settled questions or require fixed
+  interview rounds; routine implementation choices belong to the agent. When
+  the user invokes `grilling` by name or clearly requests its full interview,
+  follow its full decision-space exploration, including routine choices, and
+  confirmation instructions. Do not invoke it automatically because several
+  decisions are open. Clarify disputed domain terms against code and maintained
+  docs; a domain-modeling specialist may help but is not required for ordinary
+  clarification. Name a missing specialist when it is specifically requested.
 - Define the intended outcome, scope and exclusions, externally observable
   behavior, important edge cases and failure/recovery behavior, acceptance
   criteria, and a credible validation approach. Keep stories optional; concrete
@@ -118,7 +122,9 @@ invoked directly.
 4. Verify outcomes against acceptance criteria and report actual validation and
    limitations. Partial execution does not complete a parent or imply Git
    delivery. Normal review and shipping safeguards still apply. Do not create
-   automatic commits or invoke shipping merely because execution finished.
+   automatic commits or invoke `repo-commit` or `ship` merely because execution
+   finished. `repo-commit` owns authorized local preparation/commits; `ship`
+   owns explicitly requested remote delivery.
 
 ## Error handling
 

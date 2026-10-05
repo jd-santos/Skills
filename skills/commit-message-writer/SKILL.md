@@ -1,7 +1,7 @@
 ---
 name: commit-message-writer
 description: 'Writes git commit messages using Scoped Commits format (scope: description). Use when committing changes, writing commit messages, or when user says "commit this" or "write a commit message".'
-version: 1.2.0
+version: 1.3.0
 author: jdwork
 category: git
 requires: [core-writing]
@@ -111,8 +111,9 @@ checks actually run; a checked task is not evidence of delivery.
   The link supplements the explanation; it must not replace it.
 - Do not paste execution checklists, duplicate the changelog, or label local
   commits as merged or released.
-- Writing a message does not authorize task cleanup. `ship` and `todo-manager`
-  own closeout; a message-only request must not edit the queue.
+- Writing a message does not authorize task cleanup. `todo-manager` owns the
+  lifecycle rules and `repo-commit` applies local closeout; `ship` owns remote
+  delivery. A message-only request must not edit the queue.
 
 ### 5. Handle breaking changes and trailers
 

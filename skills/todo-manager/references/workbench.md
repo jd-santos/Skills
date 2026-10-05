@@ -50,8 +50,9 @@ history separate:
 
 Keep short tasks in TODO. Give larger efforts a creation-order-numbered,
 descriptive folder under `work/`, with one README that owns the detailed
-checklist. When work ships, remove it from the live list and let Git, pull
-requests, and the project's changelog tell the finished story.
+checklist. During verified local closeout, remove only ready scope from the live
+list. Git, pull requests, and the project's changelog tell the finished story;
+local completion does not claim remote delivery.
 ```
 
 Adapt the title and opening to the project. Add links to the actual changelog,
@@ -179,8 +180,9 @@ child outcomes, is verified complete; hierarchy alone does not define which
 outcomes are required.
 
 At task entry reconcile only a selected stale record using actual evidence;
-implementation and handoff update that record at meaningful checkpoints. `ship`
-owns reviewed pre-merge closeout. Set `status: complete` and remove only ready
+implementation and handoff update that record at meaningful checkpoints.
+`repo-commit` applies reviewed local/pre-merge closeout under these lifecycle
+rules; `ship` checks requirements due at remote delivery. Set `status: complete` and remove only ready
 scope from TODO in the closeout commit once the whole record's scope and required
 checks/review at that boundary are satisfied. This does not claim merge or
 release, so it needs no post-merge status commit. Keep a partial parent open.
@@ -209,8 +211,11 @@ before deployment, or after deployment.
 
 ## Reviewed pre-merge closeout
 
-Review only the shipping scope. Read-only reviewers can recommend changes but
-cannot prune files or close tasks. The shipping agent:
+Review only the authorized closeout scope. Read-only reviewers can recommend
+changes but cannot prune files or close tasks. `repo-commit` performs local
+closeout when commits are requested; `ship` composes it when delivery needs local
+preparation and checks requirements due at delivery. No generic human-review or
+manual adoption step is required. The agent performing closeout:
 
 1. Matches tasks and acceptance criteria to the actual diff and validation.
 2. Checks the applicable `Human review` section. Surface outstanding required
@@ -227,7 +232,7 @@ cannot prune files or close tasks. The shipping agent:
    - **Propose removal:** scratch output, empty scaffolding, or redundant drafts.
 4. Presents proposed file deletions by path and reason, including apparently
    temporary files. Apply only after explicit approval. Deletion is not implied
-   by "ship" or "mark done." Never clean unrelated or concurrently owned work.
+   by "commit", "ship", or "mark done." Never clean unrelated or concurrently owned work.
 5. Updates retained material and navigation. A stale plan's header must say it is
    historical or superseded and link to the final decision/current guidance.
    Clearly distinguish observations at the time from claims about current code.
@@ -241,9 +246,10 @@ cannot prune files or close tasks. The shipping agent:
 8. Updates the changelog for notable behavior or workflow changes. Existing
    location and release conventions win; default to root `CHANGELOG.md` only
    when creating one. Do not relocate it into `todo/`.
-9. Carries purpose, consequential decisions, validation, migration notes, and
-   limitations into commit bodies and PR descriptions where relevant. Preserve
-   the story even if commits will be squashed. Do not copy the whole checklist.
+9. Carries useful purpose, consequential decisions, validation, migration notes,
+   and limitations into commit bodies. `ship` uses that evidence for concise PR
+   descriptions, not a transcript of the problem-solving process. Do not copy
+   the whole checklist.
 10. Removes only the ready scope from the priority index in its closeout commit.
     Preserve unfinished parent tasks and unrelated or concurrent work. Retain
     useful work records at their stable paths. Set `status: complete` only for
