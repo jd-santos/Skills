@@ -47,7 +47,21 @@ class WorkRoutingSkillTests(unittest.TestCase):
         self.assertIn("If the project uses or adopts a `todo/` workbench", SKILL)
         self.assertIn("Preserve other trackers until migration is authorized", SKILL)
         self.assertIn("the only detailed execution checklist", SKILL)
-        self.assertIn("`to-spec` skill only when it adds value", SKILL)
+        self.assertIn("`work-contract` skill only when it adds value", SKILL)
+
+    def test_routes_capabilities_without_forcing_a_pipeline(self):
+        text = " ".join(SKILL.split())
+        for requirement in (
+            "Select useful capabilities automatically",
+            "invoke any capability directly",
+            "not a required preamble or a mandatory pipeline",
+            "`todo-manager` owns record creation and lifecycle",
+            "`work-contract` owns behavior synthesis and decomposition",
+            "The user asks to create a project, issue, feature, or work record",
+            "Return material conflicts and changed commitments to the user",
+        ):
+            with self.subTest(requirement=requirement):
+                self.assertIn(requirement, text)
 
     def test_project_fit_capture_includes_answer_only_but_not_exploration(self):
         self.assertIn("even an answer-only one", SKILL)

@@ -1,14 +1,25 @@
 ---
 name: work-routing
 description: Routes uncertain or multi-step software work to the shortest useful process. Use when the user asks how to approach work, several consequential decisions are unsettled, or a task may need discovery, domain modeling, a spec, or implementation slices.
-version: 1.1.0
+version: 1.3.0
 author: jdwork
 category: workflow
 ---
 
 # Work Routing
 
-Choose the smallest workflow that fits the user's request. This skill is a routing aid, not a required preamble to every task and not a substitute for the skills it recommends.
+Choose the smallest workflow that fits the user's request. Select useful
+capabilities automatically; the user need not name a skill. They may also invoke
+any capability directly. This skill is a routing aid, not a required preamble or
+a mandatory pipeline, and it does not duplicate the skills it recommends.
+
+`todo-manager` owns record creation and lifecycle. `work-contract` owns behavior
+synthesis and decomposition. The executing agent follows the agreed contract;
+`ship` remains responsible for delivery only when requested. Use host discovery
+or the available sources for [`todo-manager`](../todo-manager/SKILL.md) and
+[`work-contract`](../work-contract/SKILL.md). If a needed capability cannot be
+loaded by either method, report the gap rather than substituting silently. File access alone does
+not prove catalog discovery or parity across hosts.
 
 ## Instructions
 
@@ -27,13 +38,16 @@ Choose the smallest workflow that fits the user's request. This skill is a routi
 | Pure exploration or an unrelated question | Answer in chat. Do not create or update files unless asked. |
 | Several consequential decisions remain open | Use the available `grilling` skill. Ask only the decision frontier that can be answered now, recommend an option, and wait for the user's decisions before asking dependent questions. |
 | Domain terms, relationships, or boundaries are unclear or contested | Pair grilling with an available, locally adapted domain-modeling skill. Compare terminology with code and maintained project docs, then test it with concrete scenarios. If that adapted skill is unavailable, say so and ask before doing equivalent modeling by hand. |
-| A substantial behavior contract needs to travel across sessions | Use the available local `to-spec` skill only when it adds value; small contracts stay in the established work record. If that skill is unavailable in the current agent, name the gap and ask before producing a formal spec by hand. |
-| Work needs independent implementation slices | Start with one vertical-slice checklist in the project's established task source and note real blockers. Split records when backlog readability or independent ownership and delivery require them. |
+| A substantial behavior contract needs to travel across sessions | Use the available `work-contract` skill only when it adds value; small contracts stay in the established work record. If it is unavailable, name the gap and ask before substituting. |
+| Work needs independent implementation slices | Use the decomposition method in `work-contract`: start with one outcome-oriented checklist and real prerequisites. Consequential scope, delivery, or dependency changes require the user's decision; `todo-manager` creates approved records only when useful. |
+| The user asks to create a project, issue, feature, or work record | Use `todo-manager` to find or create the authoritative record in the established task source. Use `work-contract` for missing behavior decisions, not another tracker or note schema. |
 | A very large effort still has no clear destination | Mention Wayfinder only as a possible future route if the user wants it. It is not part of the default workflow and must not introduce another tracker. |
 
-Do not recommend every route in sequence. Stop when the current route resolves the need. `grilling`, domain modeling, spec synthesis, and Wayfinder are distinct capabilities, not synonyms for planning.
+Do not recommend every route in sequence. Stop when the current route resolves the need. `grilling`, domain modeling, contract synthesis, and Wayfinder are distinct capabilities, not synonyms for planning.
 
 ### 3. Use grilling without adding an approval ritual
+
+Find `grilling` through the host's skill discovery. If it is not listed, check the installed [`../grilling/SKILL.md`](../grilling/SKILL.md) in this collection or the project's configured shared skills directory and read the actual source before using it. If neither source is available, report the gap and ask before installation or substitution. Do not copy its interview into this router. File retrieval verifies only that host/session's access, not automatic discovery or cross-agent parity; a host may need a reload after installation.
 
 When using `grilling`, follow that skill's question and confirmation instructions. The agent owns fact-finding; the user owns unresolved decisions. After the user confirms the shared understanding, continue with the next action they already requested without asking for a second conversational build approval. Normal tool permissions, read-only requests, safety rules, and delivery safeguards still apply.
 
@@ -41,7 +55,14 @@ A suggested route does not authorize file writes, task migration, deletion, inst
 
 ### 4. Keep one source of truth
 
-- If the project uses or adopts a `todo/` workbench, put substantial work in its existing work record. That README owns status, concise acceptance criteria, and the only detailed execution checklist. Add a linked `plan.md` for substantial design, or `spec.md` for a durable behavior contract, only when the detail needs room. Keep optional documents linked and avoid duplicate checklists.
+- If the project uses or adopts a `todo/` workbench, put substantial work in its existing work record. That README owns status, the full behavior contract and acceptance criteria, decisions, and the only detailed execution checklist. Substantial or multi-session work still defaults to that README, using stable headings for selective reading. Add linked subject-named detail such as `research.md`, `design.md`, or `validation.md` only when it has an independently useful reading or evidence purpose, or the user explicitly requests it. Length alone does not require `plan.md` or `spec.md`. Move detail rather than mirror it; avoid empty scaffolding and progress journals.
+- Use `todo-manager` for work-record YAML and lifecycle rules: required `status`, optional `pr`, `blocked_by`, `parent`, `child`, and `tags`. Hierarchy does not imply dependencies or duplicated child progress. Respect existing records until migration is authorized. At task entry reconcile only the selected record when stale, not the whole archive; implementation and handoff update it at meaningful checkpoints, and `ship` owns reviewed pre-merge closeout.
+- Have `todo-manager` reuse or create a durable record once authorized work needs
+  a home and purpose/current scope are known. It need not wait for a settled
+  contract. Exploration alone does not authorize creation. During execution,
+  use the agreed contract, validate observable outcomes, and update the existing
+  checklist at meaningful checkpoints. Return material conflicts and changed
+  commitments to the user; do not silently rewrite the contract to fit the build.
 - During authorized development, capture settled working decisions as they emerge. Do not commit each answer or rewrite the whole discussion as a transcript.
 - Keep tentative terms and scenarios in the project's established task source. Promote vocabulary to existing maintained domain docs only when it is adopted or verified beyond the effort. Create a glossary only when several reusable terms need one home.
 - Record a major, agreed domain or architectural tradeoff in the project's existing ADR convention only when it is consequential, hard to reverse, and surprising without context. State clearly when a decision is proposed rather than implemented.

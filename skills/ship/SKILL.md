@@ -6,7 +6,7 @@ description: >-
   updates pull requests. Use when the repository state is uncertain, finishing
   development work, preparing branch changes, or when the user says "ship
   this", "commit and push", or "review this branch".
-version: 1.2.0
+version: 1.3.0
 author: jdwork
 category: workflow
 requires:
@@ -142,9 +142,15 @@ Make branch choice a dedicated decision before committing:
    - If pruning is declined or unanswered, retain the files, label known stale
      guidance, and report pending cleanup. Do not block otherwise safe delivery
      for optional cleanup; sensitive files remain blocked.
-   - Remove only the ready scope from the live queue in its closeout commit.
-     Keep useful records at stable paths with accurate state, such as Ready for
-     merge. Never infer merge or release from a checked box or a successful push.
+   - In the reviewed pre-merge closeout commit, remove only ready scope from
+     the live queue.
+     Keep useful records at stable paths. For YAML work records, prepare
+     `status: complete` in that commit only when the whole agreed scope and
+     required checks/review at this boundary are satisfied; keep partial parents
+     open. Completion describes work, not merge or release. Preserve legacy
+     formats unless migration is authorized. Update a real `pr` link when known;
+     do not infer delivery from it, a checked box, or a successful push. Follow
+     `todo-manager` for metadata and hierarchy rather than defining another schema.
    - Keep the existing changelog as the release record. Update `todo/DONE.md`
      only for useful navigation or selected verified major release highlights,
      not for every shipped task. Do not create duplicate completion logs.
@@ -157,8 +163,9 @@ Make branch choice a dedicated decision before committing:
    repository requires them.
 10. Repeat until all ready groups are committed. Leave unfinished, unclear,
     sensitive, or concurrently owned work untouched and report it. On commit or
-    delivery failure, preserve the work records and report pending state rather
-    than claiming task shipment.
+    delivery failure, preserve verified work completion and report pending
+    delivery separately rather than claiming shipment. Reopen work if scope or
+    validation fails; keep unfinished scope visible.
 
 ### 5. Deliver commits
 
@@ -195,8 +202,9 @@ Make branch choice a dedicated decision before committing:
 
 Post-merge branch/worktree deletion is a separate authorized operation, not a
 side effect of task closeout. Do not require another commit solely to mark a
-record merged; reconcile historical status when next needed, using verified
-host or Git evidence. A stale Ready for merge label does not prove it is unmerged.
+record merged. `status: complete` already records verified work completion,
+not delivery. Reconcile legacy status when next needed using verified host or
+Git evidence. A stale Ready for merge label does not prove it is unmerged.
 
 Report:
 

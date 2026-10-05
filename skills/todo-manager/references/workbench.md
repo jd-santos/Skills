@@ -101,9 +101,11 @@ new generator.
 ### `todo/work/<NNN-descriptive-name>/README.md`
 
 ```markdown
-# Work title
+---
+status: planned
+---
 
-Status: Planned.
+# Work title
 
 ## Purpose
 
@@ -122,10 +124,68 @@ The observable conditions that make this slice complete.
 Link only files that exist and help this work.
 ```
 
-Replace instructional prose with actual content. Add active ownership and scope
-when work starts. Add validation, decisions, blockers, or handoff notes when
-needed; omit empty sections. If a separate plan owns the design, link it instead
-of copying it. The work README still owns the execution checklist.
+Replace instructional prose with actual content. Keep the full agreement,
+behavior contract, decisions, and sole execution checklist in the README by
+default, including for substantial work. Use stable headings for selective
+reading and targeted edits. Add validation, blockers, or handoff notes only when
+needed. Attach subject-named detail only for independently useful reading or
+evidence, or an explicit user request; length alone does not require a separate
+plan or spec. Move detail rather than mirror it. Preserve existing evidence.
+For a record created before contract readiness, state its actual purpose/current
+scope and open questions; omit unsettled criteria instead of filling headings
+with `TBD` or pretending behavior is agreed. `planned` records are not inherently
+ready to implement. Contract readiness is established by the agreement and
+validation approach, not inferred from a metadata value.
+
+### Work-record YAML
+
+Apply this schema to new or explicitly migrated `todo/work/*/README.md` files,
+not the workbench introduction, supporting documents, skills, or unrelated
+project READMEs. Existing record formats remain valid until an authorized
+migration; never bulk-convert the archive at task entry.
+
+| Field | Type and meaning |
+| --- | --- |
+| `status` | Required string: `planned`, `in_progress`, `blocked`, `awaiting_human_review`, `ready_for_review`, `ready_for_merge`, or `complete`. This describes work, not merge or release. |
+| `pr` | Optional string: a real PR URL relevant to this record. Its presence does not prove delivery or cover every remaining slice. |
+| `blocked_by` | Optional nonempty list of work-record paths or external issue/PR URLs that are actual prerequisites. For an unresolved human decision without a record, use the relevant question/review section and `blocked` status instead of inventing a record. |
+| `parent` | Optional string: the containing work record's repository-root-relative README path. |
+| `child` | Optional nonempty list of subordinate work-record README paths, each repository-root-relative. The singular field name is intentional. |
+| `tags` | Optional nonempty list of unique, nonempty strings for useful subjects or subsystems. No mandatory taxonomy or tagging requirement. |
+
+Omit unused fields rather than writing empty values. Keep priority in TODO; do
+not require timestamps, harness/model details, owner fields, or per-session logs.
+Do not add deadlines, life-area/project classification, or a separate subsystem
+field by default. Use tags only when useful; omit empty or duplicate tags. Git
+provides change history, not a reason to repeat audit metadata in each record.
+The header is the sole metadata authority. The body owns decisions and the next
+actions checklist, not copies of header values. Navigation links may repeat a
+path for usability but not volatile status.
+
+Use hierarchy only when separate records improve independent ownership or
+delivery, not merely to split a long README. `parent` and `child` express
+containment; `blocked_by` expresses dependency. Neither containment nor a PR
+link automatically blocks work. Each record owns its own detailed checklist;
+a parent references child outcomes without mirroring child checkboxes/status.
+
+One direction of a hierarchy link is enough; do not require reciprocal lists.
+When both sides exist, keep them consistent in the same authorized change.
+Check that referenced records exist and relationships contain no duplicates,
+self-links, hierarchy cycles, or dependency cycles. Do not create placeholders
+or modify an unowned relative merely to fill a field. If a referenced record is
+outside authorized scope, report any inconsistency instead of silently editing
+it. A parent reaches `complete` only when its agreed scope, including required
+child outcomes, is verified complete; hierarchy alone does not define which
+outcomes are required.
+
+At task entry reconcile only a selected stale record using actual evidence;
+implementation and handoff update that record at meaningful checkpoints. `ship`
+owns reviewed pre-merge closeout. Set `status: complete` and remove only ready
+scope from TODO in the closeout commit once the whole record's scope and required
+checks/review at that boundary are satisfied. This does not claim merge or
+release, so it needs no post-merge status commit. Keep a partial parent open.
+Failed delivery is reported separately from completed work; failed validation or
+new scope reopens the record. Never infer merge from a checkbox or `pr` field.
 
 Add `## Human review` only when the slice requires a human decision, visual
 check, deployment check, or signoff. Do not copy an empty heading into every
@@ -186,7 +246,9 @@ cannot prune files or close tasks. The shipping agent:
    the story even if commits will be squashed. Do not copy the whole checklist.
 10. Removes only the ready scope from the priority index in its closeout commit.
     Preserve unfinished parent tasks and unrelated or concurrent work. Retain
-    useful work records at their stable paths with accurate delivery status.
+    useful work records at their stable paths. Set `status: complete` only for
+    verified whole-record completion, not partial parent work or unverified merge.
+    Respect legacy formats until an authorized migration.
 
 Pre-merge plans and evidence can be committed as plans and evidence. They must
 not present proposed behavior as already delivered product documentation.
@@ -199,10 +261,10 @@ preserve branch commit ancestry. Verify clean state, ownership, and active-agent
 status before removing anything. Never delete a sibling or active worktree as a
 side effect of task closeout.
 
-If a tracked record still says Ready for merge, a later verified reconciliation
-can mark it as retained historical evidence. Do not require a ceremonial
-post-merge commit solely to update status. Treat an unverified state as unknown,
-not evidence that work is still unmerged. If the work resumes, re-check delivery
+A YAML record already marked `complete` needs no ceremonial post-merge commit.
+For legacy records still saying Ready for merge, a later verified reconciliation
+can identify retained evidence without an unauthorized format migration. Treat
+unverified delivery as unknown, not evidence that work is still unmerged. If the work resumes, re-check delivery
 and add a new slice to the index rather than executing the old plan blindly.
 
 ## Legacy migration

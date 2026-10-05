@@ -33,19 +33,17 @@ index, give substantial work a stable home, and let Git tell the finished story.
 
 ## Work records
 
-### Active
-
-- [Composable design skill family](work/004-design-skill-family/README.md) — Planned
-- [Matt Pocock workflow integration](work/006-agent-workflow-integration/README.md) — In progress
-- [Learner-aware development guidance](work/002-i-am-baby/README.md) — Ready for merge
-- [Writing skill system](work/003-writing-skill-system/README.md) — Ready for review
-- [Tracked-skill registration command](work/005-tracked-skills-add/README.md) — Ready for review
-
-### Retained
-
 - [Task workbench](work/001-task-workbench/README.md)
+- [Learner-aware development guidance](work/002-i-am-baby/README.md)
+- [Writing skill system](work/003-writing-skill-system/README.md)
+- [Composable design skill family](work/004-design-skill-family/README.md)
+- [Tracked-skill registration command](work/005-tracked-skills-add/README.md)
+- [Planning and execution workflow](work/006-agent-workflow-integration/README.md)
 
-A work record's `Status` line is authoritative. Do not move its folder when the
+Each work record owns its status; this map does not mirror it. New or explicitly
+migrated records use YAML `status` with optional `pr`, `blocked_by`, `parent`,
+`child`, and `tags`. Existing plaintext status remains valid until migration is authorized.
+Hierarchy is optional and does not imply dependencies. Do not move folders when
 status changes.
 
 ## Priorities
@@ -69,7 +67,14 @@ unused creation-order number and link it from the TODO entry. Keep each number
 stable across priority or status changes and never reuse a gap. Keep one detailed
 checklist so progress does not drift between files.
 
-When work ships, remove it from the live list. Keep work records that explain
+The work README holds the full contract and decisions by default. Add linked,
+subject-named detail only for independently useful reading or evidence, or an
+explicit request; length alone does not require a plan or spec.
+
+During reviewed pre-merge closeout, remove only ready scope from the live list.
+A YAML record may become `complete` when its whole scope and required checks are
+verified; that does not claim its PR merged. Partial parents stay open, and no
+post-merge status-only commit is needed. Keep work records that explain
 important decisions or preserve useful evidence. Git and pull requests remain
 the source of truth for what changed, while the [changelog](../CHANGELOG.md)
 records notable releases and user-visible changes.
