@@ -39,6 +39,7 @@ index, give substantial work a stable home, and let Git tell the finished story.
 - [Composable design skill family](work/004-design-skill-family/README.md)
 - [Tracked-skill registration command](work/005-tracked-skills-add/README.md)
 - [Planning and execution workflow](work/006-agent-workflow-integration/README.md)
+- [Developer workflow refinements](work/007-developer-workflow-refinements/README.md)
 
 Each work record owns its status; this map does not mirror it. New or explicitly
 migrated records use YAML `status` with optional `pr`, `blocked_by`, `parent`,
@@ -71,7 +72,9 @@ The work README holds the full contract and decisions by default. Add linked,
 subject-named detail only for independently useful reading or evidence, or an
 explicit request; length alone does not require a plan or spec.
 
-During reviewed pre-merge closeout, remove only ready scope from the live list.
+During reviewed local/pre-merge closeout, `repo-commit` removes only ready scope
+from the live list using task-management rules; `ship` checks requirements due at
+remote delivery.
 A YAML record may become `complete` when its whole scope and required checks are
 verified; that does not claim its PR merged. Partial parents stay open, and no
 post-merge status-only commit is needed. Keep work records that explain

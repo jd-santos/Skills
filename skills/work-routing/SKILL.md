@@ -1,7 +1,7 @@
 ---
 name: work-routing
 description: Routes uncertain or multi-step software work to the shortest useful process. Use when the user asks how to approach work, several consequential decisions are unsettled, or a task may need discovery, domain modeling, a spec, or implementation slices.
-version: 1.3.0
+version: 1.4.0
 author: jdwork
 category: workflow
 ---
@@ -15,7 +15,8 @@ a mandatory pipeline, and it does not duplicate the skills it recommends.
 
 `todo-manager` owns record creation and lifecycle. `work-contract` owns behavior
 synthesis and decomposition. The executing agent follows the agreed contract;
-`ship` remains responsible for delivery only when requested. Use host discovery
+`repo-commit` handles local review and authorized commits, while `ship` handles
+remote delivery only when requested. Use host discovery
 or the available sources for [`todo-manager`](../todo-manager/SKILL.md) and
 [`work-contract`](../work-contract/SKILL.md). If a needed capability cannot be
 loaded by either method, report the gap rather than substituting silently. File access alone does
@@ -36,27 +37,37 @@ not prove catalog discovery or parity across hosts.
 | --- | --- |
 | Clear, bounded change | Work directly. Skip grilling, a plan file, and optional synthesis skills. |
 | Pure exploration or an unrelated question | Answer in chat. Do not create or update files unless asked. |
-| Several consequential decisions remain open | Use the available `grilling` skill. Ask only the decision frontier that can be answered now, recommend an option, and wait for the user's decisions before asking dependent questions. |
-| Domain terms, relationships, or boundaries are unclear or contested | Pair grilling with an available, locally adapted domain-modeling skill. Compare terminology with code and maintained project docs, then test it with concrete scenarios. If that adapted skill is unavailable, say so and ask before doing equivalent modeling by hand. |
+| Several consequential decisions remain open | Ask ordinary focused questions about unresolved outcomes, scope, or constraints. Leave routine implementation choices to the agent. Do not invoke grilling automatically. |
+| The user explicitly requests grilling or its full decision-tree interview | Load the available `grilling` skill and follow its full decision-space exploration and confirmation instructions. Do not narrow it to consequential questions only. |
+| Domain terms, relationships, or boundaries are unclear or contested | Compare terms with code and maintained docs and clarify the disputed meaning. An available domain-modeling skill may help; name a missing specialist if requested, but ordinary clarification does not require it or grilling. |
 | A substantial behavior contract needs to travel across sessions | Use the available `work-contract` skill only when it adds value; small contracts stay in the established work record. If it is unavailable, name the gap and ask before substituting. |
 | Work needs independent implementation slices | Use the decomposition method in `work-contract`: start with one outcome-oriented checklist and real prerequisites. Consequential scope, delivery, or dependency changes require the user's decision; `todo-manager` creates approved records only when useful. |
 | The user asks to create a project, issue, feature, or work record | Use `todo-manager` to find or create the authoritative record in the established task source. Use `work-contract` for missing behavior decisions, not another tracker or note schema. |
+| Review repository state or a branch, stage changes, or commit ready work | Use `repo-commit`. Review-only requests stay read-only; stage-only requests do not authorize commits. Local commits do not authorize delivery. |
+| Explicitly ship, push, or create/update a PR | Use `ship`, which composes `repo-commit` for necessary local preparation. Respect the requested operation; a push-only request does not authorize a PR. |
 | A very large effort still has no clear destination | Mention Wayfinder only as a possible future route if the user wants it. It is not part of the default workflow and must not introduce another tracker. |
 
 Do not recommend every route in sequence. Stop when the current route resolves the need. `grilling`, domain modeling, contract synthesis, and Wayfinder are distinct capabilities, not synonyms for planning.
 
-### 3. Use grilling without adding an approval ritual
+### 3. Use grilling only when invoked
+
+Invoke `grilling` when the user requests it by name or clearly asks for its full
+interview, not merely because work is large or decisions are unresolved. Without
+that invocation, use ordinary consequential clarification and leave routine
+implementation choices to the agent.
 
 Find `grilling` through the host's skill discovery. If it is not listed, check the installed [`../grilling/SKILL.md`](../grilling/SKILL.md) in this collection or the project's configured shared skills directory and read the actual source before using it. If neither source is available, report the gap and ask before installation or substitution. Do not copy its interview into this router. File retrieval verifies only that host/session's access, not automatic discovery or cross-agent parity; a host may need a reload after installation.
 
-When using `grilling`, follow that skill's question and confirmation instructions. The agent owns fact-finding; the user owns unresolved decisions. After the user confirms the shared understanding, continue with the next action they already requested without asking for a second conversational build approval. Normal tool permissions, read-only requests, safety rules, and delivery safeguards still apply.
+When using `grilling`, follow that skill's full decision-tree exploration,
+question, and confirmation instructions. Routine implementation choices are
+available for exploration too; do not impose a consequential-only filter. The agent owns fact-finding; the user owns unresolved decisions. After the user confirms the shared understanding, continue with the next action they already requested without asking for a second conversational build approval. Normal tool permissions, read-only requests, safety rules, and delivery safeguards still apply.
 
 A suggested route does not authorize file writes, task migration, deletion, installation, commits, or delivery. Do not infer an unanswered decision or permission from silence.
 
 ### 4. Keep one source of truth
 
 - If the project uses or adopts a `todo/` workbench, put substantial work in its existing work record. That README owns status, the full behavior contract and acceptance criteria, decisions, and the only detailed execution checklist. Substantial or multi-session work still defaults to that README, using stable headings for selective reading. Add linked subject-named detail such as `research.md`, `design.md`, or `validation.md` only when it has an independently useful reading or evidence purpose, or the user explicitly requests it. Length alone does not require `plan.md` or `spec.md`. Move detail rather than mirror it; avoid empty scaffolding and progress journals.
-- Use `todo-manager` for work-record YAML and lifecycle rules: required `status`, optional `pr`, `blocked_by`, `parent`, `child`, and `tags`. Hierarchy does not imply dependencies or duplicated child progress. Respect existing records until migration is authorized. At task entry reconcile only the selected record when stale, not the whole archive; implementation and handoff update it at meaningful checkpoints, and `ship` owns reviewed pre-merge closeout.
+- Use `todo-manager` for work-record YAML and lifecycle rules: required `status`, optional `pr`, `blocked_by`, `parent`, `child`, and `tags`. Hierarchy does not imply dependencies or duplicated child progress. Respect existing records until migration is authorized. At task entry reconcile only the selected record when stale, not the whole archive; implementation and handoff update it at meaningful checkpoints, `repo-commit` applies reviewed local/pre-merge closeout, and `ship` checks requirements due at delivery.
 - Have `todo-manager` reuse or create a durable record once authorized work needs
   a home and purpose/current scope are known. It need not wait for a settled
   contract. Exploration alone does not authorize creation. During execution,
@@ -80,6 +91,7 @@ A suggested route does not authorize file writes, task migration, deletion, inst
 
 - A user asks for a small, fully specified typo fix: make the edit directly.
 - A user asks for a substantial project-specific comparison without mentioning TODO: answer the question and check whether its agreed follow-up belongs in the established backlog. An explicitly read-only discussion remains read-only.
-- A user asks to compare two approaches with unresolved product tradeoffs: use `grilling`, then act only after the shared understanding is confirmed.
-- A user asks to rename a domain concept whose meaning differs across code paths: recommend grilling with the adapted domain-modeling skill, if available, and keep working notes in the project's task source.
+- A user asks to compare approaches with unresolved product tradeoffs: gather facts and ask focused questions without invoking grilling.
+- A user says "grill me on this plan": load grilling and explore its full decision space, then wait for confirmation of shared understanding.
+- A user asks to rename a disputed domain concept: check code and maintained terminology, clarify its meaning, and keep useful working notes in the project's task source.
 - A user describes a large build with settled behavior but many independent slices: keep one authoritative task record and split its checklist only as much as ownership requires.

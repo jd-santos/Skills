@@ -50,7 +50,7 @@ class WorkContractSkillTests(unittest.TestCase):
         for requirement in (
             "current code, tests, and maintained docs",
             "material conflicts",
-            "Do not replay already settled questions",
+            "Do not replay settled questions",
             "failure/recovery behavior",
             "acceptance criteria",
             "existing test seams",

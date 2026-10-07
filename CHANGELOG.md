@@ -8,6 +8,9 @@ unless the project adopts a versioning policy.
 
 ### Added
 
+- Add `repo-commit` for local repository review and authorized staging/commits,
+  separate from remote delivery, plus a targeted developer-workflow migration guide.
+
 - Add `work-contract` for behavior synthesis and proportional decomposition in
   the established task source, without duplicate checklists or a mandatory spec.
 - Add `work-routing` for automatic capability selection and optional direct
@@ -24,6 +27,14 @@ unless the project adopts a versioning policy.
   concepts without replacing domain-specific skills.
 
 ### Changed
+
+- Refocus `ship` on explicitly requested pushes and PRs, composing local
+  preparation through `repo-commit`. Review-only and local commit requests do not
+  authorize delivery.
+- Make grilling explicit opt-in with full decision-space exploration. Ordinary
+  clarification leaves routine implementation choices to the agent.
+- Reorganize the README around the developer workflow and document its companion
+  skill set without mandatory stages or a manual adoption review.
 
 - Make the work README the default home for full behavior contracts and design,
   including substantial work; attach subject-named detail only when useful.
@@ -67,6 +78,7 @@ unless the project adopts a versioning policy.
 - Retire `project-issue-note`; salvage record discovery, duplicate prevention,
   and preservation guidance into `todo-manager`. Rename `to-spec` to
   `work-contract` without compatibility wrappers or bulk note migration.
-- Retire the mandatory `planning-first` skill in favor of optional `work-routing` and pinned `grilling` for consequential decisions.
+- Retire the mandatory `planning-first` skill in favor of optional `work-routing`
+  and explicitly invoked, pinned `grilling`.
 - Remove the overlapping `swift-mentor` skill and route Swift teaching guidance
   through `i-am-baby`.

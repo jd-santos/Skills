@@ -15,7 +15,8 @@ preferences.
 | --- | --- |
 | [`work-routing`](skills/work-routing/) | Choose the shortest useful workflow for discovery and implementation. |
 | [`work-contract`](skills/work-contract/) | Reconcile behavior decisions and define useful implementation outcomes in the existing work record. |
-| [`ship`](skills/ship/) | Review, commit, push, and open pull requests. |
+| [`repo-commit`](skills/repo-commit/) | Review repository work and stage/commit ready changes when requested, without pushing. |
+| [`ship`](skills/ship/) | Deliver requested work through pushes and pull requests. |
 | [`todo-manager`](skills/todo-manager/) | Create and maintain task entries, work records, metadata, and lifecycle rules. |
 | [`commit-message-writer`](skills/commit-message-writer/) | Write concise, scope-first commit messages. |
 | [`changelog-writer`](skills/changelog-writer/) | Write changelog entries and release notes. |
@@ -66,18 +67,32 @@ preferences.
 
 ### Recommended: copy and adapt
 
-Start with the skills that fit your workflow. Copy them into your own Agent
-Skills directory, then change the instructions to suit how you work.
+Copy the skills that fit your work, then adapt their instructions. For the
+[developer workflow](#development-workflow), install the companion set rather
+than the router alone:
 
 ```bash
 git clone --depth 1 https://github.com/jd-santos/Skills.git jd-skills
 mkdir -p ~/.agents/skills
-cp -R jd-skills/skills/work-routing ~/.agents/skills/
+for skill in work-routing todo-manager work-contract repo-commit ship \
+  core-writing technical-writing commit-message-writer changelog-writer; do
+  cp -R "jd-skills/skills/$skill" ~/.agents/skills/
+done
 ```
 
-Replace `work-routing` with another skill from the list and repeat as needed.
-Copy the whole directory so its references and scripts come with it.
-`tracked-skills` is repository tooling and expects a full checkout.
+The planning/task companions are `work-routing`, `todo-manager`, and
+`work-contract`. Local commits use `repo-commit`, `commit-message-writer`, and
+`changelog-writer`; delivery adds `ship`. Prose companions are `core-writing` and
+`technical-writing`. Installing the set makes these capabilities available,
+not mandatory stages. For an unrelated standalone skill, copy its whole
+directory and any companions named in its instructions.
+
+`grilling` is optional and used only when explicitly requested. It is not in the
+maintained-source clone until installed. To use the reviewed pin, run
+`./scripts/tracked-skills install grilling` from a full checkout, then copy the
+installed skill directory with its attribution/license files if using the
+copy-and-adapt setup. Other external capabilities are optional too.
+`tracked-skills` itself is repository tooling and expects a full checkout.
 
 ### Track this repository directly
 
@@ -185,43 +200,76 @@ asks for approval before changing `tracked-skills.json`. See
 [`docs/tracked-skills.md`](docs/tracked-skills.md) for safety and recovery
 details.
 
-## Task workbench
+## Development workflow
 
-Start at [todo/README.md](todo/README.md) for the human introduction and map.
-Agents use [todo/TODO.md](todo/TODO.md) as a P1–P5 priority index; larger tasks
-keep their execution checklist and supporting evidence in stable work folders.
-Parallel agents primarily edit separate records and reconcile the shared queue
-during integration. Ownership notes are not cross-worktree locks.
+These skills form the development process I use with agents. They are cooperating
+capabilities, not a required sequence. Clear requests go straight to work;
+planning earns its place when it resolves uncertainty or preserves an agreement.
 
-`work-routing` selects useful capabilities without requiring users to name a
-skill or follow a mandatory pipeline. Each capability can also be invoked
-directly. Clear requests proceed directly; unresolved consequential decisions
-can use `grilling`. `todo-manager` finds or creates the authoritative work record
-once authorized work warrants a durable home; its contract need not be settled.
-`work-contract` reconciles behavior, defines acceptance criteria and validation,
-and decomposes work only when useful. Consequential changes to scope, delivery
-order, or dependencies require the user's decision. Execution follows the
-agreement and updates the existing checklist rather than silently changing the
-contract to match the build.
+The agent gathers facts and makes routine implementation choices. Consequential
+unknowns about behavior, scope, delivery order, or dependencies return to the
+user. If you explicitly invoke `grilling`, its interview explores the full
+decision space, including routine choices, before confirming shared understanding.
+Ordinary clarification does not invoke that interview automatically.
 
-The work README holds the full contract, including substantial or multi-session
-work. Subject-named attachments are optional for independently useful reading
-or evidence, not because a contract is long. New or explicitly migrated work
-READMEs use YAML `status` with optional `pr`, `blocked_by`, `parent`, `child`, and
-`tags`; priority stays in TODO. Tags can describe useful subjects or subsystems
-without a required taxonomy. No deadline or Git-derived audit fields are required.
-Hierarchy does not imply dependencies or mirrored child progress. Existing
-record formats and standalone notes remain valid until migration is authorized.
-Shipping checks task claims against the diff, preserves unfinished work, and
-prepares `status: complete` only for verified whole-record completion in the
-pre-merge closeout commit, without claiming merge or release. It proposes
-artifact pruning before merge; file deletions require explicit approval.
-Completed work does not accumulate in a Done task section.
+For substantial work, keep the agreement and sole execution checklist in one
+work README. It can begin with known purpose/scope and open questions before the
+contract is ready. Execution follows the agreement, validates observable outcomes,
+and updates that record instead of rewriting commitments to fit the build.
 
-[DONE](todo/DONE.md) points to Git history, PRs, and retained records.
-[CHANGELOG.md](CHANGELOG.md) holds release notes. DONE may highlight a few major
-releases, but does not duplicate the changelog. Older projects keep their
-existing task location until a migration is authorized.
+Local review, commits, and delivery are separate requests:
+
+- **Review this branch:** inspect and report, without changing or delivering work.
+- **Commit what's ready:** validate and create coherent local commits, without pushing.
+- **Ship this:** prepare relevant ready local work if necessary, then push and
+  create/update its PR. Already-committed branches need no extra commit.
+
+Project review requirements still apply. There is no generic manual adoption
+review, compulsory spec/ticket pipeline, or automatic delivery after implementation.
+Use the workflow and refine it when real work exposes friction.
+
+### Skill ownership and optional capabilities
+
+| Responsibility | Owner |
+| --- | --- |
+| Select the smallest useful route | `work-routing` |
+| Discover/create records and maintain task lifecycle | `todo-manager` |
+| Reconcile behavior, acceptance criteria, validation, and useful slices | `work-contract` |
+| Implement and validate the agreement | The executing agent |
+| Review local work and apply authorized staging, commits, and closeout | `repo-commit` |
+| Push and create/update PRs when requested | `ship` |
+| Commit prose and release notes | `commit-message-writer` and `changelog-writer` |
+
+Writing and domain-specific skills support this process without becoming new
+workflow stages. `grilling` is an explicit full interview. Offgrid Review is an
+optional way to compare complex human decisions outside chat, not a default gate.
+Domain-modeling specialists may help where available; ordinary clarification
+does not depend on installing one. Wayfinder and additional supporting-document
+methods remain possible extensions, not prerequisites for using the process.
+
+### Task workbench
+
+[Todo's introduction](todo/README.md) maps this repository's records. Small work
+stays inline in [TODO](todo/TODO.md); substantial efforts get a stable work README
+with their agreement, decisions, and one checklist. Add subject-named supporting
+material only when it has a separate reading or evidence purpose, not because
+the README is long.
+
+`todo-manager` owns metadata and lifecycle rules. Priority stays in the index;
+new or explicitly migrated records use lean YAML. Existing trackers, standalone
+notes, and record formats remain valid until migration is authorized. Parallel
+writers use disjoint scopes/worktrees and reconcile the shared queue; ownership
+notes are not locks.
+
+`repo-commit` checks completion against actual diffs and validation during local
+closeout, preserving unfinished parent scope. `ship` checks requirements due at
+delivery. Work completion never claims merge or release, and optional cleanup
+does not block safe delivery. File deletion requires explicit approval.
+
+[DONE](todo/DONE.md) links to Git history, PRs, and retained evidence, not a Done
+task ledger. [CHANGELOG](CHANGELOG.md) owns release notes. For projects using the
+older planning or shipping setup, follow the [migration guide](docs/developer-workflow-migration.md)
+one selected project or work item at a time.
 
 ## Repository layout
 
