@@ -1,7 +1,7 @@
 ---
 name: add-pi-feature
 description: "Adds pi coding agent features: skills, extensions, prompt templates, themes, custom tools, commands, shortcuts, and flags. Use when setting up a new pi workflow, adding a slash command, building an extension, creating a prompt template, or when user says 'add a pi feature', 'create a pi extension', 'make a pi skill', or 'set up pi'."
-version: 1.0.0
+version: 1.0.1
 author: jdwork
 category: workflow
 ---
@@ -354,6 +354,31 @@ Invoked as: `/review src/auth.ts`
 - `""` - terminal default color
 
 ---
+
+## Documentation and Visuals
+
+When adding or updating a feature, check the project's existing Pi README and
+reference documentation before finishing. Update user-visible behavior, command
+syntax, component descriptions, and setup or reload steps that changed. Keep the
+README focused on what the setup does differently and what each component is
+for; put detailed rules and edge cases in the existing reference doc.
+
+If the README includes prompt, footer, permission-gate, or other feature visuals:
+
+1. Check affected screenshots or recreations against the current implementation
+   and theme. Update layout, labels, options, colors, and captions when they change.
+2. Refresh editable recreations alongside the prose. Label them as recreations
+   with example data, not live screenshots. Don't present invented states as
+   supported behavior.
+3. Capture real screenshots only from a sanitized demo session. Inspect them for
+   private paths, account details, internal URLs, secrets, and conversation content
+   before adding them to a public repository.
+4. Keep assets beside the existing docs, link them from the README, and provide
+   useful alt text or a nearby text explanation. Preview the result and check links.
+
+In the Dotfiles Pi package, maintain `pi/README.md`, `pi/docs/reference.md`, and
+any affected assets under `pi/docs/assets/`. This documentation check also applies
+to updates of existing features, not just new ones.
 
 ## Error Handling
 
