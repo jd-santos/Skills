@@ -28,6 +28,8 @@ unless the project adopts a versioning policy.
 
 ### Changed
 
+- Add documentation and visual maintenance guidance to `add-pi-feature`, including
+  editable recreations, sanitized screenshots, and public-repository checks.
 - Refocus `ship` on explicitly requested pushes and PRs, composing local
   preparation through `repo-commit`. Review-only and local commit requests do not
   authorize delivery.
