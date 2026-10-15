@@ -28,6 +28,22 @@ preferences.
 | --- | --- |
 | [`core-writing`](skills/core-writing/) | Apply JD's baseline voice to prose and copyable text. |
 | [`technical-writing`](skills/technical-writing/) | Write accurate, useful technical material. |
+| [`shareable-doc-writer`](skills/shareable-doc-writer/) | Restructure technical documents so teammates can follow them, keeping every fact. |
+| [`dev-brief`](skills/dev-brief/) | Cut source material down to a message-sized ask or decision explanation for a developer. |
+
+`core-writing` sets the voice and `technical-writing` keeps technical content
+accurate. The other two build on both and handle sharing work with technical
+readers. They differ in what they do with detail:
+
+| | `shareable-doc-writer` | `dev-brief` |
+| --- | --- | --- |
+| Output | A document people keep: plan, proposal, handoff, Jira epic | A message: Slack, PR comment, short ticket, handoff note |
+| Detail | Preserves facts and moves them to appendices or task sections | Cuts everything the reader doesn't need and links to the source |
+| Leads with | The structure the reader's job needs | The ask, or the decision |
+
+If a brief keeps growing into several features or audiences, it's a document.
+If a document only needs to get one developer moving, it's a brief that links to
+the document.
 
 ### Design
 

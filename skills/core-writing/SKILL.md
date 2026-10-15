@@ -47,4 +47,4 @@ Read the draft aloud when possible. Fix awkward rhythm, vague references, repeti
 
 ## Combine with focused skills
 
-Load the relevant peer skill when the format has its own rules. Use `technical-writing` for technical explanations and documentation, `commit-message-writer` for Git history, and `changelog-writer` for release notes. Prefer one relevant specialist rather than loading every writing skill.
+Load the relevant peer skill when the format has its own rules. Use `technical-writing` for technical explanations and documentation, `shareable-doc-writer` for restructuring a technical document for teammates, `dev-brief` for a message-sized brief to a developer, `commit-message-writer` for Git history, and `changelog-writer` for release notes. Prefer one relevant specialist rather than loading every writing skill.
