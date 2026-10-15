@@ -1,10 +1,11 @@
 ---
 name: shareable-doc-writer
 description: Creates and revises technical documents meant for sharing with teammates, mixed technical audiences, Jira epics, implementation handoffs, plans, and proposals. Use when a user says a doc is too dense, stilted, hard to share, needs better information architecture, needs examples near requirements, or needs to explain concepts without over-teaching.
-version: 1.1.0
-author: jdwork
-category: documentation
-requires: [core-writing, technical-writing]
+metadata:
+  version: "1.1.0"
+  author: jdwork
+  category: documentation
+  requires: core-writing, technical-writing
 ---
 
 # Skill: Shareable Doc Writer

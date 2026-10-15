@@ -1,10 +1,11 @@
 ---
 name: changelog-writer
 description: Writes human-readable CHANGELOG.md entries using Keep a Changelog sections with optional date-based or SemVer releases. Use when updating changelogs, writing release notes, summarizing notable changes, preparing releases, or when user says "update the changelog", "write release notes", or "summarize these changes".
-version: 1.2.0
-author: jdwork
-category: documentation
-requires: [core-writing]
+metadata:
+  version: "1.2.0"
+  author: jdwork
+  category: documentation
+  requires: core-writing
 ---
 
 # Skill: Changelog Writer
@@ -12,6 +13,8 @@ requires: [core-writing]
 ## Description
 
 Writes and updates `CHANGELOG.md` for humans, not machines. Use Keep a Changelog sections, default to date-based releases, and only use Semantic Versioning when the project already has a clear versioning policy or the user asks for it.
+
+Apply `core-writing` to entry wording.
 
 ## Instructions
 

@@ -1,8 +1,9 @@
 ---
 name: work-contract
 description: Defines behavior contracts and implementation slices from decisions and project evidence. Use when a substantial agreement needs to survive across sessions, when planning a feature, or when the user asks to write a spec, define acceptance criteria, or break work into tasks.
-version: 1.1.0
-category: workflow
+metadata:
+  version: "1.1.0"
+  category: workflow
 ---
 
 # Skill: Work Contract

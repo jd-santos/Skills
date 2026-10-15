@@ -1,9 +1,10 @@
 ---
 name: tracked-skills
 description: Installs, verifies, and reviews updates for external agent skills pinned in tracked-skills.json. Use when hydrating a Skills checkout, checking external skill integrity, reviewing upstream changes, or changing an external skill pin.
-version: 2.0.0
-author: jd-santos
-category: workflow
+metadata:
+  version: "2.0.0"
+  author: jd-santos
+  category: workflow
 ---
 
 # Skill: Tracked Skills

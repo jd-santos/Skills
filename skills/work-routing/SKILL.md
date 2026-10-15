@@ -1,9 +1,10 @@
 ---
 name: work-routing
 description: Routes uncertain or multi-step software work to the shortest useful process. Use when the user asks how to approach work, several consequential decisions are unsettled, or a task may need discovery, domain modeling, a spec, or implementation slices.
-version: 1.4.0
-author: jdwork
-category: workflow
+metadata:
+  version: "1.4.0"
+  author: jdwork
+  category: workflow
 ---
 
 # Work Routing

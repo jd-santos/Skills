@@ -1,9 +1,10 @@
 ---
 name: swift-code-writer
 description: Writes and reviews idiomatic Swift, SwiftUI, and SwiftData code using project settings, Xcode MCP tools, and Apple documentation as sources of truth. Use when implementing or reviewing Apple-platform features, models, views, tests, concurrency, persistence, or Xcode project changes.
-version: 1.1.0
-author: JD
-category: workflow
+metadata:
+  version: "1.1.0"
+  author: JD
+  category: workflow
 ---
 
 # Skill: Swift Code Writer

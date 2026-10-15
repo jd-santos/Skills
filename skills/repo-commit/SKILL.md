@@ -1,12 +1,10 @@
 ---
 name: repo-commit
 description: Reviews staged, unstaged, and untracked repository work and commits ready changes when authorized. Use when the repository state is uncertain, reviewing local work or a branch, or when the user says "commit this" or "commit whatever is ready". Does not push or create pull requests.
-version: 1.0.0
-category: workflow
-requires:
-  - commit-message-writer
-  - changelog-writer
-  - todo-manager
+metadata:
+  version: "1.0.0"
+  category: workflow
+  requires: commit-message-writer, changelog-writer, todo-manager
 ---
 
 # Skill: Repo Commit

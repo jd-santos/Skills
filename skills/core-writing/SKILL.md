@@ -1,9 +1,10 @@
 ---
 name: core-writing
 description: Defines JD's baseline voice for all prose and copyable text. Use whenever drafting, rewriting, or polishing text, especially when the user will paste the result into a document, message, post, review, or other communication.
-version: 1.0.0
-author: jdwork
-category: documentation
+metadata:
+  version: "1.0.0"
+  author: jdwork
+  category: documentation
 ---
 
 # Core Writing

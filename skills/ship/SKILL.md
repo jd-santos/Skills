@@ -1,14 +1,11 @@
 ---
 name: ship
 description: Delivers committed work through pushes and pull requests, using repo-commit for outstanding local changes. Use when the user explicitly asks to ship, push, open a PR, or commit and push. Inspection, branch review, and local commit requests do not authorize delivery.
-version: 2.0.0
-author: jdwork
-category: workflow
-requires:
-  - repo-commit
-  - todo-manager
-  - core-writing
-  - technical-writing
+metadata:
+  version: "2.0.0"
+  author: jdwork
+  category: workflow
+  requires: repo-commit, todo-manager, core-writing, technical-writing
 ---
 
 # Skill: Ship

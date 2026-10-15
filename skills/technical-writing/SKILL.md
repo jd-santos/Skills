@@ -1,10 +1,11 @@
 ---
 name: technical-writing
 description: Writes and edits accurate technical documentation, explanations, guides, references, specs, and agent instructions. Use with core-writing when technical content needs clear structure, preserved operational detail, or adaptation to a technical audience.
-version: 1.0.0
-author: jdwork
-category: documentation
-requires: [core-writing]
+metadata:
+  version: "1.0.0"
+  author: jdwork
+  category: documentation
+  requires: core-writing
 ---
 
 # Technical Writing

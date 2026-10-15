@@ -1,179 +1,107 @@
 ---
 name: create-agents-md
-description: Creates AGENTS.md files that provide context for AI agents working in codebases. Use when setting up a new project for AI assistance, documenting conventions for agents, or when user says "create an AGENTS.md" or "set up agent context".
-version: 1.0.0
-author: jdwork
-category: documentation
+description: Creates, audits, and slims AGENTS.md files that give coding agents the project context they cannot infer from the code. Use when setting up a repo for AI agents, when an AGENTS.md or CLAUDE.md has grown long or stale, when agents repeat the same mistake in a repo, or when user says "create an AGENTS.md" or "set up agent context".
+metadata:
+  version: "2.0.0"
+  author: jdwork
+  category: documentation
 ---
 
-# Skill: Create AGENTS.md
+# Create AGENTS.md
 
-## Description
+`AGENTS.md` loads into every agent session in the repo, so every line costs
+tokens and attention on every task. Keep it to what an agent cannot discover
+quickly and would otherwise get wrong.
 
-Creates AGENTS.md files—the authoritative instruction file for AI agents working in a codebase. This file is added to the agent's context automatically, providing 100% reliable passive context without requiring tool calls or retrieval decisions.
+The evidence supports a short file. In a 2026 study (Gloaguen et al.),
+LLM-generated context files did not improve task success and raised cost by
+about 20%. Developer-written files helped slightly, and repository overviews did
+not help agents find files faster. Write the file by hand, or heavily prune a
+generated draft.
 
-## When to Use
+## 1. Inspect before writing
 
-- Setting up a new project for AI-assisted development
-- Onboarding AI agents to an existing codebase
-- Documenting project conventions that agents should follow
-- Creating a compressed index for large documentation sets
+- Read the build, test, and lint setup (`package.json`, `Makefile`,
+  `pyproject.toml`, CI workflows) to find the real commands.
+- Read `README.md` and existing docs so you can point to them instead of
+  copying them.
+- Look for an existing `AGENTS.md`, `CLAUDE.md`, `.cursor/rules/`, or
+  `.github/copilot-instructions.md`. Consolidate rather than adding another file.
+- Ask the user which mistakes agents keep making here. Those are the best lines.
 
-**Important:** AGENTS.md is for *knowledge* (conventions, structure, rules). For *actions* (deploy, test, migrate), create a Skill instead using the `create-claude-skill` skill.
+## 2. Include only what earns its place
 
-## Instructions
+For each line, ask: *would removing this cause an agent to make a mistake?*
 
-### 1. Pre-flight Analysis
+**Include:**
+- Commands an agent cannot guess, with exact flags (for example, the one test
+  command that works, or "run `pnpm check` before committing").
+- Conventions that differ from the language or framework defaults.
+- Constraints and gotchas: generated directories, files never to edit, ordering
+  requirements, environment quirks.
+- Pointers to deeper docs, with when to read each one.
 
-Before generating, examine the project:
+**Leave out:**
+- Project overviews and directory tours. Agents explore faster than they read.
+- Anything already in the README or derivable from config files.
+- Style rules a formatter or linter enforces. Run the tool instead.
+- Generic advice ("write clean code", "add tests").
+- Versions and other fast-changing facts.
+- Multi-step procedures. Make them skills (see `create-skill`).
+- Rules that must hold every time. Enforce them with hooks, CI, or permissions.
 
-- **Structure:** Run `ls -la` and check directory organization
-- **Tech stack:** Check `package.json`, `Cargo.toml`, `pyproject.toml`, `go.mod`, etc.
-- **Existing docs:** Read `README.md` for project context
-- **Conventions:** Look at existing code for style patterns
-- **CI/CD:** Check `.github/workflows/`, `Makefile`, etc. for build commands
+Aim for well under 100 lines. Treat 200 as a ceiling, not a target.
 
-### 2. Structure the File
+## 3. Structure lightly
 
-Use this template structure:
+The [AGENTS.md standard](https://agents.md/) has no required sections. Use short
+headings that match the content, for example:
 
 ```markdown
 # AGENTS.md
-
-> This file provides context for AI agents working in this codebase.
-> IMPORTANT: Prefer retrieval-led reasoning. Read local doc files before answering framework-specific questions.
-
-## Project Context
-- **Project**: [Name and brief purpose]
-- **Tech Stack**: [Key technologies]
-- **Architecture**: [Monolith/Microservices/Monorepo/etc.]
-
-## Critical Rules
-- [Rule 1: Focus on "don'ts" and constraints]
-- [Rule 2: Project-specific conventions]
-- [Rule 3: Common mistakes to avoid]
 
 ## Commands
-- **Build**: `[command]`
-- **Test**: `[command]`
-- **Lint**: `[command]`
+- Test one file: `pnpm vitest run path/to/file.test.ts`
+- Before committing: `pnpm check` (lint, typecheck, test)
 
-## Documentation Index
-> Read files from this index when relevant to your task.
-[Root]: ./.docs/
-[category]: {file1.md, file2.md}
+## Conventions
+- Database access goes through `packages/db`; never import Prisma in `apps/`.
+- `src/generated/` is codegen output. Edit `schema.graphql` and run `pnpm gen`.
 
-## File-Specific Notes
-- **[pattern]**: [convention or note]
+## Docs
+- Read `docs/auth.md` before touching session or token code.
 ```
 
-### 3. Write Critical Rules
+- **Monorepos:** put an `AGENTS.md` in each package that has its own rules.
+  The nearest file to the edited code applies, and hosts combine it with the
+  root file.
+- **Framework docs the model lacks:** if the project depends on APIs newer than
+  the model's training data, a compact index of local doc files can work better
+  than a skill, because it is always present. Compress it to paths and topics
+  and keep the full docs in a separate folder.
+- **Emphasis:** use `IMPORTANT` on at most one or two lines that agents have
+  been seen to skip. If many lines are emphasized, none stand out.
 
-Focus on constraints and gotchas:
+## 4. Connect other tools
 
-- What NOT to do (more useful than obvious "do's")
-- Project-specific conventions that differ from defaults
-- Common mistakes agents make in this codebase
-- Security considerations (what not to commit, etc.)
+- **Codex, Cursor, Copilot:** read `AGENTS.md` natively. Do not create
+  `.cursorrules` (deprecated) or `COPILOT.md` (not a recognized name).
+- **Claude Code:** reads `CLAUDE.md`, and reads `AGENTS.md` only in some setups.
+  The portable option is a `CLAUDE.md` that imports the shared file, plus any
+  Claude-only notes:
 
-Example rules:
-```markdown
-## Critical Rules
-- Never use `any` type in TypeScript—use `unknown` and narrow
-- Always use `server-only` import for server utilities
-- Run `pnpm check` before committing—it runs lint + typecheck + test
-- Don't modify files in `generated/`—they're auto-generated
-```
+  ```markdown
+  @AGENTS.md
+  ```
 
-### 4. Add Compressed Documentation Index (if applicable)
+  A `CLAUDE.md -> AGENTS.md` symlink also works but can check out as a plain
+  file on Windows. A sentence such as "read AGENTS.md" is weaker than the
+  import, because the agent may not follow it.
 
-For projects with extensive documentation (frameworks, large codebases):
+## 5. Maintain it
 
-1. Store docs in a `.docs/` folder (or reference existing docs location)
-2. Create a compressed index mapping categories to files
-3. Add the retrieval instruction
-
-Format:
-```markdown
-## Documentation Index
-> Agents: Read the file at the path below if related to your task.
-
-[Root]: ./.docs/
-01-getting-started: {installation.md, project-structure.md}
-02-api: {endpoints.md, authentication.md, error-handling.md}
-03-database: {schema.md, migrations.md, queries.md}
-```
-
-### 5. Interoperability
-
-Recommend symlinking to support multiple tools:
-
-```bash
-# Create symlinks for other AI tools
-ln -s AGENTS.md CLAUDE.md
-```
-
-Note: Only recommend symlinks the user has tools for. Common conventions:
-- `CLAUDE.md` - Claude Code
-- `.cursorrules` - Cursor
-- `COPILOT.md` - GitHub Copilot
-
-## Anti-Patterns
-
-- **DON'T** dump entire documentation files—link to them instead
-- **DON'T** state obvious rules ("write clean code")
-- **DON'T** duplicate README content verbatim
-- **DON'T** include frequently-changing information (versions, etc.)
-- **DON'T** add action workflows—those belong in Skills
-
-## Examples
-
-### Minimal AGENTS.md (small project)
-
-```markdown
-# AGENTS.md
-
-## Project Context
-- **Project**: Personal blog built with Astro
-- **Stack**: Astro, TypeScript, Tailwind CSS, MDX
-
-## Rules
-- Content lives in `src/content/`—follow the existing frontmatter schema
-- Don't modify `src/components/ui/`—they're from shadcn
-
-## Commands
-- **Dev**: `pnpm dev`
-- **Build**: `pnpm build`
-```
-
-### With Documentation Index (framework project)
-
-```markdown
-# AGENTS.md
-
-> IMPORTANT: Read local doc files before answering framework questions.
-
-## Project Context
-- **Project**: E-commerce platform
-- **Stack**: Next.js 15, TypeScript, Prisma, PostgreSQL
-- **Architecture**: Monorepo with apps/ and packages/
-
-## Documentation Index
-[Root]: ./docs/
-architecture: {overview.md, data-flow.md}
-api: {rest-endpoints.md, graphql-schema.md}
-database: {schema.md, migrations.md}
-
-## Critical Rules
-- Use Server Actions for mutations, not API routes
-- All database queries go through `packages/db`
-- Never import from `apps/` into `packages/`
-```
-
-## Cross-Reference
-
-For repeatable workflows and actions, create a Skill instead using the `create-claude-skill` skill. Skills are better for:
-- Deployment procedures
-- Database migrations
-- Test suite execution
-- Code generation workflows
+- Add a line when an agent makes the same mistake twice, not before.
+- Remove lines that no longer change behavior, and update commands when the
+  tooling changes.
+- Review it when it passes about 100 lines. Move task-specific material into
+  linked docs or skills.

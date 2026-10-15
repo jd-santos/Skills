@@ -1,267 +1,173 @@
 ---
 name: create-skill
-description: Creates new skills (SKILL.md files) for repeatable workflows. Use when building a new skill, writing skill instructions, or when user says "create a skill" or "make a new skill".
-version: 1.2.0
-author: jdwork
-category: meta
+description: Creates and revises agent skills (SKILL.md packages) for repeatable workflows and on-demand knowledge. Use when building a new skill, rewriting or slimming an existing one, fixing a skill that fails to trigger, or when user says "create a skill" or "make a new skill".
+metadata:
+  version: "2.0.0"
+  author: jdwork
+  category: meta
 ---
 
-# Skill: Create Skill
+# Create Skill
 
-## Description
+A skill is a folder with a `SKILL.md` that an agent loads only when its
+description matches the task. The description is always in context; the body
+and any bundled files load on demand. Write for a capable agent: include only
+what it would otherwise get wrong or have to rediscover.
 
-Creates well-structured agent skills (`SKILL.md`) for repeatable workflows and actions, following the [Agent Skills](https://agentskills.io) open standard. Skills live under `.agents/skills/` and are shared across Claude Code, pi, and OpenCode. They are retrieved by agents when needed, making them ideal for specific procedures rather than general knowledge.
+## 1. Decide whether it should be a skill
 
-## When to Create a Skill
+| Need | Put it in |
+| --- | --- |
+| A repeatable procedure, or knowledge needed only for some tasks | Skill |
+| A fact every task in a repo needs (commands, constraints, gotchas) | `AGENTS.md` (see `create-agents-md`) |
+| A rule that must hold every time (format, lint, blocked paths) | Hook, linter, or CI check |
+| A deterministic, fragile sequence | Script, invoked from a skill |
 
-**DO create a skill for:**
-- Deployment procedures
-- Database migrations
-- Running test suites with specific setup
-- Code generation workflows
-- Audits (accessibility, security, performance)
-- Complex refactoring procedures
+Agents can fail to load skills they would benefit from. Vercel's evals found an
+unprompted skill was skipped in over half of runs, while a compact docs index in
+`AGENTS.md` was always present. If the agent must have the knowledge on nearly
+every task, prefer always-on context.
 
-**DON'T create a skill for:**
-- General framework knowledge → use AGENTS.md
-- Coding conventions → use AGENTS.md
-- Project structure documentation → use AGENTS.md
+Before writing, ask for or collect two or three real tasks the skill should
+handle. They drive the description, the body, and the tests.
 
-**Rule of thumb:** If it's a repeatable *action* with specific steps → Skill. If it's *knowledge* the agent should always have → AGENTS.md (use `create-agents-md` skill).
+## 2. Save it under `.agents/skills/`
 
-## Where Skills Live — Directory Structure (READ FIRST, MUST FOLLOW)
+| Scope | Path |
+| --- | --- |
+| Personal (default) | `~/.agents/skills/<skill-name>/SKILL.md` |
+| Project | `<repo-root>/.agents/skills/<skill-name>/SKILL.md` |
 
-**Every skill MUST be saved under an `.agents/skills/` tree. You MUST NOT create it under `.claude/skills/`.**
+`.agents/skills/` is the single source that Claude Code, pi, and OpenCode all
+read. `~/.claude/skills` is a symlink into it, so a skill written under
+`.claude/skills/` becomes a second copy that drifts and that pi and OpenCode
+never see. Create `.agents/skills/` if it is missing rather than falling back to
+`.claude/`. For Claude Code discovery in a project, link it once:
+`ln -s ../.agents/skills <repo-root>/.claude/skills`.
 
-| Scope | Exact path to create |
-|-------|----------------------|
-| Personal / reusable (default) | `~/.agents/skills/<skill-name>/SKILL.md` |
-| Project-specific | `<repo-root>/.agents/skills/<skill-name>/SKILL.md` |
+Before finishing, confirm the written path contains `/.agents/skills/`.
 
-**Why this is a hard rule — not a preference:** `.agents/` is the single canonical source of truth for skills, and every agent tool reads from it — Claude Code, pi, and OpenCode. At the personal level, Claude Code's `~/.claude/skills` is a **symlink into `~/.agents/skills`**, so a skill saved there is discovered by all three tools automatically (Claude Code picks it up on next restart). The `.agents/` path is what keeps one skill working everywhere instead of three copies drifting apart.
+## 3. Write the frontmatter
 
-For a **project-specific** skill, still author it in `<repo-root>/.agents/skills/`. If that repo also needs Claude Code to auto-discover it, create the same one-time symlink in the repo (`ln -s ../.agents/skills <repo-root>/.claude/skills`) — author once in `.agents/`, never maintain a second copy under `.claude/`.
-
-**Do NOT write to `.claude/skills/` or `~/.claude/skills/`.** That location is only a symlink target, not a place to author files. Writing a real file or directory there:
-
-- forks a second copy that silently drifts out of sync with `.agents/`,
-- is invisible to pi and OpenCode,
-- can shadow or collide with the symlinked tree and corrupt discovery.
-
-If the target `.agents/skills/` directory does not exist yet, **create it** (`mkdir -p`). Do not "fall back" to `.claude/` because it happens to exist.
-
-**Verify before you finish (do not skip):** the full path of the file you wrote MUST contain `/.agents/skills/` and MUST NOT contain `/.claude/skills/`. If it contains `/.claude/skills/`, you placed it wrong — move it into `.agents/skills/` and confirm again.
-
-## Instructions
-
-### 1. Required Frontmatter
-
-Every skill must have YAML frontmatter:
+Use only the fields in the [Agent Skills spec](https://agentskills.io/specification)
+so the skill loads everywhere:
 
 ```yaml
 ---
-name: kebab-case-skill-name
-description: What it does + when to use it. Claude uses this to decide when to load the skill.
-version: 1.0.0
-author: [optional]
-category: [optional - category from list below]
-requires: [optional - other skill names this depends on]
+name: kebab-case-name          # 1-64 chars, a-z 0-9 and hyphens, matches the folder
+description: ...               # 1-1024 chars, no XML tags
+metadata:                      # optional, string values only
+  version: "1.0.0"
+  author: jdwork
+  category: workflow
+  requires: "core-writing"     # informational only; see step 6
+license: ...                   # optional
+compatibility: ...             # optional, e.g. required tools or network access
 ---
 ```
 
-**Note:** Skip `tags` - they don't help retrieval. Put searchable keywords in the description instead.
+Keep custom keys such as `version`, `author`, `category`, and `requires` under
+`metadata`. The reference validator and claude.ai reject unknown top-level keys.
+Use host-specific fields (for example Claude Code's `disable-model-invocation`,
+`allowed-tools`, or `paths`) only in skills meant for that host.
 
-### 2. Category Options
+Categories: `automation`, `code-quality`, `database`, `documentation`,
+`education`, `git`, `meta`, `security`, `testing`, `workflow`.
 
-Use one of these standard categories:
+## 4. Write the description for retrieval
 
-| Category | Use For |
-|----------|---------|
-| `automation` | CI/CD, deployments, builds, scheduled tasks |
-| `code-quality` | Linting, formatting, refactoring, code review |
-| `database` | Migrations, queries, schema changes, backups |
-| `documentation` | Docs generation, README updates, API docs |
-| `meta` | Skills about skills, templates, tooling setup |
-| `security` | Audits, vulnerability scanning, secrets management |
-| `testing` | Test execution, coverage, fixtures, mocking |
-| `workflow` | Multi-step procedures that span categories |
+The description is the only text the agent sees when deciding whether to load
+the skill. Write it in the third person, with two parts:
 
-### 3. Write Descriptions for Retrieval
-
-**Claude uses the description to decide when to load a skill.** Descriptions need two parts:
-
-1. **What it does** (verb-first)
-2. **When to use it** (trigger scenarios, user phrases)
+1. **What it does.** Start with a verb: Creates, Runs, Audits, Writes.
+2. **When to use it.** A `Use when...` clause naming the situations, the
+   technology keywords, and the phrases users actually type.
 
 ```yaml
-# Good - what + when
+# Good
 description: Runs database migrations with backup and rollback support. Use when applying schema changes, updating database structure, or when user says "migrate" or "run migrations".
 
-# Good - includes trigger phrases
-description: Writes git commit messages using Conventional Commits format. Use when committing code, writing commit messages, or when user asks for help with commits.
-
-# Bad - no trigger context
-description: Helps with database stuff.
-
-# Bad - what only, no when
+# Bad: no trigger context
 description: Runs database migrations safely.
 ```
 
-**Tips:**
-- Start with action verb (Creates, Runs, Audits, Generates, Deploys)
-- Include technology keywords users might say (PostgreSQL, React, Docker)
-- Add "Use when..." with specific scenarios
-- Include phrases users actually type ("help me write", "how do I", etc.)
+- Put the main use case first. Some hosts truncate long descriptions.
+- Agents tend to undertrigger, so list adjacent situations where the skill
+  helps even when the user does not name it.
+- Be specific, not loud. `Use when...` works; `ALWAYS use this skill...`
+  causes overtriggering on newer models.
+- Skip tags. Put searchable words in the description.
 
-### 4. Structure the Skill Body
+## 5. Write the body
 
-Required sections:
+There is no required section layout. Use the structure the task needs.
 
-```markdown
-# Skill: [Human-Readable Name]
+- **Add only what the agent lacks.** Cut explanations of general concepts,
+  restated defaults, and anything a strong model already does well.
+- **Match freedom to fragility.** Give goals and judgment criteria for
+  heuristic work. Give exact commands, ordered steps, or a script for
+  operations that break or destroy data when done slightly wrong.
+- **Explain why instead of shouting.** A short reason generalizes better than
+  `MUST` or `NEVER`. Reserve emphasis for one rule you have seen agents break.
+- **Cover failure where it matters.** Add checks and recovery steps for
+  destructive, irreversible, or environment-sensitive steps. Skip the
+  boilerplate error-handling section otherwise.
+- **Show, briefly.** One concrete input and output example usually beats a
+  paragraph of description.
+- **Use imperative language** and one term per concept.
 
-## Description
-[1-2 sentences on what this does and when to use it]
+## 6. Use progressive disclosure
 
-## Instructions
+- Keep `SKILL.md` under 500 lines (about 5,000 tokens). Aim much lower.
+- Move detail into `references/`, deterministic helpers into `scripts/`, and
+  templates or static files into `assets/`.
+- Link each bundled file directly from `SKILL.md` and say when to read it.
+  Keep references one level deep; agents may only skim files linked from other
+  linked files.
+- Add a short table of contents to reference files over about 100 lines.
+- Keep everything the skill needs inside its folder so it works when copied.
 
-### 1. Pre-flight Checks
-[What to verify before running]
+No loader resolves dependencies between skills. If a skill builds on another,
+say so in the body, for example "Apply `core-writing` first", and record it in
+`metadata.requires` for humans.
 
-### 2. Main Workflow
-[Numbered steps to execute]
+## 7. Test and iterate
 
-### 3. Error Handling
-[What to do when things fail]
+1. Run the real tasks from step 1 without the skill and note what goes wrong.
+2. Write the smallest skill that fixes those failures.
+3. Run the same tasks with a fresh agent that has the skill. Watch which files
+   it reads, which it skips, and where it hesitates.
+4. Check triggering with a few prompts that should load the skill and a few
+   near misses that should not.
+5. Revise from what you observed, not from what seems thorough. Delete
+   instructions that change nothing.
 
-## Examples
-[At least one usage example]
-```
-
-Optional sections:
-- `## Prerequisites` - Required tools, setup, or context
-- `## Notes` - Caveats, edge cases, tips
-- `## Cross-Reference` - Related skills or AGENTS.md
-
-### 5. Write Pre-flight Checks
-
-Explicit checks prevent errors:
-
-```markdown
-### 1. Pre-flight Checks
-
-Before running this skill:
-
-1. **Verify environment**: Check that `.env` exists and has required variables
-2. **Confirm target**: Ask user to confirm the target environment (dev/staging/prod)
-3. **Check dependencies**: Run `which docker` to ensure Docker is installed
-4. **Backup state**: If modifying data, note current state for rollback
-```
-
-### 6. Define Error Handling
-
-Tell the agent what to do on failure:
-
-```markdown
-### 3. Error Handling
-
-If the migration fails:
-1. Read the error log at `./logs/migration-error.log`
-2. Do NOT retry automatically—report the error to the user
-3. If in production, immediately run the rollback script
-4. Check the `migrations/` folder for the failed migration file
-```
-
-### 7. Add Examples
-
-Show realistic usage with expected behavior:
-
-```markdown
-## Examples
-
-### Example: Running in Development
-
-**User:** "Use the migrate-db skill to run pending migrations"
-
-**Workflow:**
-1. Check environment → `.env` shows `DATABASE_URL` is set
-2. Confirm target → User confirms "development"
-3. Run migrations → `prisma migrate dev`
-4. Report results → "Applied 3 migrations successfully"
-```
-
-## Skill Composition
-
-For complex skills, split into smaller skills and use `requires`:
-
-```yaml
----
-name: full-deploy
-requires: [run-tests, build-app, deploy-to-cloud]
----
-```
-
-Keep individual skills under 200 lines when possible. If a skill grows too large, extract sub-workflows into separate skills.
-
-## Anti-Patterns
-
-- **God skills:** One skill that does everything → Split into focused skills
-- **Micro skills:** Skill for trivial single commands → Just document in AGENTS.md
-- **Knowledge skills:** General "how to" information → Use AGENTS.md instead
-- **Missing error handling:** No guidance on failures → Always include recovery steps
+Test with the weakest model the skill must support. What is enough for a large
+model may be too little for a small one.
 
 ## Template
-
-> Save this file to `~/.agents/skills/<skill-name>/SKILL.md` (personal) or `<repo-root>/.agents/skills/<skill-name>/SKILL.md` (project). Never `.claude/skills/`. See [Where Skills Live](#where-skills-live--directory-structure-read-first-must-follow).
 
 ```markdown
 ---
 name: skill-name
-description: [What it does]. Use when [trigger scenarios] or when user [phrases they might say].
-version: 1.0.0
-category: [category]
+description: [Does what]. Use when [situations], or when user says "[phrase]".
+metadata:
+  version: "1.0.0"
+  author: jdwork
+  category: [category]
 ---
 
-# Skill: [Human Name]
+# Skill Name
 
-## Description
+[One or two sentences: the outcome and any key boundary.]
 
-[What this skill does and when to use it.]
+## Workflow
 
-## Instructions
-
-### 1. Pre-flight Checks
-
-Before running:
-- [ ] Check [requirement 1]
-- [ ] Verify [requirement 2]
-
-### 2. Workflow
-
-1. **Step one**: [action]
-2. **Step two**: [action]
-3. **Step three**: [action]
-
-### 3. Error Handling
-
-If the skill fails:
-1. [Recovery action]
-2. [Fallback behavior]
-
-## Examples
-
-### Basic Usage
-
-**User:** "[example request]"
-**Result:** [expected outcome]
+1. [Step, with the exact command if it is fragile]
+2. [Step]
+3. [How to verify the result]
 
 ## Notes
 
-[Optional caveats or tips]
+[Only the gotchas the agent would otherwise hit.]
 ```
-
-## Cross-Reference
-
-For project knowledge and conventions that agents should always have, create an AGENTS.md file instead using the `create-agents-md` skill.
-
-**Placement reminder:** the finished skill goes under `.agents/skills/`, never `.claude/skills/` — see [Where Skills Live](#where-skills-live--directory-structure-read-first-must-follow).

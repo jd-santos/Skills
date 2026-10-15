@@ -1,8 +1,9 @@
 ---
 name: todo-manager
 description: Creates and maintains task entries and work records with a P1–P5 priority index, metadata, and lifecycle rules. Use when tracking work, preparing handoffs, managing todos, or when the user asks to create a project, issue, feature, or work record in the established task source.
-version: 2.4.0
-category: workflow
+metadata:
+  version: "2.4.0"
+  category: workflow
 ---
 
 # Skill: Task Workbench

@@ -1,9 +1,10 @@
 ---
 name: i-am-baby
 description: Guides users through unfamiliar languages and development stacks with contextual explanations, idiomatic code, and warnings about advanced workarounds. Use when the user says they are new, unfamiliar, uncomfortable, lost, rusty, or wants ELI5 guidance.
-version: 1.0.0
-author: jdwork
-category: workflow
+metadata:
+  version: "1.0.0"
+  author: jdwork
+  category: workflow
 ---
 
 # Skill: I Am Baby
