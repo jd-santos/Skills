@@ -1,10 +1,11 @@
 ---
 name: commit-message-writer
 description: 'Writes git commit messages using Scoped Commits format (scope: description). Use when committing changes, writing commit messages, or when user says "commit this" or "write a commit message".'
-version: 1.3.0
-author: jdwork
-category: git
-requires: [core-writing]
+metadata:
+  version: "1.3.0"
+  author: jdwork
+  category: git
+  requires: core-writing
 ---
 
 # Skill: Commit Message Writer
@@ -12,6 +13,8 @@ requires: [core-writing]
 ## Description
 
 Writes commit messages that put the changed area first. Use Scoped Commits format: `scope: description`. No type-first prefixes like `feat:`, `fix:`, or `chore:` unless a project explicitly asks for them.
+
+Apply `core-writing` to the subject and body.
 
 ## Instructions
 

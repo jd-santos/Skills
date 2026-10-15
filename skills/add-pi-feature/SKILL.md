@@ -1,9 +1,10 @@
 ---
 name: add-pi-feature
 description: "Adds pi coding agent features: skills, extensions, prompt templates, themes, custom tools, commands, shortcuts, and flags. Use when setting up a new pi workflow, adding a slash command, building an extension, creating a prompt template, or when user says 'add a pi feature', 'create a pi extension', 'make a pi skill', or 'set up pi'."
-version: 1.0.1
-author: jdwork
-category: workflow
+metadata:
+  version: "1.0.1"
+  author: jdwork
+  category: workflow
 ---
 
 # Skill: Add Pi Feature
@@ -56,54 +57,24 @@ Before implementing:
 
 3. Verify with `/reload` in pi - skill appears in system prompt `<available_skills>`
 
-**SKILL.md template:**
+**SKILL.md frontmatter:**
 
 ```markdown
 ---
 name: <name>
-description: <verb-first what it does>. Use when <trigger scenarios> or when user says "<trigger phrases>".
-version: 1.0.0
-author: jdwork
-category: <workflow|automation|code-quality|database|documentation|meta|security|testing>
+description: <Does what>. Use when <trigger scenarios> or when user says "<trigger phrases>".
+metadata:
+  version: "1.0.0"
+  author: jdwork
+  category: <category>
 ---
-
-# Skill: <Human Name>
-
-## Description
-
-<What this skill does and when to use it.>
-
-## Instructions
-
-### 1. Pre-flight Checks
-
-Before running:
-- [ ] Check <requirement>
-- [ ] Verify <requirement>
-
-### 2. Workflow
-
-1. **Step one**: <action>
-2. **Step two**: <action>
-
-### 3. Error Handling
-
-If the skill fails:
-1. <Recovery action>
-
-## Examples
-
-### Basic Usage
-
-**User:** "<example request>"
-**Result:** <expected outcome>
 ```
 
-**Description writing rules:**
-- Start with action verb (Creates, Runs, Audits, Generates, Deploys)
-- Include technology keywords users might say
-- Add "Use when..." with specific scenarios and exact trigger phrases
-- Max 1024 characters
+Keep custom keys under `metadata`; loaders that follow the Agent Skills spec
+reject unknown top-level keys. Write the description in the third person, verb
+first, with a `Use when...` clause (max 1024 characters). The body has no
+required sections. Use the `create-skill` skill for body, testing, and
+progressive-disclosure guidance.
 
 ---
 

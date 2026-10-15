@@ -1,14 +1,15 @@
 ---
 name: marimo-pair
 description: >-
-  Work inside a running marimo notebook's kernel — execute code, create cells,
+  Works inside a running marimo notebook's kernel — execute code, create cells,
   and build a notebook as an artifact. Load the marimo hub skill first. Use
   when the user wants to start a marimo notebook or work in an active marimo
   session.
-version: 1.0.0
-author: jdwork
-category: workflow
-requires: [marimo]
+metadata:
+  version: "1.0.0"
+  author: jdwork
+  category: workflow
+  requires: marimo
 allowed-tools: Bash(bash **/scripts/discover-servers.sh *), Bash(bash **/scripts/execute-code.sh *), Read
 ---
 

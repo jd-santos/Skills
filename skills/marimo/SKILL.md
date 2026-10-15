@@ -1,10 +1,10 @@
 ---
 name: marimo
 description: Guides working with marimo reactive Python notebooks. Covers setup, routing, core reactivity, notebook editing, interactive data, SQL, widgets, exports, apps, scripts, and deployment. Use whenever working with marimo, writing marimo code, or when user says "marimo", "reactive notebook", or "mo.".
-version: 2.0.0
-author: jdwork
-category: workflow
-requires: []
+metadata:
+  version: "2.0.0"
+  author: jdwork
+  category: workflow
 ---
 
 # Skill: Marimo

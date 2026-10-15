@@ -1,9 +1,10 @@
 ---
 name: adaptive-teaching
 description: Teaches topics efficiently with selective calibration, time-boxed lessons, active practice, and client-aware visuals or interaction. Use when the user asks to learn, understand, study, explain, teach, tutor, or build durable knowledge.
-version: 1.0.0
-author: jdwork
-category: education
+metadata:
+  version: "1.0.0"
+  author: jdwork
+  category: education
 ---
 
 # Skill: Adaptive Teaching

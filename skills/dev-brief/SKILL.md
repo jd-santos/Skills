@@ -1,10 +1,11 @@
 ---
 name: dev-brief
 description: Edits notes, docs, threads, or drafts down into a short brief for a developer or other technical reader, either an actionable ask or a readable explanation of a technical decision or architecture. Use when sharing context with an engineer, writing a Slack message, PR comment, ticket description, or handoff note, or when user says "trim this for a dev", "make this dev-friendly", "cut this down", "explain this decision to the team", "what does the engineer need", "tl;dr for the team", or "dev brief".
-version: 1.1.0
-author: jdwork
-category: documentation
-requires: [core-writing, technical-writing]
+metadata:
+  version: "1.1.0"
+  author: jdwork
+  category: documentation
+  requires: core-writing, technical-writing
 ---
 
 # Skill: Dev Brief

@@ -1,97 +1,64 @@
 ---
 name: example-skill
-description: Template demonstrating agent skill structure and format. Use when learning how skills work, viewing an example skill, or as a starting point for new skills.
-version: 1.0.0
-author: jdwork
-category: meta
+description: Shows a small, complete agent skill as a reference for structure and style. Use when learning how skills are put together, viewing an example skill, or starting a new skill from a working sample.
+metadata:
+  version: "2.0.0"
+  author: jdwork
+  category: meta
 ---
 
-# Skill: Example Skill
+# Example Skill
 
-## Description
+This file is a sample, not a workflow to follow. The skill below,
+`release-notes-from-tags`, shows the patterns `create-skill` recommends. Use
+`create-skill` for the full guidance.
 
-This is a template/example skill that demonstrates the structure and format of an agent skill. Use this as a starting point when creating your own custom skills.
+Save real skills under `~/.agents/skills/<name>/SKILL.md` or
+`<repo-root>/.agents/skills/<name>/SKILL.md`, never `.claude/skills/`.
 
-**Where to save it:** skills live under `.agents/skills/` — `~/.agents/skills/<name>/SKILL.md` (personal) or `<repo-root>/.agents/skills/<name>/SKILL.md` (project). Never `.claude/skills/`, which is only a symlink into `.agents/skills/`. See the `create-skill` skill for the full rule.
+## The sample
 
-## Instructions
+````markdown
+---
+name: release-notes-from-tags
+description: Drafts release notes from the git commits between two tags, grouped by scope. Use when preparing a release, summarizing changes since the last tag, or when user says "write release notes" or "what changed since v1.2".
+metadata:
+  version: "1.0.0"
+  category: documentation
+  requires: core-writing
+---
 
-When this skill is loaded, follow these guidelines:
+# Release Notes from Tags
 
-1. **Understand the Task**
-   - Read the user's request carefully
-   - Identify the specific goal and desired outcome
-   - Ask clarifying questions if needed
+Apply `core-writing` to the final prose.
 
-2. **Plan the Approach**
-   - Break down complex tasks into smaller steps
-   - Consider dependencies and prerequisites
-   - Identify potential challenges or edge cases
+## Workflow
 
-3. **Execute Systematically**
-   - Follow best practices for the relevant technology
-   - Maintain consistent code style and conventions
-   - Document important decisions and rationale
-
-4. **Validate and Verify**
-   - Test the implementation
-   - Check for errors or issues
-   - Ensure the solution meets requirements
-
-5. **Communicate Clearly**
-   - Explain what you're doing and why
-   - Highlight important changes or considerations
-   - Provide next steps or recommendations
-
-## Examples
-
-### Example 1: Simple Task
-```
-User: "Use the example skill to help me create a function"
-Claude: Following the example skill workflow:
-1. Understanding: You need a function created
-2. Planning: I'll ask about parameters, return type, and purpose
-3. Execution: [creates function with proper style]
-4. Validation: [explains testing approach]
-5. Communication: [explains the implementation]
-```
-
-### Example 2: Complex Task
-```
-User: "Use the example skill to refactor this module"
-Claude: Applying the systematic approach:
-1. Understanding: Analyzing current module structure
-2. Planning: Identifying refactoring opportunities
-3. Execution: Making improvements incrementally
-4. Validation: Ensuring functionality is preserved
-5. Communication: Documenting changes and benefits
-```
-
-## Prerequisites
-
-- None - this is a general-purpose example skill
-- Adapt the instructions for your specific use case
+1. Find the range. Use the tags the user names; otherwise run
+   `git describe --tags --abbrev=0` for the latest tag and compare it to `HEAD`.
+2. List commits with `git log --no-merges --format='%h %s' <from>..<to>`.
+3. Group by the scope before the colon (`nvim: ...`, `tmux: ...`). Put commits
+   without a scope under "Other".
+4. Rewrite each group as user-facing changes. Drop refactors, formatting, and
+   CI-only commits unless they change behavior; readers care about effects,
+   not churn.
+5. Show the draft. Do not create a tag or a GitHub release unless asked,
+   because both are visible to others and awkward to undo.
 
 ## Notes
 
-This example skill demonstrates:
-- Clear structure with numbered steps
-- Actionable instructions
-- Concrete examples
-- Flexible guidelines that work across different contexts
+- Squash-merged repos have one commit per PR; use the PR title as the entry.
+- If the range is empty, say so instead of inventing entries.
+````
 
-When creating your own skills, customize each section to provide specific, relevant guidance for your particular use case.
+## What it demonstrates
 
-### Writing Descriptions
-
-The `description` field in frontmatter should be verb-first and include searchable keywords:
-
-```yaml
-# Good - verb-first, searchable
-description: Runs database migrations safely with backup verification and rollback support for PostgreSQL databases.
-
-# Bad - vague, passive
-description: A skill for database stuff that helps with migrations.
-```
-
-Start with an action verb (Creates, Runs, Audits, Generates, Deploys) followed by what it does and relevant context.
+- **Description:** third person, verb first, then a `Use when...` clause with
+  real user phrases.
+- **Metadata:** custom keys sit under `metadata`, so the skill passes the Agent
+  Skills spec. `requires` is a note for humans; the body line "Apply
+  `core-writing`" is what gets the other skill used.
+- **Body:** no boilerplate sections. Exact commands where a wrong flag gives a
+  wrong answer, and judgment where judgment fits.
+- **Reasons, not caps:** steps 4 and 5 say why instead of shouting `NEVER`.
+- **Notes:** only the gotchas an agent would otherwise hit.

@@ -32,6 +32,12 @@ unless the project adopts a versioning policy.
 
 ### Changed
 
+- Rewrite `create-skill`, `create-agents-md`, and `example-skill` around current
+  guidance: spec-only frontmatter, no fixed section template, test-driven skill
+  iteration, and a short, hand-written AGENTS.md.
+- Move `version`, `author`, `category`, and `requires` under `metadata` in every
+  skill so they pass the Agent Skills spec, and state `core-writing`
+  dependencies in skill bodies where only frontmatter named them.
 - Add documentation and visual maintenance guidance to `add-pi-feature`, including
   editable recreations, sanitized screenshots, and public-repository checks.
 - Refocus `ship` on explicitly requested pushes and PRs, composing local
