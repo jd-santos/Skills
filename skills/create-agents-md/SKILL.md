@@ -11,13 +11,8 @@ metadata:
 
 `AGENTS.md` loads into every agent session in the repo, so every line costs
 tokens and attention on every task. Keep it to what an agent cannot discover
-quickly and would otherwise get wrong.
-
-The evidence supports a short file. In a 2026 study (Gloaguen et al.),
-LLM-generated context files did not improve task success and raised cost by
-about 20%. Developer-written files helped slightly, and repository overviews did
-not help agents find files faster. Write the file by hand, or heavily prune a
-generated draft.
+quickly and would otherwise get wrong. Write it by hand, or heavily prune a
+generated draft; generated files mostly restate what the agent can already find.
 
 ## 1. Inspect before writing
 

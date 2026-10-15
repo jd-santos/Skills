@@ -336,7 +336,7 @@ skill works when copied independently.
 
 ## License
 
-Skills and code committed to this repository are licensed under GPL-3.0. Skills
+Skills and code committed to this repository are licensed under the Apache License 2.0. Skills
 installed from external repositories retain their upstream licenses and are not
 part of this repository's committed source. If you distribute modified copies,
 follow the license terms that apply to those files.
