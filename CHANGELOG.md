@@ -8,6 +8,10 @@ unless the project adopts a versioning policy.
 
 ### Added
 
+- Add `dev-brief` for cutting source material down to a message-sized ask or
+  decision explanation for a developer, and add `shareable-doc-writer` for
+  restructuring technical documents without losing detail. Both build on
+  `core-writing` and `technical-writing` and are listed under Communication.
 - Add `repo-commit` for local repository review and authorized staging/commits,
   separate from remote delivery, plus a targeted developer-workflow migration guide.
 

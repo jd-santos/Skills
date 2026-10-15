@@ -2,6 +2,8 @@
 /.local/
 /skills/.tracked-skill-*/
 /skills/.*.previous/
+/skills/.trash/
+/skills/synced/
 /skills/informed-patient/
 /skills/learning-opportunities/
 /skills/orient/
