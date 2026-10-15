@@ -32,6 +32,9 @@ unless the project adopts a versioning policy.
 
 ### Changed
 
+- Relicense the collection from GPL-3.0 to Apache-2.0 so the skills can be
+  reused in work and proprietary projects. External tracked skills keep their
+  upstream licenses.
 - Rewrite `create-skill`, `create-agents-md`, and `example-skill` around current
   guidance: spec-only frontmatter, no fixed section template, test-driven skill
   iteration, and a short, hand-written AGENTS.md.
