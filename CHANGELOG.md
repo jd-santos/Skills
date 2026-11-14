@@ -8,6 +8,8 @@ unless the project adopts a versioning policy.
 
 ### Added
 
+- Track Inanna Malick's MIT-licensed `proptest-praxis` skill at a reviewed commit
+  for model-based property testing and focused regression fixes.
 - Add `dev-brief` for cutting source material down to a message-sized ask or
   decision explanation for a developer, and add `shareable-doc-writer` for
   restructuring technical documents without losing detail. Both build on
