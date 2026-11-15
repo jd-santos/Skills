@@ -18,8 +18,8 @@ preferences.
 | [`repo-commit`](skills/repo-commit/) | Review repository work and stage/commit ready changes when requested, without pushing. |
 | [`ship`](skills/ship/) | Deliver requested work through pushes and pull requests. |
 | [`todo-manager`](skills/todo-manager/) | Create and maintain task entries, work records, metadata, and lifecycle rules. |
-| [`commit-message-writer`](skills/commit-message-writer/) | Write concise, scope-first commit messages. |
-| [`changelog-writer`](skills/changelog-writer/) | Write changelog entries and release notes. |
+| [`commit-message-writer`](skills/commit-message-writer/) | Write concise, scope-first commit messages (requires `core-writing`). |
+| [`changelog-writer`](skills/changelog-writer/) | Write changelog entries and release notes (requires `core-writing`). |
 | [`offgrid-review`](https://github.com/jd-santos/offgrid-review) | Move complex decisions into a portable review workbench. |
 
 ### Communication
@@ -27,23 +27,9 @@ preferences.
 | Skill | Purpose |
 | --- | --- |
 | [`core-writing`](skills/core-writing/) | Apply JD's baseline voice to prose and copyable text. |
-| [`technical-writing`](skills/technical-writing/) | Write accurate, useful technical material. |
-| [`shareable-doc-writer`](skills/shareable-doc-writer/) | Restructure technical documents so teammates can follow them, keeping every fact. |
-| [`dev-brief`](skills/dev-brief/) | Cut source material down to a message-sized ask or decision explanation for a developer. |
-
-`core-writing` sets the voice and `technical-writing` keeps technical content
-accurate. The other two build on both and handle sharing work with technical
-readers. They differ in what they do with detail:
-
-| | `shareable-doc-writer` | `dev-brief` |
-| --- | --- | --- |
-| Output | A document people keep: plan, proposal, handoff, Jira epic | A message: Slack, PR comment, short ticket, handoff note |
-| Detail | Preserves facts and moves them to appendices or task sections | Cuts everything the reader doesn't need and links to the source |
-| Leads with | The structure the reader's job needs | The ask, or the decision |
-
-If a brief keeps growing into several features or audiences, it's a document.
-If a document only needs to get one developer moving, it's a brief that links to
-the document.
+| [`technical-writing`](skills/technical-writing/) | Write accurate, useful technical material (requires `core-writing`). |
+| [`shareable-doc-writer`](skills/shareable-doc-writer/) | Restructure technical documents so teammates can follow them, keeping every fact (requires `core-writing`, `technical-writing`). |
+| [`dev-brief`](skills/dev-brief/) | Cut source material down to a message-sized ask or decision explanation for a developer (requires `core-writing`, `technical-writing`). |
 
 ### Design
 
@@ -70,6 +56,12 @@ the document.
 | [`learning-opportunities`](https://github.com/DrCatHicks/learning-opportunities) | Practice concepts through opt-in exercises during development. |
 | [`study-lyrics`](skills/study-lyrics/) | Study lyrics through translation and cultural context. |
 | [`study-cards`](skills/study-cards/) | Create sourced, Mochi-compatible study cards from learning materials. |
+
+### Testing
+
+| Skill | Purpose |
+| --- | --- |
+| [`proptest-praxis`](https://github.com/inanna-malick/agent-skills/tree/fa2ce23d66a155833e227860699da18044341b3e/skills/proptest-praxis) | Build model-based property tests and turn failures into deterministic regression tests and minimal fixes. |
 
 ### Languages and tools
 
@@ -176,6 +168,7 @@ repository.
 | `explain-diff-notion` | Explain Diff by Geoffrey Litt | No license declared | [geoffreylitt/explain-diff gist](https://gist.github.com/geoffreylitt/a29df1b5f9865506e8952488eac3d524) |
 | `herdr` | Herdr by herdrdev | Apache 2.0 | [Herdr skill](https://github.com/herdrdev/herdr/tree/master/skills/herdr) |
 | `grilling` | Matt Pocock Skills by Matt Pocock | MIT | [Pinned grilling skill](https://github.com/mattpocock/skills/tree/c55ee46073ed923f86ce59a5eb3b6d895095d1b7/skills/productivity/grilling) |
+| `proptest-praxis` | Agent skills by Inanna Malick | MIT | [Pinned proptest-praxis skill](https://github.com/inanna-malick/agent-skills/tree/fa2ce23d66a155833e227860699da18044341b3e/skills/proptest-praxis) |
 
 The local installer preserves each declared upstream license and records the
 source repository and exact installed commit. See
